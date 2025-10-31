@@ -180,24 +180,3 @@ WebFlux 학습 전략:
 - [ ] 비용 모니터링 및 최적화
 
 **Velog 포스팅**: AWS ECS 기반 백엔드 운영 환경 구축기
-
-## 5. Milestone Tracking
-### ✅ 전체 진행 상황
-- Current Phase: Phase 1
-- Current Week: Week 1
-- Progress: 0%
-
-### 🔎 Phase 완료 기준
-#### ✅ Phase 1
-- [ ] Docker 개발환경 구축 완료
-- [ ] Gradle 멀티모듈 구성 완료
-- [ ] PostgreSQL 연결 성공
-- [ ] Health Check API 정상 작동
-- [ ] Velog 1편 발행
-
-#### ⏳ Phase 2
-- [ ] JWT 인증/인가 구현
-- [ ] Redis 세션 관리 적용
-- [ ] 사용자 캐싱 + TTL 관리
-- [ ] Velog 1편 발행
-

@@ -49,7 +49,7 @@ dev-debug.log
 # Dependency directories
 node_modules/
 # Environment variables
-.env
+docker/.env
 # Editor directories and files
 .vscode
 *.suo
