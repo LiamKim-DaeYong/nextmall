@@ -1,5 +1,7 @@
 # 🛒 NextMall
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/LiamKim-DaeYong/nextmall?utm_source=oss&utm_medium=github&utm_campaign=LiamKim-DaeYong%2Fnextmall&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 모듈형 쇼핑몰 백엔드 프로젝트입니다.  
 이직을 위한 기술 포트폴리오로, **실무에서 다루지 못한 기술 스택을 직접 설계 및 구현**합니다.
 
