@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class FindUserUseCase(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
-    fun findById(id: Long): User =
-        userRepository.findById(id).orElseThrow { NoSuchElementException("User($id) not found") }
+    fun findById(id: Long): User = userRepository.findById(id).orElseThrow { NoSuchElementException("User($id) not found") }
 }

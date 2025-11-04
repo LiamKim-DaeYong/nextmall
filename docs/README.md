@@ -9,6 +9,7 @@
 
 ## ✅ Task Lists
 - [`phase-1-tasks.md`](./tasks/phase-1-tasks.md)
+- [`phase-2-tasks.md`](./tasks/phase-2-tasks.md)
 
 ## 🔁 회고 (Retrospective)
 - (추가 예정)
