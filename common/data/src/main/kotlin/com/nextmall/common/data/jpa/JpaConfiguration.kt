@@ -1,0 +1,16 @@
+package com.nextmall.common.data.jpa
+
+import org.springframework.boot.autoconfigure.domain.EntityScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+
+/**
+ * Common JPA configuration shared across modules.
+ *
+ * Defines base packages for entity scanning and JPA repository discovery.
+ * Extend this configuration if additional JPA-related beans are required.
+ */
+@Configuration
+@EntityScan(basePackages = ["com.nextmall"])
+@EnableJpaRepositories(basePackages = ["com.nextmall"])
+class JpaConfiguration
