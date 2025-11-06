@@ -18,12 +18,14 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 postgresql = { module = "org.postgresql:postgresql" }
-spring-security-crypto = { module = "org.springframework.security:spring-security-crypto" }
-spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }  # ⭐ 추가
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-security-crypto = { module = "org.springframework.security:spring-security-crypto" }
+spring-context = { module = "org.springframework:spring-context" }
 
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
