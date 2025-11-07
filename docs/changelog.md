@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.0.4] - 2025-11-06
+
+### Gradle 멀티모듈 빌드 구조 및 bootJar 설정 수정
+
+- Gradle 멀티모듈 환경에서 bootJar 관련 빌드 오류 해결
+- 실행 모듈(api)과 라이브러리 모듈(user, common)의 빌드 방식을 명확히 분리하여 안정화
+- 루트 build.gradle.kts의 Kotlin DSL 업데이트 및 컴파일 옵션(compilerOptions)을 최신 방식으로 정리
+- api 모듈을 제외한 모든 모듈에서 bootJar 비활성화 및 jar 활성화
+- JVM 타깃 버전을 21로 통일 (compilerOptions.jvmTarget = JvmTarget.JVM_21)
+- ktlint 및 테스트 로깅(testLogging.events) 설정 정비
+- clean, bootJar, jar 태스크 정상 동작 확인
+- Gradle 빌드 구조 안정화 완료
+
+---
+
 ## [v1.0.3] - 2025-11-04
 
 ### User 모듈 고도화 및 환경 구성 개선
