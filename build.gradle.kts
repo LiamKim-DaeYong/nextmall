@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.sonarqube) apply true
     alias(libs.plugins.ktlint)
+    jacoco
 }
 
 allprojects {
@@ -22,6 +23,7 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.jvm")
     }
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "jacoco")
 
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
@@ -34,6 +36,40 @@ subprojects {
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
+        }
+        finalizedBy("jacocoTestReport")
+    }
+
+    tasks.withType<JacocoReport> {
+        reports {
+            xml.required.set(true)
+            html.required.set(false)
+        }
+    }
+}
+
+tasks.register<JacocoReport>("jacocoRootReport") {
+    description = "Generates a unified JaCoCo test coverage report for all subprojects."
+    group = "verification"
+
+    dependsOn(subprojects.map { it.tasks.named("test") })
+
+    reports {
+        xml.required.set(true)
+        html.required.set(false)
+    }
+
+    val executionData =
+        fileTree(rootDir) {
+            include("**/build/jacoco/*.exec")
+        }
+    executionData(executionData)
+
+    subprojects.forEach { subproject ->
+        val sourceSets = subproject.extensions.findByName("sourceSets") as? SourceSetContainer
+        sourceSets?.findByName("main")?.let { main ->
+            sourceDirectories.from(main.allSource.srcDirs)
+            classDirectories.from(main.output)
         }
     }
 }
