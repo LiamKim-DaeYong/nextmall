@@ -38,6 +38,7 @@ jobs:
           
           PR_NUMBER=${{ github.event.pull_request.number }}
           echo "Fetching CodeRabbit summary for PR #$PR_NUMBER"
+
           COMMENTS=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[].body')
           SUMMARY=$(echo "$COMMENTS" | grep -A50 "Summary by CodeRabbit" || true)          
 
@@ -45,16 +46,19 @@ jobs:
             echo "::warning ::CodeRabbit summary not found. Using PR body as fallback."
             SUMMARY="$PR_BODY"
           fi
+
           echo "summary=$(echo "$SUMMARY" | base64 -w 0)" >> "$GITHUB_OUTPUT"
-      - name: Insert changelog entry
+
+      - name: Insert or append changelog entry
         run: |
           set -euo pipefail
+
           CHANGELOG_FILE="docs/changelog.md"
           TEMP_FILE="docs/changelog_tmp.md"
           DECODED_SUMMARY=$(echo "${{ steps.coderabbit.outputs.summary }}" | base64 --decode)
           DATE=$(date +'%Y-%m-%d')
-          VERSION_LINE=$(grep -m1 -E '^## \[v[0-9]+\.[0-9]+\.[0-9]+\]' "$CHANGELOG_FILE" 2>/dev/null || echo "")
           
+          VERSION_LINE=$(grep -m1 -E '^## \[v[0-9]+\.[0-9]+\.[0-9]+\]' "$CHANGELOG_FILE" 2>/dev/null || echo "")
           if [ -n "$VERSION_LINE" ]; then
             LAST_VERSION=$(echo "$VERSION_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
             IFS='.' read -r major minor patch <<< "$LAST_VERSION"
@@ -62,15 +66,25 @@ jobs:
           else
             NEXT_VERSION="1.0.0"
           fi
-          echo "Generating changelog entry for version v$NEXT_VERSION"
 
-          NEW_ENTRY="## [v${NEXT_VERSION}] - ${DATE}\n${DECODED_SUMMARY}\n---"
+          echo "Generating changelog entry for version v$NEXT_VERSION (${DATE})"
+          
+          NEW_ENTRY="### PR #${{ github.event.pull_request.number }}\n${DECODED_SUMMARY}\n"
 
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "# Changelog" > "$CHANGELOG_FILE"
           fi
 
-          echo -e "# Changelog\n\n${NEW_ENTRY}\n$(tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true)" > "$TEMP_FILE"
+          if grep -q "## \[v${NEXT_VERSION}\] - ${DATE}" "$CHANGELOG_FILE"; then
+            echo "Existing version for today detected, appending to that section..."
+            awk -v entry="$NEW_ENTRY" -v version="## [v${NEXT_VERSION}]" '
+              $0 ~ version { print; print entry; next } 1
+            ' "$CHANGELOG_FILE" > "$TEMP_FILE"
+          else
+            echo "Creating new changelog section for v${NEXT_VERSION}"
+            echo -e "# Changelog\n\n## [v${NEXT_VERSION}] - ${DATE}\n${NEW_ENTRY}\n---\n$(tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true)" > "$TEMP_FILE"
+          fi
+
           mv "$TEMP_FILE" "$CHANGELOG_FILE"
           echo "changelog updated successfully at docs/changelog.md"
 
@@ -80,4 +94,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/changelog.md
           git commit -m "docs(changelog): auto update from CodeRabbit summary [skip ci]" || echo "No changes to commit"
-          git push || echo "⚠️ Push skipped (PR context or permission issue)"
+          git push || echo "Push skipped (PR context or permission issue)"
