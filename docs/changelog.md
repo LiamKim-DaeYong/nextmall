@@ -1,5 +1,27 @@
 # Changelog
 
+## [v1.0.5] - 2025-11-08
+### SonarCloud 코드 품질 분석 및 CI 자동화 구축
+
+- SonarCloud 통합 완료
+  - Gradle sonarqube 플러그인 설정 추가
+  - GitHub Actions 기반 자동 분석 파이프라인 구성
+  - jacocoRootReport 태스크로 멀티모듈 커버리지 통합
+  - SonarCloud에서 NextMall 프로젝트 품질 게이트(Quality Gate) 연동
+  - Pull Request 시 자동 분석 및 코멘트 피드백 확인 
+- CI/CD 워크플로우 개선
+  - sonarcloud.yml 워크플로우 신규 작성
+  - Gradle 캐시 및 종속성 그래프(Dependency Graph) 자동 생성
+  - 테스트 커버리지 검증 단계(jacocoRootReport) 추가
+  - GitHub Actions에서 gradlew 실행 권한 문제 해결 (chmod +x)
+  - 빈 리포트 생성 방지를 위해 커버리지 검증 로직 강화
+- 테스트 환경 정비
+  - .env 기반 환경 변수 자동 주입 구조 확인
+  - H2 데이터베이스 대체 전략 검토 (CI 환경에서 DB 미존재 대응)
+  - 로컬 실행 시 정상 동작, GitHub Actions 환경 테스트 완료
+
+---
+
 ## [v1.0.4] - 2025-11-06
 
 ### Gradle 멀티모듈 빌드 구조 및 bootJar 설정 수정
