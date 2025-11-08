@@ -20,13 +20,16 @@ allprojects {
 
 sonar {
     properties {
-        property("sonar.projectName", project.name.replaceFirstChar { it.uppercase() })
-        property("sonar.projectKey", System.getProperty("sonar.projectKey") ?: "${project.group}:${project.name}")
+        property("sonar.projectName", "NextMall")
+        property("sonar.projectKey", "LiamKim-DaeYong_nextmall")
         property("sonar.organization", System.getProperty("sonar.organization") ?: "")
-        property("sonar.host.url", System.getProperty("sonar.host.url") ?: "https://sonarcloud.io")
+        property("sonar.host.url", "https://sonarcloud.io")
 
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml")
-        property("sonar.exclusions", "**/build/**, **/docker/**, **/docs/**")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${layout.buildDirectory.get()}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml",
+        )
+        property("sonar.exclusions", "**/build/**, **/docker/**, **/docs/**, **/*.gradle.kts")
 
         System.getProperty("sonar.branch.name")?.let { branchName ->
             property("sonar.branch.name", branchName)

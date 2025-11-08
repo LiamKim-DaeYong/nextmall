@@ -28,14 +28,35 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-home-cache-cleanup: true
           dependency-graph: generate-and-submit
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Run tests with coverage
-        run: ./gradlew clean test jacocoRootReport --no-daemon
+        run: ./gradlew clean test jacocoRootReport --no-daemon --stacktrace
+
+      - name: Verify coverage report exists
+        run: |
+          if [ ! -f "build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml" ]; then
+            echo "Coverage report not found!"
+            ls -la build/reports/jacoco/ || echo "jacoco directory not found"
+            exit 1
+          fi
 
       - name: SonarCloud Scan
         env:
@@ -43,17 +64,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            ./gradlew sonar --no-daemon \
+            ./gradlew sonar --no-daemon --stacktrace \
               -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-              -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
               -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
               -Dsonar.pullrequest.branch=${{ github.head_ref }} \
               -Dsonar.pullrequest.base=${{ github.base_ref }}
           else
-            ./gradlew sonar --no-daemon \
+            ./gradlew sonar --no-daemon --stacktrace \
               -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-              -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
               -Dsonar.branch.name=${{ github.ref_name }}
           fi
