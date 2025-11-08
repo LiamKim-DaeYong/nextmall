@@ -14,7 +14,7 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
     runtimeOnly(libs.postgresql)
 
-    testImplementation("com.h2database:h2")
+    testImplementation(libs.h2)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
