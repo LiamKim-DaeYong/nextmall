@@ -30,6 +30,7 @@ jobs:
         id: coderabbit
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body || 'No summary available.' }}
         run: |
           set -euo pipefail
           
@@ -37,11 +38,11 @@ jobs:
           echo "Fetching CodeRabbit summary for PR #$PR_NUMBER"
 
           COMMENTS=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[].body')
-          SUMMARY=$(echo "$COMMENTS" | grep -A10 "Summary by CodeRabbit" || true)
+          SUMMARY=$(echo "$COMMENTS" | grep -A50 "Summary by CodeRabbit" || true)
 
           if [ -z "$SUMMARY" ]; then
             echo "::warning ::CodeRabbit summary not found. Using PR body as fallback."
-            SUMMARY="${{ github.event.pull_request.body || 'No summary available.' }}"
+            SUMMARY="$PR_BODY"
           fi
 
           echo "summary=$(echo "$SUMMARY" | base64 -w 0)" >> "$GITHUB_OUTPUT"
@@ -67,15 +68,12 @@ jobs:
 
           echo "Generating changelog entry for version v$NEXT_VERSION"
 
-          # changelog header 생성
           NEW_ENTRY="## [v${NEXT_VERSION}] - ${DATE}\n${DECODED_SUMMARY}\n---"
 
-          # 파일 없으면 새로 생성
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "# Changelog" > "$CHANGELOG_FILE"
           fi
 
-          # 새로운 changelog 삽입
           echo -e "# Changelog\n\n${NEW_ENTRY}\n$(tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true)" > "$TEMP_FILE"
           mv "$TEMP_FILE" "$CHANGELOG_FILE"
 
