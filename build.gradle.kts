@@ -120,17 +120,9 @@ tasks.register<JacocoReport>("jacocoRootReport") {
                 .get()
                 .asFile
         if (!reportFile.exists() || reportFile.length() == 0L) {
-            reportFile.parentFile.mkdirs()
-            reportFile.writeText(
-                """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <report name="nextmall">
-                    <sessioninfo id="session" start="0" dump="0"/>
-                </report>
-                """.trimIndent(),
-            )
-            println("Created minimal JaCoCo report at: $reportFile")
+            throw GradleException("JaCoCo report generation failed: $reportFile is missing or empty")
         }
+        println("JaCoCo report generated successfully at: $reportFile")
     }
 }
 
