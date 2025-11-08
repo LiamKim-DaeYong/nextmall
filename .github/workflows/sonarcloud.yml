@@ -7,45 +7,53 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    name: Analyze with SonarCloud
+  sonar:
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    
     permissions:
       contents: read
       pull-requests: write
 
-    defaults:
-      run:
-        working-directory: .
-
     steps:
-      - name: Checkout source
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 21
+      - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Grant execute permission for Gradle
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+          dependency-graph: generate-and-submit
 
-      - name: Run tests and build (with coverage)
-        run: ./gradlew clean test jacocoTestReport build
+      - name: Run tests with coverage
+        run: ./gradlew clean test jacocoRootReport --no-daemon
 
-      - name: Run SonarCloud Analysis
+      - name: SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         run: |
-          ./gradlew sonar \
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-            -Dsonar.projectKey=LiamKim-DaeYong_nextmall \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.branch.name=main \
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/build/reports/jacoco/test/jacocoTestReport.xml
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            ./gradlew sonar --no-daemon \
+              -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+              -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+              -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
+              -Dsonar.pullrequest.branch=${{ github.head_ref }} \
+              -Dsonar.pullrequest.base=${{ github.base_ref }}
+          else
+            ./gradlew sonar --no-daemon \
+              -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+              -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+              -Dsonar.branch.name=${{ github.ref_name }}
+          fi

@@ -18,12 +18,28 @@ allprojects {
     repositories { mavenCentral() }
 }
 
+sonar {
+    properties {
+        property("sonar.projectName", project.name.replaceFirstChar { it.uppercase() })
+        property("sonar.projectKey", System.getProperty("sonar.projectKey") ?: "${project.group}:${project.name}")
+        property("sonar.organization", System.getProperty("sonar.organization") ?: "")
+        property("sonar.host.url", System.getProperty("sonar.host.url") ?: "https://sonarcloud.io")
+
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml")
+        property("sonar.exclusions", "**/build/**, **/docker/**, **/docs/**")
+
+        System.getProperty("sonar.branch.name")?.let { branchName ->
+            property("sonar.branch.name", branchName)
+        }
+    }
+}
+
 subprojects {
     if (project.name !in listOf("docker", "docs")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
+        apply(plugin = "jacoco")
     }
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "jacoco")
 
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
@@ -59,11 +75,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
         html.required.set(false)
     }
 
-    val executionData =
-        fileTree(rootDir) {
-            include("**/build/jacoco/*.exec")
-        }
-    executionData(executionData)
+    executionData.from(fileTree(rootDir) { include("**/build/jacoco/*.exec") })
 
     subprojects.forEach { subproject ->
         val sourceSets = subproject.extensions.findByName("sourceSets") as? SourceSetContainer
@@ -72,4 +84,8 @@ tasks.register<JacocoReport>("jacocoRootReport") {
             classDirectories.from(main.output)
         }
     }
+}
+
+tasks.named("sonar") {
+    dependsOn("jacocoRootReport")
 }
