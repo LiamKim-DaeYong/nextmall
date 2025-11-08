@@ -1,0 +1,55 @@
+name: Auto Update Changelog
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  changelog:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Changelog with OpenAI
+        id: changelog
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          SUMMARY=$(curl https://api.openai.com/v1/chat/completions \
+            -s \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d '{
+              "model": "gpt-4o-mini",
+              "messages": [
+                {"role": "system", "content": "너는 changelog를 작성하는 기술 문서 어시스턴트야."},
+                {"role": "user", "content": "다음 내용을 changelog 포맷으로 작성해줘:\n\n제목: '"$PR_TITLE"'\n\n내용: '"$PR_BODY"'\n\n출력은 반드시 아래 형식을 따라야 해:\n\n## [v{next_version}] - {오늘날짜}\n### {요약제목}\n\n- {카테고리}\n  - {세부항목}\n---"}
+              ]
+            }' | jq -r '.choices[0].message.content')
+
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Insert Changelog at top
+        run: |
+          CHANGELOG_FILE="docs/changelog.md"
+          TEMP_FILE="docs/changelog_tmp.md"
+
+          echo -e "# Changelog\n\n${{ steps.changelog.outputs.summary }}\n$(tail -n +2 $CHANGELOG_FILE)" > $TEMP_FILE
+          mv $TEMP_FILE $CHANGELOG_FILE
+
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/changelog.md
+          git commit -m "docs(changelog): auto update changelog [skip ci]" || echo "No changes"
+          git push
