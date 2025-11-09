@@ -25,8 +25,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sudo apt-get update && sudo apt-get install -y jq gh
-          echo "$GH_TOKEN" | gh auth login --with-token
-          echo "gh CLI authenticated successfully."
+          echo "gh CLI ready."
 
       - name: Fetch CodeRabbit summary
         id: coderabbit
