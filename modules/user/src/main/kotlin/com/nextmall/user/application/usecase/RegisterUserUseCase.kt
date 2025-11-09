@@ -1,5 +1,6 @@
 package com.nextmall.user.application.usecase
 
+import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.user.domain.exception.DuplicateEmailException
 import com.nextmall.user.domain.model.User
 import com.nextmall.user.domain.repository.UserRepository
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class RegisterUserUseCase(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional
     fun register(
@@ -28,7 +30,7 @@ class RegisterUserUseCase(
                 email = email,
                 password = passwordEncoder.encode(password),
                 nickname = nickname,
-            )
+            ).apply { id = idGenerator.generate() }
 
         val saved = userRepository.save(user)
         return RegisterUserResponse.from(saved)
