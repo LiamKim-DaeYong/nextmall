@@ -4,14 +4,14 @@ import com.nextmall.user.domain.exception.DuplicateEmailException
 import com.nextmall.user.domain.model.User
 import com.nextmall.user.domain.repository.UserRepository
 import com.nextmall.user.presentation.dto.RegisterUserResponse
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RegisterUserUseCase(
     private val userRepository: UserRepository,
-    private val passwordEncoder: BCryptPasswordEncoder,
+    private val passwordEncoder: PasswordEncoder,
 ) {
     @Transactional
     fun register(
