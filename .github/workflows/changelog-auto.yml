@@ -81,14 +81,15 @@ jobs:
           fi
 
           if grep -q "## \[v${NEXT_VERSION}\] - ${DATE}" "$CHANGELOG_FILE"; then
-            echo "Existing version for today detected, appending to that section..."
-            awk -v version="## [v${NEXT_VERSION}]" '
-              BEGIN {
-                while ((getline line < "docs/changelog_entry.tmp") > 0) {
-                  entry = entry line "\n"
+            echo "Existing version for today detected, appending to that section..."            
+            awk -v version="## [v${NEXT_VERSION}]" -v tempfile="$TEMP_ENTRY" '
+              $0 ~ version {
+                print
+                while ((getline line < tempfile) > 0) {
+                  print line
                 }
-              }
-              $0 ~ version { print; print entry; next } 1
+                next
+              } 1
             ' "$CHANGELOG_FILE" > "$TEMP_FILE"
           else
             echo "Creating new changelog section for v${NEXT_VERSION}"
