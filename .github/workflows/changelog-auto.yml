@@ -21,10 +21,12 @@ jobs:
           fetch-depth: 0
 
       - name: Setup GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sudo apt-get update && sudo apt-get install -y jq gh
-          gh auth setup-git
-          echo "gh CLI installed successfully."
+          echo "$GH_TOKEN" | gh auth login --with-token
+          echo "gh CLI authenticated successfully."
 
       - name: Fetch CodeRabbit summary
         id: coderabbit
@@ -38,7 +40,7 @@ jobs:
           echo "Fetching CodeRabbit summary for PR #$PR_NUMBER"
 
           COMMENTS=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[].body')
-          SUMMARY=$(echo "$COMMENTS" | grep -A50 "Summary by CodeRabbit" || true)
+          SUMMARY=$(echo "$COMMENTS" | grep -A50 "Summary by CodeRabbit" || true)          
 
           if [ -z "$SUMMARY" ]; then
             echo "::warning ::CodeRabbit summary not found. Using PR body as fallback."
@@ -47,17 +49,17 @@ jobs:
 
           echo "summary=$(echo "$SUMMARY" | base64 -w 0)" >> "$GITHUB_OUTPUT"
 
-      - name: Insert changelog entry
+      - name: Insert or append changelog entry
         run: |
           set -euo pipefail
 
           CHANGELOG_FILE="docs/changelog.md"
           TEMP_FILE="docs/changelog_tmp.md"
+          TEMP_ENTRY="docs/changelog_entry.tmp"
           DECODED_SUMMARY=$(echo "${{ steps.coderabbit.outputs.summary }}" | base64 --decode)
-
           DATE=$(date +'%Y-%m-%d')
+
           VERSION_LINE=$(grep -m1 -E '^## \[v[0-9]+\.[0-9]+\.[0-9]+\]' "$CHANGELOG_FILE" 2>/dev/null || echo "")
-          
           if [ -n "$VERSION_LINE" ]; then
             LAST_VERSION=$(echo "$VERSION_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
             IFS='.' read -r major minor patch <<< "$LAST_VERSION"
@@ -66,17 +68,43 @@ jobs:
             NEXT_VERSION="1.0.0"
           fi
 
-          echo "Generating changelog entry for version v$NEXT_VERSION"
-
-          NEW_ENTRY="## [v${NEXT_VERSION}] - ${DATE}\n${DECODED_SUMMARY}\n---"
+          echo "Generating changelog entry for version v$NEXT_VERSION (${DATE})"
+          
+          {
+            printf "### PR #%s\n" "${{ github.event.pull_request.number }}"
+            printf "%s\n" "$DECODED_SUMMARY"
+            echo ""
+          } > "$TEMP_ENTRY"
 
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "# Changelog" > "$CHANGELOG_FILE"
           fi
 
-          echo -e "# Changelog\n\n${NEW_ENTRY}\n$(tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true)" > "$TEMP_FILE"
-          mv "$TEMP_FILE" "$CHANGELOG_FILE"
+          if grep -q "## \[v${NEXT_VERSION}\] - ${DATE}" "$CHANGELOG_FILE"; then
+            echo "Existing version for today detected, appending to that section..."            
+            awk -v version="## [v${NEXT_VERSION}]" -v tempfile="$TEMP_ENTRY" '
+              $0 ~ version {
+                print
+                while ((getline line < tempfile) > 0) {
+                  print line
+                }
+                next
+              } 1
+            ' "$CHANGELOG_FILE" > "$TEMP_FILE"
+          else
+            echo "Creating new changelog section for v${NEXT_VERSION}"
+            {
+              echo "# Changelog"
+              echo ""
+              echo "## [v${NEXT_VERSION}] - ${DATE}"
+              cat "$TEMP_ENTRY"
+              echo "---"
+              tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true
+            } > "$TEMP_FILE"
+          fi
 
+          mv "$TEMP_FILE" "$CHANGELOG_FILE"
+          rm -f "$TEMP_ENTRY"
           echo "changelog updated successfully at docs/changelog.md"
 
       - name: Commit and push changelog
@@ -85,4 +113,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/changelog.md
           git commit -m "docs(changelog): auto update from CodeRabbit summary [skip ci]" || echo "No changes to commit"
-          git push || echo "⚠️ Push skipped (PR context or permission issue)"
+          git push || echo "Push skipped (PR context or permission issue)"
