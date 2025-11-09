@@ -55,9 +55,10 @@ jobs:
 
           CHANGELOG_FILE="docs/changelog.md"
           TEMP_FILE="docs/changelog_tmp.md"
+          TEMP_ENTRY="docs/changelog_entry.tmp"
           DECODED_SUMMARY=$(echo "${{ steps.coderabbit.outputs.summary }}" | base64 --decode)
           DATE=$(date +'%Y-%m-%d')
-          
+
           VERSION_LINE=$(grep -m1 -E '^## \[v[0-9]+\.[0-9]+\.[0-9]+\]' "$CHANGELOG_FILE" 2>/dev/null || echo "")
           if [ -n "$VERSION_LINE" ]; then
             LAST_VERSION=$(echo "$VERSION_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
@@ -69,7 +70,11 @@ jobs:
 
           echo "Generating changelog entry for version v$NEXT_VERSION (${DATE})"
           
-          NEW_ENTRY="### PR #${{ github.event.pull_request.number }}\n${DECODED_SUMMARY}\n"
+          {
+            printf "### PR #%s\n" "${{ github.event.pull_request.number }}"
+            printf "%s\n" "$DECODED_SUMMARY"
+            echo ""
+          } > "$TEMP_ENTRY"
 
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "# Changelog" > "$CHANGELOG_FILE"
@@ -77,15 +82,28 @@ jobs:
 
           if grep -q "## \[v${NEXT_VERSION}\] - ${DATE}" "$CHANGELOG_FILE"; then
             echo "Existing version for today detected, appending to that section..."
-            awk -v entry="$NEW_ENTRY" -v version="## [v${NEXT_VERSION}]" '
+            awk -v version="## [v${NEXT_VERSION}]" '
+              BEGIN {
+                while ((getline line < "docs/changelog_entry.tmp") > 0) {
+                  entry = entry line "\n"
+                }
+              }
               $0 ~ version { print; print entry; next } 1
             ' "$CHANGELOG_FILE" > "$TEMP_FILE"
           else
             echo "Creating new changelog section for v${NEXT_VERSION}"
-            echo -e "# Changelog\n\n## [v${NEXT_VERSION}] - ${DATE}\n${NEW_ENTRY}\n---\n$(tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true)" > "$TEMP_FILE"
+            {
+              echo "# Changelog"
+              echo ""
+              echo "## [v${NEXT_VERSION}] - ${DATE}"
+              cat "$TEMP_ENTRY"
+              echo "---"
+              tail -n +2 "$CHANGELOG_FILE" 2>/dev/null || true
+            } > "$TEMP_FILE"
           fi
 
           mv "$TEMP_FILE" "$CHANGELOG_FILE"
+          rm -f "$TEMP_ENTRY"
           echo "changelog updated successfully at docs/changelog.md"
 
       - name: Commit and push changelog
