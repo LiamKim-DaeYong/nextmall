@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":common:security"))
     implementation(project(":common:util"))
     implementation(project(":common:data"))
+    implementation(project(":common:identifier"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.web)
@@ -32,9 +33,11 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.security.crypto)
 
+    testImplementation(project(":common:test-support"))
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotest.framework.engine)
+    testImplementation(libs.kotest.extensions.spring)
     testImplementation(libs.mockk)
 }

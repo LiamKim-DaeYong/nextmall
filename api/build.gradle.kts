@@ -8,12 +8,14 @@ plugins {
 dependencies {
     implementation(project(":modules:auth"))
     implementation(project(":modules:user"))
+    implementation(project(":common:identifier"))
 
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     runtimeOnly(libs.postgresql)
 
+    testImplementation(project(":common:test-support"))
     testImplementation(libs.h2)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)

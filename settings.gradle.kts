@@ -11,3 +11,5 @@ include("modules:user") // 회원 도메인 (User Registration, Profile, Role �
 include("common:security") // 공통 보안/암호화/비밀번호 해시 관리
 include("common:data") // 데이터 접근 계층 (JPA, Redis, Kafka, JOOQ 등 통합 설정)
 include("common:util") // 범용 유틸리티 (시간, 문자열, JSON, Validation 등)
+include("common:identifier") // 식별자 생성/관리
+include("common:test-support") // 테스트 공통 환경 및 유틸 (Kotest, Mock, Fixture 등)
