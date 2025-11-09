@@ -12,6 +12,12 @@ import java.util.concurrent.atomic.AtomicLong
 class SnowflakeIdGenerator(
     private val nodeId: Long = 1L,
 ) : IdGenerator {
+    init {
+        require(nodeId in 0..MAX_NODE_ID) {
+            "nodeId must be between 0 and $MAX_NODE_ID, but was $nodeId"
+        }
+    }
+
     private val sequence = AtomicLong(0)
     private var lastTimestamp = -1L
 
@@ -46,6 +52,7 @@ class SnowflakeIdGenerator(
     companion object {
         private const val NODE_BITS = 10
         private const val SEQUENCE_BITS = 12
+        private const val MAX_NODE_ID = (1L shl NODE_BITS) - 1
         private const val NODE_SHIFT = SEQUENCE_BITS
         private const val TIMESTAMP_SHIFT = NODE_BITS + SEQUENCE_BITS
         private const val MAX_SEQUENCE = (1L shl SEQUENCE_BITS) - 1

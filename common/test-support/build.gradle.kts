@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.spring.boot)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.dependency.management)
 }
@@ -11,7 +10,10 @@ java {
 }
 
 dependencies {
+    implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.kotlin.reflect)
+    implementation(libs.spring.context)
+
     implementation(libs.spring.boot.starter.test)
     implementation(libs.kotest.runner.junit5)
     implementation(libs.kotest.assertions.core)
