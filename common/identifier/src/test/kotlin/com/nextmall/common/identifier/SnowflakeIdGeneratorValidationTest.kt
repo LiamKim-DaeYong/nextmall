@@ -2,6 +2,7 @@ package com.nextmall.common.identifier
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 
 class SnowflakeIdGeneratorValidationTest :
@@ -26,6 +27,6 @@ class SnowflakeIdGeneratorValidationTest :
         test("유효한 nodeId는 정상 생성된다") {
             val generator = SnowflakeIdGenerator(nodeId = 10)
             val id = generator.generate()
-            id shouldBe id
+            id shouldBeGreaterThan 0L
         }
     })

@@ -23,19 +23,21 @@ class SnowflakeIdGenerator(
 
     override fun generate(): Long {
         var timestamp = currentTime()
+        val seq: Long
         synchronized(this) {
             if (timestamp == lastTimestamp) {
-                val seq = (sequence.incrementAndGet()) and MAX_SEQUENCE
+                seq = (sequence.incrementAndGet()) and MAX_SEQUENCE
                 if (seq == 0L) {
                     timestamp = waitNextMillis(lastTimestamp)
                 }
             } else {
+                seq = 0
                 sequence.set(0)
             }
             lastTimestamp = timestamp
             return ((timestamp - EPOCH) shl TIMESTAMP_SHIFT) or
                 (nodeId shl NODE_SHIFT) or
-                sequence.get()
+                seq
         }
     }
 
