@@ -17,7 +17,8 @@ class TokenProvider(
         val now = Date()
         val expiry = Date(now.time + jwtProperties.accessTokenExpiration)
 
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .subject(subject)
             .issuedAt(now)
             .expiration(expiry)
@@ -29,7 +30,8 @@ class TokenProvider(
         val now = Date()
         val expiry = Date(now.time + jwtProperties.refreshTokenExpiration)
 
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .subject(subject)
             .issuedAt(now)
             .expiration(expiry)
@@ -39,10 +41,12 @@ class TokenProvider(
 
     fun getClaims(token: String): Claims {
         val cleanToken = token.removePrefix(jwtProperties.tokenPrefix)
-        val jws = Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(cleanToken)
+        val jws =
+            Jwts
+                .parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(cleanToken)
 
         return jws.payload
     }

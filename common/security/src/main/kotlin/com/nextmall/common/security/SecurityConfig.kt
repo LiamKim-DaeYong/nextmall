@@ -22,11 +22,11 @@ class SecurityConfig {
                         "/api/auth/**",
                         "/api/users",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
                     ).permitAll()
-                    .anyRequest().authenticated()
-            }
-            .formLogin { it.disable() }
+                    .anyRequest()
+                    .authenticated()
+            }.formLogin { it.disable() }
             .httpBasic { it.disable() }
 
         return http.build()

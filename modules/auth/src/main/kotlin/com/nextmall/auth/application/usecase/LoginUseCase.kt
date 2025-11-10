@@ -13,8 +13,9 @@ class LoginUseCase(
     private val tokenProvider: TokenProvider,
 ) {
     fun login(email: String, password: String): TokenResponse {
-        val user = userRepository.findByEmail(email)
-            ?: throw IllegalArgumentException("Invalid email or password")
+        val user =
+            userRepository.findByEmail(email)
+                ?: throw IllegalArgumentException("Invalid email or password")
 
         require(passwordEncoder.matches(password, user.password)) {
             throw IllegalArgumentException("Invalid email or password")
