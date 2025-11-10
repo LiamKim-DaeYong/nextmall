@@ -12,10 +12,13 @@ import jakarta.persistence.Table
 class User(
     @Column(nullable = false, unique = true)
     val email: String,
+
     @Column(nullable = false)
     val password: String,
+
     @Column(nullable = false)
     val nickname: String,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val role: UserRole = UserRole.BUYER,

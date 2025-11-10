@@ -12,6 +12,14 @@ plugins {
     jacoco
 }
 
+ktlint {
+    ignoreFailures.set(false)
+    filter {
+        exclude("**/build/**")
+        exclude("**/generated/**")
+    }
+}
+
 allprojects {
     group = "com.nextmall"
     version = "0.0.1-SNAPSHOT"

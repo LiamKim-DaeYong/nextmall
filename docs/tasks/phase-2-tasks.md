@@ -42,13 +42,13 @@ modules/
 
 | Task ID | Task 이름 | 설명 | 예상 시간 | 우선순위 | 상태 | 기술 |
 |----------|------------|--------|-------------|----------|--------|--------|
-| T7 | User 도메인 정의 | id, email, password, nickname, role 등 필드 정의 및 JPA 매핑 | 2h | ⭐ High | TODO | Spring Data JPA |
-| T8 | UserRepository 구현 | CRUD 및 이메일 중복 검증 쿼리 작성 | 1h | ⭐ High | TODO | Spring Data JPA |
-| T9 | RegisterUserUseCase 구현 | 회원가입 로직 + 패스워드 암호화(BCrypt) | 2h | ⭐ High | TODO | Kotlin, BCrypt |
-| T10 | FindUserUseCase 구현 | 회원 단건 조회 + 예외 처리 | 1h | High | TODO | Kotlin |
-| T11 | UserController 구현 | 회원가입/조회 API + DTO/Validation 적용 | 2h | ⭐ High | TODO | Spring Web |
-| T12 | ExceptionHandler 통합 | 중복 회원, Validation, EntityNotFound 등 공통 예외 처리 | 2h | Medium | TODO | Spring Boot |
-| T13 | 단위 테스트 추가 | UseCase, Repository, Controller 테스트 작성 | 3h | Medium | TODO | Kotest, Mockk |
+| T7 | User 도메인 정의 | id, email, password, nickname, role 등 필드 정의 및 JPA 매핑 | 2h | ⭐ High | ✅ Done | Spring Data JPA |
+| T8 | UserRepository 구현 | CRUD 및 이메일 중복 검증 쿼리 작성 | 1h | ⭐ High | ✅ Done | Spring Data JPA |
+| T9 | RegisterUserUseCase 구현 | 회원가입 로직 + 패스워드 암호화(BCrypt) | 2h | ⭐ High | ✅ Done | Kotlin, BCrypt |
+| T10 | FindUserUseCase 구현 | 회원 단건 조회 + 예외 처리 | 1h | High | ✅ Done | Kotlin |
+| T11 | UserController 구현 | 회원가입/조회 API + DTO/Validation 적용 | 2h | ⭐ High | ✅ Done | Spring Web |
+| T12 | ExceptionHandler 통합 | 중복 회원, Validation, EntityNotFound 등 공통 예외 처리 | 2h | Medium | ✅ Done | Spring Boot |
+| T13 | 단위 테스트 추가 | UseCase, Repository, Controller 테스트 작성 | 3h | Medium | ✅ Done | Kotest, Mockk |
 
 ---
 
