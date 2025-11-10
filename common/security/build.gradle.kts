@@ -12,6 +12,6 @@ java {
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.kotlin.reflect)
-    implementation(libs.spring.security.crypto)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.context)
 }
