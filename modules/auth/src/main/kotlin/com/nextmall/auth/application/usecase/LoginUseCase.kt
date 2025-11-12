@@ -18,7 +18,7 @@ class LoginUseCase(
                 ?: throw IllegalArgumentException("Invalid email or password")
 
         require(passwordEncoder.matches(password, user.password)) {
-            throw IllegalArgumentException("Invalid email or password")
+            "Invalid email or password"
         }
 
         val accessToken = tokenProvider.generateAccessToken(user.id.toString())

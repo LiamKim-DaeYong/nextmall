@@ -1,14 +1,14 @@
 package com.nextmall.user.domain.repository
 
 import com.nextmall.common.identifier.IdGenerator
-import com.nextmall.common.testsupport.IntegrationTest
+import com.nextmall.common.testsupport.RepositoryTest
 import com.nextmall.user.domain.model.User
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
-@IntegrationTest
+@RepositoryTest
 class UserRepositoryIdTest(
     private val userRepository: UserRepository,
     private val idGenerator: IdGenerator,

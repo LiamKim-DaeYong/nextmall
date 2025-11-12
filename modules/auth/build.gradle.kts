@@ -25,4 +25,6 @@ dependencies {
     implementation(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
+
+    testImplementation(project(":common:test-support"))
 }

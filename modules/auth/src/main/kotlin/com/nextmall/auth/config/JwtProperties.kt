@@ -7,5 +7,5 @@ data class JwtProperties(
     val secretKey: String,
     val accessTokenExpiration: Long,
     val refreshTokenExpiration: Long,
-    val tokenPrefix: String = "Bearer ",
+    val tokenPrefix: String,
 )

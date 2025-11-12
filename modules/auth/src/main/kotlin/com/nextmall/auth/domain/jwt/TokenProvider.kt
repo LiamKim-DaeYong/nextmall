@@ -5,13 +5,28 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
+import java.util.Base64
 import java.util.Date
 
 @Component
 class TokenProvider(
     private val jwtProperties: JwtProperties,
 ) {
-    private val key = Keys.hmacShaKeyFor(jwtProperties.secretKey.toByteArray())
+    private val key =
+        run {
+            val decoded =
+                try {
+                    Base64.getDecoder().decode(jwtProperties.secretKey)
+                } catch (_: IllegalArgumentException) {
+                    jwtProperties.secretKey.toByteArray()
+                }
+
+            require(decoded.size >= 32) {
+                "JWT secret key must be at least 256 bits (32 bytes)"
+            }
+
+            Keys.hmacShaKeyFor(decoded)
+        }
 
     fun generateAccessToken(subject: String): String {
         val now = Date()

@@ -6,8 +6,9 @@ ktlint = "13.1.0"
 kotest = "6.0.4"
 kotest-spring = "6.0.4"
 mockk = "1.14.6"
+springmockk = "4.0.2"
 sonarqube = "7.0.1.6134"
-jjwt = "1.13.0"
+jjwt = "0.13.0"
 
 [plugins]
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
@@ -33,12 +34,13 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto" }
-jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version = "0.13.0" }
-jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version = "0.13.0" }
-jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version = "0.13.0" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-extensions-spring = { module = "io.kotest:kotest-extensions-spring", version.ref = "kotest-spring" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
