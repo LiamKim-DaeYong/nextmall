@@ -86,6 +86,7 @@ subprojects {
                 classDirectories.files.map {
                     fileTree(it) {
                         exclude(
+                            "**/health*",
                             "**/ApiApplication*",
                             "**/dto/**",
                             "**/mapper/**",
@@ -133,6 +134,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
                 listOf(
                     fileTree(classesDir) {
                         exclude(
+                            "**/health*",
                             "**/ApiApplication*",
                             "**/dto/**",
                             "**/mapper/**",
