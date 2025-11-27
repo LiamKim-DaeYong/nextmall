@@ -27,10 +27,11 @@ class RegisterUserUseCase(
 
         val user =
             User(
+                id = idGenerator.generate(),
                 email = email,
                 password = passwordEncoder.encode(password),
                 nickname = nickname,
-            ).apply { id = idGenerator.generate() }
+            )
 
         val saved = userRepository.save(user)
         return RegisterUserResponse.from(saved)

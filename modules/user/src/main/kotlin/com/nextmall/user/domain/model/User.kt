@@ -5,11 +5,15 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
 class User(
+    @Id
+    val id: Long,
+
     @Column(nullable = false, unique = true)
     val email: String,
 

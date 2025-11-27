@@ -23,10 +23,11 @@ class FindUserUseCaseTest :
             // given
             val user =
                 User(
+                    id = 1L,
                     email = "test@a.com",
                     password = "pw",
                     nickname = "tester",
-                ).apply { id = 1L }
+                )
 
             val response =
                 UserResponse(
