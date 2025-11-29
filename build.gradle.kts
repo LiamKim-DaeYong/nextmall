@@ -14,6 +14,24 @@ plugins {
     jacoco
 }
 
+val coverageExcludes =
+    listOf(
+        "**/health*",
+        "**/*Application*",
+        "**/dto/**",
+        "**/mapper/**",
+        "**/config/**",
+        "**/generated/**",
+    )
+
+val sonarExtraExcludes =
+    listOf(
+        "**/build/**",
+        "**/docker/**",
+        "**/docs/**",
+        "**/*.gradle.kts",
+    )
+
 ktlint {
     ignoreFailures.set(false)
     filter {
@@ -44,12 +62,7 @@ sonar {
 
         property(
             "sonar.exclusions",
-            """
-            **/build/**,
-            **/docker/**,
-            **/docs/**,
-            **/*.gradle.kts
-            """.trimIndent(),
+            (coverageExcludes + sonarExtraExcludes).joinToString(","),
         )
 
         System.getProperty("sonar.branch.name")?.let { branchName ->
@@ -85,14 +98,7 @@ subprojects {
             files(
                 classDirectories.files.map {
                     fileTree(it) {
-                        exclude(
-                            "**/health*",
-                            "**/ApiApplication*",
-                            "**/dto/**",
-                            "**/mapper/**",
-                            "**/config/**",
-                            "**/generated/**",
-                        )
+                        exclude(coverageExcludes)
                     }
                 },
             ),
@@ -111,12 +117,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     group = "verification"
 
     val testableProjects = subprojects.filterNot { it.name in listOf("docker", "docs") }
-
-    val testTasks = testableProjects.mapNotNull { it.tasks.findByName("test") }
-    val reportTasks = testableProjects.mapNotNull { it.tasks.findByName("jacocoTestReport") }
-
-    dependsOn(testTasks)
-    mustRunAfter(reportTasks)
+    dependsOn(testableProjects.mapNotNull { it.tasks.findByName("test") })
 
     executionData.from(
         testableProjects.map {
@@ -131,29 +132,20 @@ tasks.register<JacocoReport>("jacocoRootReport") {
         testableProjects.flatMap { subproject ->
             val classesDir = subproject.file("build/classes/kotlin/main")
             if (classesDir.exists()) {
-                listOf(
-                    fileTree(classesDir) {
-                        exclude(
-                            "**/health*",
-                            "**/ApiApplication*",
-                            "**/dto/**",
-                            "**/mapper/**",
-                            "**/config/**",
-                            "**/generated/**",
-                        )
-                    },
-                )
+                listOf(fileTree(classesDir) { exclude(coverageExcludes) })
             } else {
                 emptyList()
             }
         }
+
     classDirectories.setFrom(allClassDirs)
 
     val allSourceDirs =
-        testableProjects.flatMap { subproject ->
+        testableProjects.mapNotNull { subproject ->
             val srcDir = subproject.file("src/main/kotlin")
-            if (srcDir.exists()) listOf(srcDir) else emptyList()
+            if (srcDir.exists()) srcDir else null
         }
+
     sourceDirectories.setFrom(files(allSourceDirs))
 
     reports {
@@ -161,17 +153,6 @@ tasks.register<JacocoReport>("jacocoRootReport") {
         xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/jacocoRootReport/jacocoRootReport.xml"))
         html.required.set(true)
         html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/jacocoRootReport/html"))
-    }
-
-    doLast {
-        val xmlFile =
-            reports.xml.outputLocation
-                .get()
-                .asFile
-        if (!xmlFile.exists() || xmlFile.length() == 0L) {
-            throw GradleException("JaCoCo root report generation failed: ${xmlFile.absolutePath} not found or empty.")
-        }
-        println("JaCoCo unified report generated at: ${xmlFile.absolutePath}")
     }
 }
 

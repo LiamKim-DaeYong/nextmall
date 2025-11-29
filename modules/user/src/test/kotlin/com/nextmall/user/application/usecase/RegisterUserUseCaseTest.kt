@@ -18,7 +18,12 @@ class RegisterUserUseCaseTest :
         val userRepository = mockk<UserRepository>()
         val passwordEncoder = mockk<PasswordEncoder>()
         val idGenerator = mockk<IdGenerator>()
-        val useCase = RegisterUserUseCase(userRepository, passwordEncoder, idGenerator)
+
+        lateinit var useCase: RegisterUserUseCase
+
+        beforeTest {
+            useCase = RegisterUserUseCase(userRepository, passwordEncoder, idGenerator)
+        }
 
         test("정상 회원가입 시 ID 생성, 비밀번호 암호화, 저장이 정상적으로 이루어진다") {
             // given

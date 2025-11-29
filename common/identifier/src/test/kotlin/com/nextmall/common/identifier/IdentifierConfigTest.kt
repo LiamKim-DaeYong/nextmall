@@ -1,5 +1,6 @@
 package com.nextmall.common.identifier
 
+import com.nextmall.common.identifier.config.IdentifierConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldNotBe
 

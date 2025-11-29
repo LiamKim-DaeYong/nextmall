@@ -1,6 +1,6 @@
 package com.nextmall.common.testsupport
 
-import com.nextmall.common.identifier.IdentifierConfig
+import com.nextmall.common.identifier.config.IdentifierConfig
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import

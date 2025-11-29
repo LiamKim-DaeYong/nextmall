@@ -19,16 +19,15 @@ class UserRepositoryIdTest(
             val generatedId = idGenerator.generate()
             val user =
                 User(
+                    id = generatedId,
                     email = "snow@id.com",
                     password = "encoded",
                     nickname = "snowflake",
-                ).apply {
-                    id = generatedId
-                }
+                )
 
             // when
             val saved = userRepository.save(user)
-            val found = userRepository.findById(saved.id!!)
+            val found = userRepository.findById(saved.id)
 
             // then
             found.shouldNotBeNull()
@@ -44,17 +43,19 @@ class UserRepositoryIdTest(
 
             val user1 =
                 User(
+                    id = id1,
                     email = "test1@test.com",
                     password = "encoded",
                     nickname = "user1",
-                ).apply { id = id1 }
+                )
 
             val user2 =
                 User(
+                    id = id2,
                     email = "test2@test.com",
                     password = "encoded",
                     nickname = "user2",
-                ).apply { id = id2 }
+                )
 
             // when
             val saved1 = userRepository.save(user1)
