@@ -1,5 +1,8 @@
-package com.nextmall.common.identifier
+package com.nextmall.common.identifier.config
 
+import com.nextmall.common.identifier.IdGenerator
+import com.nextmall.common.identifier.IdentifierProperties
+import com.nextmall.common.identifier.SnowflakeIdGenerator
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

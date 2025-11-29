@@ -21,7 +21,6 @@ class RedisOperator(
     fun getValue(key: String): String? =
         template.opsForValue().get(key) // NOSONAR
 
-    fun delete(key: String) {
+    fun delete(key: String): Boolean =
         template.delete(key)
-    }
 }
