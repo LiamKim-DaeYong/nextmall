@@ -32,7 +32,7 @@ class LoginUseCaseTest :
         lateinit var userCase: LoginUseCase
 
         beforeTest {
-            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository)
+            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository, refreshTokenStore)
             userCase =
                 LoginUseCase(
                     userRepository = userRepository,

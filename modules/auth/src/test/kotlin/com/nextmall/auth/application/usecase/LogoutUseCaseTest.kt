@@ -29,4 +29,10 @@ class LogoutUseCaseTest :
 
             verify(exactly = 1) { store.delete(1L) }
         }
+
+        test("유효하지 않은 refresh token이어도 로그아웃은 예외를 던지지 않는다") {
+            every { tokenProvider.parseRefreshToken("invalid-rt") } throws IllegalArgumentException("Invalid token")
+
+            useCase.logout("invalid-rt")
+        }
     })

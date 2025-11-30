@@ -10,7 +10,9 @@ class LogoutUseCase(
     private val refreshTokenStore: RefreshTokenStore,
 ) {
     fun logout(refreshToken: String) {
-        val userId = tokenProvider.parseRefreshToken(refreshToken)
-        refreshTokenStore.delete(userId)
+        runCatching {
+            val userId = tokenProvider.parseRefreshToken(refreshToken)
+            refreshTokenStore.delete(userId)
+        }
     }
 }
