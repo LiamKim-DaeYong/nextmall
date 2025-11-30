@@ -4,6 +4,7 @@ import com.nextmall.auth.domain.exception.InvalidLoginException
 import com.nextmall.auth.domain.exception.TooManyLoginAttemptsException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.model.LoginIdentity
+import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
 import com.nextmall.user.domain.model.AuthProvider
 import com.nextmall.user.domain.model.User
@@ -26,28 +27,32 @@ class LoginUseCaseTest :
         val passwordEncoder = mockk<PasswordEncoder>()
         val tokenProvider = mockk<TokenProvider>()
         val rateLimitRepository = mockk<RateLimitRepository>()
+        val refreshTokenStore = mockk<RefreshTokenStore>()
 
         lateinit var userCase: LoginUseCase
 
         beforeTest {
-            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository)
+            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository, refreshTokenStore)
             userCase =
                 LoginUseCase(
                     userRepository = userRepository,
                     passwordEncoder = passwordEncoder,
                     tokenProvider = tokenProvider,
                     rateLimitRepository = rateLimitRepository,
+                    refreshTokenStore = refreshTokenStore,
                 )
         }
 
-        test("정상 로그인 시 토큰 두 개가 발급된다") {
+        test("정상 로그인 시 토큰 두 개가 발급되고 RefreshToken이 저장된다") {
             // given
             val user = User(id = 1L, email = "test@a.com", password = "encoded", nickname = "tester")
 
             every { userRepository.findByEmail("test@a.com") } returns user
             every { passwordEncoder.matches("plain", "encoded") } returns true
-            every { tokenProvider.generateAccessToken(any()) } returns "access"
-            every { tokenProvider.generateRefreshToken(any()) } returns "refresh"
+            every { tokenProvider.generateAccessToken("1") } returns "access"
+            every { tokenProvider.generateRefreshToken("1") } returns "refresh"
+            every { tokenProvider.refreshTokenTtlSeconds() } returns 3600
+            every { refreshTokenStore.save(1L, "refresh", 3600) } just Runs
             every { rateLimitRepository.resetFailCount(any()) } just Runs
             every { rateLimitRepository.getFailCount(any()) } returns 0
 
@@ -60,6 +65,7 @@ class LoginUseCaseTest :
 
             verify(exactly = 1) {
                 rateLimitRepository.resetFailCount(any())
+                refreshTokenStore.save(1L, "refresh", 3600)
             }
         }
 
