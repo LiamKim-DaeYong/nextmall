@@ -12,6 +12,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.Runs
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -26,10 +27,11 @@ class LoginUseCaseTest :
         val tokenProvider = mockk<TokenProvider>()
         val rateLimitRepository = mockk<RateLimitRepository>()
 
-        lateinit var loginUseCase: LoginUseCase
+        lateinit var userCase: LoginUseCase
 
         beforeTest {
-            loginUseCase =
+            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository)
+            userCase =
                 LoginUseCase(
                     userRepository = userRepository,
                     passwordEncoder = passwordEncoder,
@@ -50,7 +52,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.getFailCount(any()) } returns 0
 
             // when
-            val result = loginUseCase.login("test@a.com", "plain")
+            val result = userCase.login("test@a.com", "plain")
 
             // then
             result.accessToken shouldBe "access"
@@ -70,7 +72,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.increaseFailCount(any()) } returns 0
 
             shouldThrow<InvalidLoginException> {
-                loginUseCase.login("test2@a.com", "wrong")
+                userCase.login("test2@a.com", "wrong")
             }
         }
 
@@ -80,7 +82,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.increaseFailCount(any()) } returns 0
 
             shouldThrow<InvalidLoginException> {
-                loginUseCase.login("none@test.com", "password")
+                userCase.login("none@test.com", "password")
             }
         }
 
@@ -88,7 +90,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.getFailCount(any()) } returns 5
 
             shouldThrow<TooManyLoginAttemptsException> {
-                loginUseCase.login("test4@a.com", "pw")
+                userCase.login("test4@a.com", "pw")
             }
         }
 
@@ -101,7 +103,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.increaseFailCount(any()) } returns 1
 
             shouldThrow<InvalidLoginException> {
-                loginUseCase.login("test5@a.com", "pw")
+                userCase.login("test5@a.com", "pw")
             }
 
             verify(exactly = 1) {
@@ -119,7 +121,7 @@ class LoginUseCaseTest :
             every { rateLimitRepository.increaseFailCount(any()) } returns 1
 
             shouldThrow<InvalidLoginException> {
-                loginUseCase.login("test6@a.com", "pw")
+                userCase.login("test6@a.com", "pw")
             }
 
             verify(exactly = 1) {

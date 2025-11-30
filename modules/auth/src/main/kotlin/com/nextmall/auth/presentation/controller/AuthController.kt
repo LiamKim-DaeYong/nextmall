@@ -1,7 +1,9 @@
 package com.nextmall.auth.presentation.controller
 
 import com.nextmall.auth.application.usecase.LoginUseCase
+import com.nextmall.auth.application.usecase.RefreshTokenUseCase
 import com.nextmall.auth.presentation.dto.LoginRequest
+import com.nextmall.auth.presentation.dto.RefreshTokenRequest
 import com.nextmall.auth.presentation.dto.TokenResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
     private val loginUseCase: LoginUseCase,
+    private val refreshTokenUseCase: RefreshTokenUseCase,
 ) {
     @PostMapping("/login")
     fun login(
@@ -27,5 +30,15 @@ class AuthController(
 
         return ResponseEntity
             .ok(tokenResponse)
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(
+        @Valid @RequestBody request: RefreshTokenRequest,
+    ): ResponseEntity<TokenResponse> {
+        val response = refreshTokenUseCase.refresh(request.refreshToken)
+
+        return ResponseEntity
+            .ok(response)
     }
 }

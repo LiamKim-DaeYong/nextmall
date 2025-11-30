@@ -8,6 +8,7 @@ import com.nextmall.user.presentation.mapper.UserMapper
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import java.util.Optional
@@ -17,7 +18,13 @@ class FindUserUseCaseTest :
 
         val userRepository = mockk<UserRepository>()
         val mapper = mockk<UserMapper>()
-        val useCase = FindUserUseCase(userRepository, mapper)
+
+        lateinit var useCase: FindUserUseCase
+
+        beforeTest {
+            clearMocks(userRepository, mapper)
+            useCase = FindUserUseCase(userRepository, mapper)
+        }
 
         test("정상적으로 사용자 정보를 조회한다") {
             // given

@@ -42,4 +42,36 @@ class TokenProviderTest :
                 shortProvider.getClaims(token)
             }
         }
+
+        test("다른 secretKey로 서명된 토큰은 검증에 실패한다") {
+            val wrongProps =
+                props.copy(secretKey = "completely-other-secret-key-1234567890")
+            val wrongProvider = TokenProvider(wrongProps)
+
+            val wrongToken = wrongProvider.generateAccessToken("user-1")
+
+            shouldThrow<Exception> {
+                provider.getClaims(wrongToken)
+            }
+        }
+
+        test("손상된 토큰 문자열은 예외를 발생시킨다") {
+            val malformedToken = "abc.def"
+
+            shouldThrow<Exception> {
+                provider.getClaims(malformedToken)
+            }
+        }
+
+        test("정상 토큰에서 prefix(Bearer ) 제거 후 파싱이 정상 동작한다") {
+            val token = provider.generateAccessToken("user-123")
+            val bearerToken = props.tokenPrefix + token
+
+            val parsed =
+                provider.getClaims(
+                    bearerToken.removePrefix(props.tokenPrefix),
+                )
+
+            parsed.subject shouldBe "user-123"
+        }
     })

@@ -13,8 +13,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import java.time.OffsetDateTime
 
 @PresentationTest(UserController::class)
@@ -54,22 +54,18 @@ class UserControllerTest(
 
             // when & then
             mockMvc
-                .perform(
-                    MockMvcRequestBuilders
-                        .post("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)),
-                ).andExpect(
-                    MockMvcResultMatchers.status().isCreated,
-                ).andExpect(
-                    MockMvcResultMatchers
-                        .jsonPath("$.email")
-                        .value("new@example.com"),
-                ).andExpect(
-                    MockMvcResultMatchers
-                        .jsonPath("$.nickname")
-                        .value("newbie"),
-                )
+                .post("/api/v1/users") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = objectMapper.writeValueAsString(request)
+                }.andExpect {
+                    status { isCreated() }
+                    jsonPath("$.email") {
+                        value("new@example.com")
+                    }
+                    jsonPath("$.nickname") {
+                        value("newbie")
+                    }
+                }
         }
 
         test("ID로 사용자 조회 시 유저 정보가 반환된다") {
@@ -86,21 +82,15 @@ class UserControllerTest(
 
             // when & then
             mockMvc
-                .perform(
-                    MockMvcRequestBuilders
-                        .get("/api/v1/users/1"),
-                ).andExpect(
-                    MockMvcResultMatchers
-                        .status()
-                        .isOk,
-                ).andExpect(
-                    MockMvcResultMatchers
-                        .jsonPath("$.email")
-                        .value("find@example.com"),
-                ).andExpect(
-                    MockMvcResultMatchers
-                        .jsonPath("$.nickname")
-                        .value("finder"),
-                )
+                .get("/api/v1/users/1")
+                .andExpect {
+                    status { isOk() }
+                    jsonPath("$.email") {
+                        value("find@example.com")
+                    }
+                    jsonPath("$.nickname") {
+                        value("finder")
+                    }
+                }
         }
     })

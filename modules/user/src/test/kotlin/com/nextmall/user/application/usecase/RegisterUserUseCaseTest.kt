@@ -8,6 +8,7 @@ import com.nextmall.user.domain.repository.UserRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -22,6 +23,7 @@ class RegisterUserUseCaseTest :
         lateinit var useCase: RegisterUserUseCase
 
         beforeTest {
+            clearMocks(userRepository, passwordHasher, idGenerator)
             useCase = RegisterUserUseCase(userRepository, passwordHasher, idGenerator)
         }
 
