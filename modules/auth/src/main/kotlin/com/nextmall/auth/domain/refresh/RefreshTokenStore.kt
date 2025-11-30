@@ -5,5 +5,5 @@ interface RefreshTokenStore {
 
     fun findByUserId(userId: Long): String?
 
-    fun delete(userId: Long)
+    fun delete(userId: Long): Boolean
 }

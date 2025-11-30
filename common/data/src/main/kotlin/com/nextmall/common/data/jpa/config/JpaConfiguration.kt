@@ -1,4 +1,4 @@
-package com.nextmall.common.data.jpa
+package com.nextmall.common.data.jpa.config
 
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Configuration

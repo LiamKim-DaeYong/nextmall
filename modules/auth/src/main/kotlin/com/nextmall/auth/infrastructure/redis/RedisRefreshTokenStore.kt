@@ -17,11 +17,11 @@ class RedisRefreshTokenStore(
         )
     }
 
-    override fun findByUserId(userId: Long): String? = redisOperator.getValue(buildKey(userId))
+    override fun findByUserId(userId: Long): String? =
+        redisOperator.getValue(buildKey(userId))
 
-    override fun delete(userId: Long) {
+    override fun delete(userId: Long): Boolean =
         redisOperator.delete(buildKey(userId))
-    }
 
     private fun buildKey(userId: Long): String =
         PREFIX + userId

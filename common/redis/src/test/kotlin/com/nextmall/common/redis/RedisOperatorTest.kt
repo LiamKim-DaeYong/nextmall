@@ -2,6 +2,7 @@ package com.nextmall.common.redis
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,9 +17,11 @@ class RedisOperatorTest :
         val template = mockk<StringRedisTemplate>()
         val valueOps = mockk<ValueOperations<String, String>>()
 
-        val operator = RedisOperator(template)
+        lateinit var operator: RedisOperator
 
         beforeTest {
+            clearMocks(template, valueOps)
+            operator = RedisOperator(template)
             every { template.opsForValue() } returns valueOps
         }
 
@@ -90,5 +93,57 @@ class RedisOperatorTest :
             verify(exactly = 1) { valueOps.increment("test-key2") }
             verify(exactly = 1) { template.getExpire("test-key2") }
             verify(exactly = 0) { template.expire("test-key2", any()) }
+        }
+
+        test("setValue는 값을 저장하고 TTL이 있으면 expire를 설정한다") {
+            // given
+            every { valueOps.set("key1", "value1") } returns Unit
+            every { template.expire("key1", Duration.ofSeconds(30)) } returns true
+
+            // when
+            operator.setValue("key1", "value1", Duration.ofSeconds(30))
+
+            // then
+            verifyOrder {
+                valueOps.set("key1", "value1")
+                template.expire("key1", Duration.ofSeconds(30))
+            }
+        }
+
+        test("setValue는 TTL이 null이면 expire를 호출하지 않는다") {
+            // given
+            every { valueOps.set("key2", "value2") } returns Unit
+            every { template.expire(any(), any()) } returns true
+
+            // when
+            operator.setValue("key2", "value2", null)
+
+            // then
+            verify(exactly = 1) { valueOps.set("key2", "value2") }
+            verify(exactly = 0) { template.expire("key2", any()) }
+        }
+
+        test("exists는 해당 키가 존재하면 true를 반환한다") {
+            // given
+            every { template.hasKey("exists-key") } returns true
+
+            // when
+            val result = operator.exists("exists-key")
+
+            // then
+            result shouldBe true
+            verify(exactly = 1) { template.hasKey("exists-key") }
+        }
+
+        test("exists는 키가 없으면 false를 반환한다") {
+            // given
+            every { template.hasKey("none-key") } returns false
+
+            // when
+            val result = operator.exists("none-key")
+
+            // then
+            result shouldBe false
+            verify(exactly = 1) { template.hasKey("none-key") }
         }
     })
