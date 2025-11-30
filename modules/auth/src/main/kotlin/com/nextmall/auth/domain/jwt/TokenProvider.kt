@@ -1,6 +1,7 @@
 package com.nextmall.auth.domain.jwt
 
 import com.nextmall.auth.config.JwtProperties
+import com.nextmall.auth.domain.exception.InvalidJwtConfigException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -15,14 +16,14 @@ class TokenProvider(
     private val key =
         run {
             val decoded =
-                try {
-                    Base64.getDecoder().decode(jwtProperties.secretKey)
-                } catch (_: IllegalArgumentException) {
-                    jwtProperties.secretKey.toByteArray()
-                }
+                runCatching { Base64.getDecoder().decode(jwtProperties.secretKey) }
+                    .getOrElse { jwtProperties.secretKey.toByteArray() }
 
-            require(decoded.size >= 32) {
-                "JWT secret key must be at least 256 bits (32 bytes)"
+            if (decoded.size < MIN_SECRET_KEY_SIZE) {
+                throw InvalidJwtConfigException(
+                    "JWT secret key must be at least 256 bits (32 bytes). " +
+                        "Current: ${decoded.size} bytes",
+                )
             }
 
             Keys.hmacShaKeyFor(decoded)
@@ -56,6 +57,7 @@ class TokenProvider(
 
     fun getClaims(token: String): Claims {
         val cleanToken = token.removePrefix(jwtProperties.tokenPrefix)
+
         val jws =
             Jwts
                 .parser()
@@ -64,5 +66,19 @@ class TokenProvider(
                 .parseSignedClaims(cleanToken)
 
         return jws.payload
+    }
+
+    // --- Refresh Token Helper Functions ---
+    fun parseRefreshToken(token: String): Long {
+        val claims = getClaims(token)
+        return claims.subject.toLongOrNull()
+            ?: throw InvalidJwtConfigException("Invalid refresh token subject: ${claims.subject}")
+    }
+
+    fun refreshTokenTtlSeconds(): Long =
+        jwtProperties.refreshTokenExpiration / 1000
+
+    companion object {
+        private const val MIN_SECRET_KEY_SIZE = 32 // bytes = 256 bits
     }
 }

@@ -21,6 +21,16 @@ class RedisOperator(
     fun getValue(key: String): String? =
         template.opsForValue().get(key) // NOSONAR
 
+    fun setValue(key: String, value: String, ttl: Duration? = null) {
+        template.opsForValue().set(key, value) // NOSONAR
+        if (ttl != null) {
+            template.expire(key, ttl)
+        }
+    }
+
     fun delete(key: String): Boolean =
         template.delete(key)
+
+    fun exists(key: String): Boolean =
+        template.hasKey(key)
 }
