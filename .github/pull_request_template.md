@@ -1,16 +1,10 @@
-## 🧾 Summary of Changes
+## Summary of Changes
 <!--
-자동 생성된 커밋 요약이 여기에 자동으로 붙습니다.
-직접 작성하고 싶은 경우, 간단히 추가 설명을 남기세요.
-예: - Added user registration API
+이번 PR에서 변경된 내용을 bullet 형태로 작성하세요.
+예:
+- User 엔티티 확장(provider, providerId)
+- LoginIdentity 도입
+- RateLimitRepository 및 LoginUseCase 리팩토링 (Identity 기반)
+- 테스트 전체 보완
 -->
-
----
-
-## 🔗 Related Issue
-<!--
-해당 PR이 연결된 이슈 번호를 적어주세요.
-예: Closes #23
--->
-
----
+- 

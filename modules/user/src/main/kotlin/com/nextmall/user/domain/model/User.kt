@@ -17,15 +17,20 @@ class User(
     @Column(nullable = false, unique = true)
     val email: String,
 
-    @Column(nullable = false)
-    val password: String,
+    @Column(nullable = true)
+    val password: String? = null,
 
     @Column(nullable = false)
     val nickname: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    val provider: AuthProvider = AuthProvider.LOCAL,
+
+    @Column(nullable = true)
+    val providerId: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     val role: UserRole = UserRole.BUYER,
 ) : BaseEntity()
-
-enum class UserRole { BUYER, SELLER, ADMIN }
