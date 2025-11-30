@@ -45,7 +45,7 @@ class RegisterUserUseCaseTest :
                 id shouldBe 100L
             }
 
-            response.userId shouldBe 100L
+            response.id shouldBe 100L
             response.email shouldBe "a@b.com"
         }
 

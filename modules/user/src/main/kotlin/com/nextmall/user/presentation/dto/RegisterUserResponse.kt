@@ -5,15 +5,17 @@ import com.nextmall.user.domain.model.User
 import java.time.OffsetDateTime
 
 data class RegisterUserResponse(
-    val userId: Long,
+    val id: Long,
     val email: String,
+    val nickname: String,
     val createdAt: OffsetDateTime,
 ) {
     companion object {
         fun from(user: User): RegisterUserResponse =
             RegisterUserResponse(
-                userId = requireNotNull(user.id) { "User must be persisted before creating response" },
+                id = user.id,
                 email = user.email,
+                nickname = user.nickname,
                 createdAt =
                     user.createdAt?.atOffset(DEFAULT_ZONE)
                         ?: OffsetDateTime.now(DEFAULT_ZONE),
