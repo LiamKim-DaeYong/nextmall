@@ -34,7 +34,7 @@ class AuthController(
 
     @PostMapping("/refresh")
     fun refresh(
-        @RequestBody request: RefreshTokenRequest,
+        @Valid @RequestBody request: RefreshTokenRequest,
     ): ResponseEntity<TokenResponse> {
         val response = refreshTokenUseCase.refresh(request.refreshToken)
 
