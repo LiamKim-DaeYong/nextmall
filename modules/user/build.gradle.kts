@@ -22,7 +22,6 @@ tasks.named<Jar>("jar") {
 }
 
 dependencies {
-    implementation(project(":common:security"))
     implementation(project(":common:util"))
     implementation(project(":common:data"))
     implementation(project(":common:identifier"))
@@ -31,7 +30,6 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
-    implementation(libs.spring.security.crypto)
 
     testImplementation(project(":common:test-support"))
 }

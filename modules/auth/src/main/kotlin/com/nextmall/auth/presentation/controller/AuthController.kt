@@ -11,13 +11,21 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 class AuthController(
     private val loginUseCase: LoginUseCase,
 ) {
     @PostMapping("/login")
-    fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<TokenResponse> {
-        val tokenResponse = loginUseCase.login(request.email, request.password)
-        return ResponseEntity.ok(tokenResponse)
+    fun login(
+        @Valid @RequestBody request: LoginRequest,
+    ): ResponseEntity<TokenResponse> {
+        val tokenResponse =
+            loginUseCase.login(
+                email = request.email,
+                password = request.password,
+            )
+
+        return ResponseEntity
+            .ok(tokenResponse)
     }
 }

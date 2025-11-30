@@ -32,7 +32,7 @@ class AuthControllerTest(
             mockMvc
                 .perform(
                     MockMvcRequestBuilders
-                        .post("/api/auth/login")
+                        .post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(

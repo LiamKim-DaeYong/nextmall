@@ -7,7 +7,7 @@ kotest = "6.0.4"
 kotest-spring = "6.0.4"
 mockk = "1.14.6"
 springmockk = "4.0.2"
-sonarqube = "7.0.1.6134"
+sonarqube = "7.1.0.6387"
 jjwt = "0.13.0"
 
 [plugins]
@@ -25,7 +25,7 @@ h2 = { module = "com.h2database:h2" }
 postgresql = { module = "org.postgresql:postgresql" }
 spring-context = { module = "org.springframework:spring-context" }
 spring-boot = { module = "org.springframework.boot:spring-boot" }
-spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }

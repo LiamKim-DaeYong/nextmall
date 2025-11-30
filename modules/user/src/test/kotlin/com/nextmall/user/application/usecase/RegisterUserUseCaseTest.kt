@@ -1,6 +1,7 @@
 package com.nextmall.user.application.usecase
 
 import com.nextmall.common.identifier.IdGenerator
+import com.nextmall.user.application.port.output.PasswordHasher
 import com.nextmall.user.domain.exception.DuplicateEmailException
 import com.nextmall.user.domain.model.User
 import com.nextmall.user.domain.repository.UserRepository
@@ -10,25 +11,24 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import org.springframework.security.crypto.password.PasswordEncoder
 
 class RegisterUserUseCaseTest :
     FunSpec({
 
         val userRepository = mockk<UserRepository>()
-        val passwordEncoder = mockk<PasswordEncoder>()
+        val passwordHasher = mockk<PasswordHasher>()
         val idGenerator = mockk<IdGenerator>()
 
         lateinit var useCase: RegisterUserUseCase
 
         beforeTest {
-            useCase = RegisterUserUseCase(userRepository, passwordEncoder, idGenerator)
+            useCase = RegisterUserUseCase(userRepository, passwordHasher, idGenerator)
         }
 
         test("정상 회원가입 시 ID 생성, 비밀번호 암호화, 저장이 정상적으로 이루어진다") {
             // given
             every { userRepository.existsByEmail("a@b.com") } returns false
-            every { passwordEncoder.encode("pw") } returns "encoded_pw"
+            every { passwordHasher.encode("pw") } returns "encoded_pw"
             every { idGenerator.generate() } returns 100L
 
             val savedUserSlot = slot<User>()

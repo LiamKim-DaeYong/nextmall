@@ -5,6 +5,8 @@ import com.nextmall.user.application.usecase.RegisterUserUseCase
 import com.nextmall.user.presentation.dto.RegisterUserRequest
 import com.nextmall.user.presentation.dto.RegisterUserResponse
 import com.nextmall.user.presentation.dto.UserResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 class UserController(
     private val registerUserUseCase: RegisterUserUseCase,
     private val findUserUseCase: FindUserUseCase,
@@ -22,15 +24,23 @@ class UserController(
     @PostMapping
     fun register(
         @RequestBody @Validated req: RegisterUserRequest,
-    ): RegisterUserResponse =
-        registerUserUseCase.register(
-            email = req.email,
-            password = req.password,
-            nickname = req.nickname,
-        )
+    ): ResponseEntity<RegisterUserResponse> {
+        val registered =
+            registerUserUseCase.register(
+                email = req.email,
+                password = req.password,
+                nickname = req.nickname,
+            )
+
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(registered)
+    }
 
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Long,
-    ): UserResponse = findUserUseCase.findById(id)
+    ): ResponseEntity<UserResponse> =
+        ResponseEntity
+            .ok(findUserUseCase.findById(id))
 }

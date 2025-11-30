@@ -12,7 +12,6 @@ java {
 }
 
 dependencies {
-    implementation(project(":common:security"))
     implementation(project(":common:data"))
     implementation(project(":common:redis"))
     implementation(project(":modules:user"))

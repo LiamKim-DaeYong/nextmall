@@ -124,7 +124,7 @@ class LoginUseCaseTest :
 
             verify(exactly = 1) {
                 rateLimitRepository.increaseFailCount(
-                    LoginIdentity.local("test6@a.com")
+                    LoginIdentity.local("test6@a.com"),
                 )
             }
         }
