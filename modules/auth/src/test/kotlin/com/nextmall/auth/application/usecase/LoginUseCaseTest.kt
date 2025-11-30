@@ -3,6 +3,7 @@ package com.nextmall.auth.application.usecase
 import com.nextmall.auth.domain.exception.InvalidLoginException
 import com.nextmall.auth.domain.exception.TooManyLoginAttemptsException
 import com.nextmall.auth.domain.jwt.TokenProvider
+import com.nextmall.auth.domain.model.LoginIdentity
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
 import com.nextmall.user.domain.model.AuthProvider
 import com.nextmall.user.domain.model.User
@@ -40,6 +41,7 @@ class LoginUseCaseTest :
         test("정상 로그인 시 토큰 두 개가 발급된다") {
             // given
             val user = User(id = 1L, email = "test@a.com", password = "encoded", nickname = "tester")
+
             every { userRepository.findByEmail("test@a.com") } returns user
             every { passwordEncoder.matches("plain", "encoded") } returns true
             every { tokenProvider.generateAccessToken(any()) } returns "access"
@@ -54,11 +56,14 @@ class LoginUseCaseTest :
             result.accessToken shouldBe "access"
             result.refreshToken shouldBe "refresh"
 
-            verify(exactly = 1) { rateLimitRepository.resetFailCount(any()) }
+            verify(exactly = 1) {
+                rateLimitRepository.resetFailCount(any())
+            }
         }
 
         test("비밀번호가 일치하지 않으면 예외 발생") {
             val user = User(id = 2L, email = "test2@a.com", password = "encoded", nickname = "tester")
+
             every { userRepository.findByEmail("test2@a.com") } returns user
             every { passwordEncoder.matches(any(), any()) } returns false
             every { rateLimitRepository.getFailCount(any()) } returns 0
@@ -89,6 +94,7 @@ class LoginUseCaseTest :
 
         test("비밀번호가 틀리면 실패 횟수가 증가한다") {
             val user = User(id = 5L, email = "test5@a.com", password = "encoded", nickname = "nick")
+
             every { userRepository.findByEmail("test5@a.com") } returns user
             every { passwordEncoder.matches(any(), any()) } returns false
             every { rateLimitRepository.getFailCount(any()) } returns 0
@@ -101,6 +107,24 @@ class LoginUseCaseTest :
             verify(exactly = 1) {
                 rateLimitRepository.increaseFailCount(
                     match { it.identifier == "test5@a.com" && it.provider == AuthProvider.LOCAL },
+                )
+            }
+        }
+
+        test("비밀번호가 없는 계정이면 실패 카운트가 증가하고 InvalidLoginException 발생") {
+            val user = User(id = 1L, email = "test6@a.com", password = null, nickname = "tester")
+
+            every { userRepository.findByEmail("test6@a.com") } returns user
+            every { rateLimitRepository.getFailCount(any()) } returns 0
+            every { rateLimitRepository.increaseFailCount(any()) } returns 1
+
+            shouldThrow<InvalidLoginException> {
+                loginUseCase.login("test6@a.com", "pw")
+            }
+
+            verify(exactly = 1) {
+                rateLimitRepository.increaseFailCount(
+                    LoginIdentity.local("test6@a.com")
                 )
             }
         }

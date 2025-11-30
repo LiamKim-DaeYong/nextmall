@@ -32,10 +32,9 @@ class LoginUseCase(
                     throw InvalidLoginException()
                 }
 
-        val encodedPassword =
-            user.password ?: throw InvalidLoginException()
+        val encodedPassword = user.password
 
-        if (!passwordEncoder.matches(password, encodedPassword)) {
+        if (encodedPassword == null || !passwordEncoder.matches(password, encodedPassword)) {
             rateLimitRepository.increaseFailCount(identity)
             throw InvalidLoginException()
         }
