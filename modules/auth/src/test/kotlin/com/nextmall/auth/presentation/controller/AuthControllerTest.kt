@@ -2,6 +2,7 @@ package com.nextmall.auth.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nextmall.auth.application.usecase.LoginUseCase
+import com.nextmall.auth.application.usecase.LogoutUseCase
 import com.nextmall.auth.application.usecase.RefreshTokenUseCase
 import com.nextmall.auth.presentation.dto.LoginRequest
 import com.nextmall.auth.presentation.dto.RefreshTokenRequest
@@ -22,6 +23,8 @@ class AuthControllerTest(
     private val loginUseCase: LoginUseCase,
     @MockkBean
     private val refreshTokenUseCase: RefreshTokenUseCase,
+    @MockkBean
+    private val logoutUseCase: LogoutUseCase,
 ) : FunSpec({
 
         test("로그인 요청이 성공하면 토큰이 반환된다") {
@@ -84,6 +87,20 @@ class AuthControllerTest(
                     jsonPath("$.refreshToken") {
                         value("new-refresh")
                     }
+                }
+        }
+
+        test("로그아웃 성공 시 200을 반환한다") {
+            val req = RefreshTokenRequest("old-rt")
+
+            every { logoutUseCase.logout("old-rt") } returns Unit
+
+            mockMvc
+                .post("/api/v1/auth/logout") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = objectMapper.writeValueAsString(req)
+                }.andExpect {
+                    status { isOk() }
                 }
         }
     })
