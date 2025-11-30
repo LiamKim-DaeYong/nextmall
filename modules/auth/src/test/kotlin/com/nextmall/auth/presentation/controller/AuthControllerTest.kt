@@ -16,15 +16,25 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @PresentationTest(AuthController::class)
 class AuthControllerTest(
-    @Autowired private val mockMvc: MockMvc,
-    @Autowired private val objectMapper: ObjectMapper,
-    @MockkBean private val loginUseCase: LoginUseCase,
+    private val mockMvc: MockMvc,
+    private val objectMapper: ObjectMapper,
+    @MockkBean
+    private val loginUseCase: LoginUseCase,
 ) : FunSpec({
 
         test("로그인 요청이 성공하면 토큰이 반환된다") {
             // given
-            val request = LoginRequest("user@example.com", "password")
-            val response = TokenResponse("accessToken123", "refreshToken123")
+            val request =
+                LoginRequest(
+                    email = "user@example.com",
+                    password = "password",
+                )
+
+            val response =
+                TokenResponse(
+                    accessToken = "accessToken123",
+                    refreshToken = "refreshToken123",
+                )
 
             every { loginUseCase.login(any(), any()) } returns response
 
@@ -32,7 +42,7 @@ class AuthControllerTest(
             mockMvc
                 .perform(
                     MockMvcRequestBuilders
-                        .post("/api/auth/login")
+                        .post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(
