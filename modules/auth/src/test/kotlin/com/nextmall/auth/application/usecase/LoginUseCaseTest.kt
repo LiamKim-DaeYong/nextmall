@@ -4,6 +4,7 @@ import com.nextmall.auth.domain.exception.InvalidLoginException
 import com.nextmall.auth.domain.exception.TooManyLoginAttemptsException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
+import com.nextmall.user.domain.model.AuthProvider
 import com.nextmall.user.domain.model.User
 import com.nextmall.user.domain.repository.UserRepository
 import io.kotest.assertions.throwables.shouldThrow
@@ -53,7 +54,7 @@ class LoginUseCaseTest :
             result.accessToken shouldBe "access"
             result.refreshToken shouldBe "refresh"
 
-            verify(exactly = 1) { rateLimitRepository.resetFailCount("test@a.com") }
+            verify(exactly = 1) { rateLimitRepository.resetFailCount(any()) }
         }
 
         test("비밀번호가 일치하지 않으면 예외 발생") {
@@ -79,7 +80,7 @@ class LoginUseCaseTest :
         }
 
         test("로그인 실패 횟수가 5 이상이면 TooManyLoginAttemptsException 발생") {
-            every { rateLimitRepository.getFailCount("test4@a.com") } returns 5
+            every { rateLimitRepository.getFailCount(any()) } returns 5
 
             shouldThrow<TooManyLoginAttemptsException> {
                 loginUseCase.login("test4@a.com", "pw")
@@ -90,13 +91,17 @@ class LoginUseCaseTest :
             val user = User(id = 5L, email = "test5@a.com", password = "encoded", nickname = "nick")
             every { userRepository.findByEmail("test5@a.com") } returns user
             every { passwordEncoder.matches(any(), any()) } returns false
-            every { rateLimitRepository.getFailCount("test5@a.com") } returns 0
-            every { rateLimitRepository.increaseFailCount("test5@a.com") } returns 1
+            every { rateLimitRepository.getFailCount(any()) } returns 0
+            every { rateLimitRepository.increaseFailCount(any()) } returns 1
 
             shouldThrow<InvalidLoginException> {
                 loginUseCase.login("test5@a.com", "pw")
             }
 
-            verify(exactly = 1) { rateLimitRepository.increaseFailCount("test5@a.com") }
+            verify(exactly = 1) {
+                rateLimitRepository.increaseFailCount(
+                    match { it.identifier == "test5@a.com" && it.provider == AuthProvider.LOCAL },
+                )
+            }
         }
     })

@@ -1,5 +1,6 @@
 package com.nextmall.auth.infrastructure.redis
 
+import com.nextmall.auth.domain.model.LoginIdentity
 import com.nextmall.common.redis.RedisOperator
 import org.springframework.stereotype.Repository
 import java.time.Duration
@@ -8,18 +9,21 @@ import java.time.Duration
 class RateLimitRepository(
     private val redisOperator: RedisOperator,
 ) {
-    fun increaseFailCount(key: String): Long =
+    fun increaseFailCount(identity: LoginIdentity): Long =
         redisOperator.increment(
-            key = PREFIX + key,
+            key = buildKey(identity),
             ttl = BLOCK_TTL,
         )
 
-    fun getFailCount(key: String): Long =
-        redisOperator.getValue(PREFIX + key)?.toLong() ?: 0L
+    fun getFailCount(identity: LoginIdentity): Long =
+        redisOperator.getValue(buildKey(identity))?.toLong() ?: 0L
 
-    fun resetFailCount(key: String) {
-        redisOperator.delete(PREFIX + key)
+    fun resetFailCount(identity: LoginIdentity) {
+        redisOperator.delete(buildKey(identity))
     }
+
+    private fun buildKey(identity: LoginIdentity): String =
+        PREFIX + identity.provider.name.lowercase() + ":" + identity.identifier
 
     companion object {
         private const val PREFIX = "auth:login:attempts:"

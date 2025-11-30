@@ -35,8 +35,18 @@ class AuthControllerTest(
                         .post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
-                ).andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").value("accessToken123"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken").value("refreshToken123"))
+                ).andExpect(
+                    MockMvcResultMatchers
+                        .status()
+                        .isOk,
+                ).andExpect(
+                    MockMvcResultMatchers
+                        .jsonPath("$.accessToken")
+                        .value("accessToken123"),
+                ).andExpect(
+                    MockMvcResultMatchers
+                        .jsonPath("$.refreshToken")
+                        .value("refreshToken123"),
+                )
         }
     })
