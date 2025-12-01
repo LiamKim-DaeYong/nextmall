@@ -4,6 +4,7 @@ import com.nextmall.auth.domain.exception.InvalidLoginException
 import com.nextmall.auth.domain.exception.TooManyLoginAttemptsException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.model.LoginIdentity
+import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
 import com.nextmall.auth.presentation.dto.TokenResponse
 import com.nextmall.user.domain.repository.UserRepository
@@ -16,6 +17,7 @@ class LoginUseCase(
     private val passwordEncoder: PasswordEncoder,
     private val tokenProvider: TokenProvider,
     private val rateLimitRepository: RateLimitRepository,
+    private val refreshTokenStore: RefreshTokenStore,
 ) {
     fun login(email: String, password: String): TokenResponse {
         val identity = LoginIdentity.local(email)
@@ -41,9 +43,15 @@ class LoginUseCase(
 
         rateLimitRepository.resetFailCount(identity)
 
+        val accessToken = tokenProvider.generateAccessToken(user.id.toString(), user.role)
+        val refreshToken = tokenProvider.generateRefreshToken(user.id.toString())
+
+        val ttl = tokenProvider.refreshTokenTtlSeconds()
+        refreshTokenStore.save(userId, refreshToken, ttl)
+
         return TokenResponse(
-            accessToken = tokenProvider.generateAccessToken(user.id.toString(), user.role),
-            refreshToken = tokenProvider.generateRefreshToken(user.id.toString()),
+            accessToken = accessToken,
+            refreshToken = refreshToken,
         )
     }
 
