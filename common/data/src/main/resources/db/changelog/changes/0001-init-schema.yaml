@@ -18,7 +18,6 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-                    unique: true
 
               - column:
                   name: password
@@ -53,19 +52,25 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: TIMESTAMP WITH TIME ZONE
+                  defaultValue: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
 
               - column:
                   name: updated_at
                   type: TIMESTAMP WITH TIME ZONE
+                  defaultValue: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
 
         - createIndex:
             tableName: users
             indexName: idx_users_email
-            unique: true
             columns:
               - column:
                   name: email
+
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: provider, provider_id
+            constraintName: uk_users_provider_provider_id
