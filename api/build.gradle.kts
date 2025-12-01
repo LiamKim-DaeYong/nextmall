@@ -6,9 +6,11 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common:identifier"))
+    implementation(project(":common:data"))
+
     implementation(project(":modules:auth"))
     implementation(project(":modules:user"))
-    implementation(project(":common:identifier"))
 
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.data.jpa)
