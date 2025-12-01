@@ -14,4 +14,5 @@ dependencies {
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.liquibase.core)
 }

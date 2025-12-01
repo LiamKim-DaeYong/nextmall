@@ -9,6 +9,7 @@ mockk = "1.14.6"
 springmockk = "4.0.2"
 sonarqube = "7.1.0.6387"
 jjwt = "0.13.0"
+liquibase = "4.30.0"
 
 [plugins]
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
@@ -23,6 +24,8 @@ sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 h2 = { module = "com.h2database:h2" }
 postgresql = { module = "org.postgresql:postgresql" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
+
 spring-context = { module = "org.springframework:spring-context" }
 spring-boot = { module = "org.springframework.boot:spring-boot" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
@@ -34,7 +37,7 @@ spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-start
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
-spring-security-crypto = { module = "org.springframework.security:spring-security-crypto" }
+
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
