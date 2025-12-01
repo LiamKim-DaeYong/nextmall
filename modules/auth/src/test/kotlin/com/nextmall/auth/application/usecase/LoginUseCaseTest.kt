@@ -49,7 +49,7 @@ class LoginUseCaseTest :
 
             every { userRepository.findByEmail("test@a.com") } returns user
             every { passwordEncoder.matches("plain", "encoded") } returns true
-            every { tokenProvider.generateAccessToken("1") } returns "access"
+            every { tokenProvider.generateAccessToken("1", any()) } returns "access"
             every { tokenProvider.generateRefreshToken("1") } returns "refresh"
             every { tokenProvider.refreshTokenTtlSeconds() } returns 3600
             every { refreshTokenStore.save(1L, "refresh", 3600) } just Runs

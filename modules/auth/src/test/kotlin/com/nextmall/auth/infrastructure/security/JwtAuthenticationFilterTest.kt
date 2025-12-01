@@ -100,6 +100,7 @@ class JwtAuthenticationFilterTest :
 
             every { validClaims.expiration } returns Date(System.currentTimeMillis() + 10000)
             every { validClaims.subject } returns "99"
+            every { validClaims["roles"] } returns listOf("ADMIN")
 
             every { tokenProvider.getClaims("Bearer good-token") } returns validClaims
 
@@ -126,6 +127,7 @@ class JwtAuthenticationFilterTest :
             val validClaims = mockk<io.jsonwebtoken.Claims>()
             every { validClaims.expiration } returns Date(System.currentTimeMillis() + 10000)
             every { validClaims.subject } returns "123"
+            every { validClaims["roles"] } returns listOf("ADMIN")
 
             every { tokenProvider.getClaims(any()) } returns validClaims
 
@@ -141,5 +143,50 @@ class JwtAuthenticationFilterTest :
             SecurityContextHolder.getContext().authentication!!.principal shouldBe "existing"
 
             verify { chain.doFilter(request, response) }
+        }
+
+        test("유효한 토큰이고 roles가 있으면 authorities가 설정된다") {
+            val validClaims = mockk<io.jsonwebtoken.Claims>()
+
+            every { validClaims.expiration } returns Date(System.currentTimeMillis() + 10000)
+            every { validClaims.subject } returns "99"
+            every { validClaims["roles"] } returns listOf("ADMIN")
+
+            every { tokenProvider.getClaims("Bearer good-token") } returns validClaims
+
+            val request =
+                MockHttpServletRequest().apply {
+                    addHeader("Authorization", "Bearer good-token")
+                }
+            val response = MockHttpServletResponse()
+            val chain = mockk<FilterChain>(relaxed = true)
+
+            filter.doFilter(request, response, chain)
+
+            val auth = SecurityContextHolder.getContext().authentication
+            auth.principal shouldBe "99"
+            auth.authorities.map { it.authority } shouldBe listOf("ROLE_ADMIN")
+        }
+
+        test("roles 클레임이 없으면 authorities는 비어있는 리스트가 된다") {
+            val validClaims = mockk<io.jsonwebtoken.Claims>()
+
+            every { validClaims.expiration } returns Date(System.currentTimeMillis() + 10000)
+            every { validClaims.subject } returns "88"
+            every { validClaims["roles"] } returns null
+
+            every { tokenProvider.getClaims("Bearer token") } returns validClaims
+
+            val request =
+                MockHttpServletRequest().apply {
+                    addHeader("Authorization", "Bearer token")
+                }
+            val response = MockHttpServletResponse()
+            val chain = mockk<FilterChain>(relaxed = true)
+
+            filter.doFilter(request, response, chain)
+
+            val auth = SecurityContextHolder.getContext().authentication
+            auth.authorities shouldBe emptyList()
         }
     })

@@ -3,6 +3,7 @@ package com.nextmall.auth.config
 import com.nextmall.auth.infrastructure.security.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -13,6 +14,7 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
+@EnableMethodSecurity
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
@@ -35,6 +37,9 @@ class SecurityConfig(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                     ).permitAll()
+                    .requestMatchers(
+                        "/api/v1/admin/**",
+                    ).hasRole("ADMIN")
                     .anyRequest()
                     .authenticated()
             }.formLogin { it.disable() }

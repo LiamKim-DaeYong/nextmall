@@ -2,6 +2,7 @@ package com.nextmall.auth.domain.jwt
 
 import com.nextmall.auth.config.JwtProperties
 import com.nextmall.auth.domain.exception.InvalidJwtConfigException
+import com.nextmall.user.domain.model.UserRole
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -29,13 +30,14 @@ class TokenProvider(
             Keys.hmacShaKeyFor(decoded)
         }
 
-    fun generateAccessToken(subject: String): String {
+    fun generateAccessToken(subject: String, role: UserRole): String {
         val now = Date()
         val expiry = Date(now.time + jwtProperties.accessTokenExpiration)
 
         return Jwts
             .builder()
             .subject(subject)
+            .claim("roles", listOf(role.name))
             .issuedAt(now)
             .expiration(expiry)
             .signWith(key)
