@@ -41,10 +41,9 @@ class LoginUseCase(
 
         rateLimitRepository.resetFailCount(identity)
 
-        val userId = user.id.toString()
         return TokenResponse(
-            accessToken = tokenProvider.generateAccessToken(userId),
-            refreshToken = tokenProvider.generateRefreshToken(userId),
+            accessToken = tokenProvider.generateAccessToken(user.id.toString(), user.role),
+            refreshToken = tokenProvider.generateRefreshToken(user.id.toString()),
         )
     }
 

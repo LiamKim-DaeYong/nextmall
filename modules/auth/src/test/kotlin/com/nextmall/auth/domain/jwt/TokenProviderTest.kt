@@ -1,6 +1,7 @@
 package com.nextmall.auth.domain.jwt
 
 import com.nextmall.auth.config.JwtProperties
+import com.nextmall.user.domain.model.UserRole
 import io.jsonwebtoken.ExpiredJwtException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -20,13 +21,13 @@ class TokenProviderTest :
         val provider = TokenProvider(props)
 
         test("토큰 생성 후 클레임 파싱이 성공한다") {
-            val token = provider.generateAccessToken("123")
+            val token = provider.generateAccessToken("123", UserRole.BUYER)
             val claims = provider.getClaims(token)
             claims.subject shouldBe "123"
         }
 
         test("AccessToken과 RefreshToken을 생성한다") {
-            val access = provider.generateAccessToken("123")
+            val access = provider.generateAccessToken("123", UserRole.BUYER)
             val refresh = provider.generateRefreshToken("123")
 
             access.shouldContain(".")
@@ -36,7 +37,7 @@ class TokenProviderTest :
         test("만료된 토큰은 예외를 발생시킨다") {
             val shortProps = props.copy(accessTokenExpiration = 1)
             val shortProvider = TokenProvider(shortProps)
-            val token = shortProvider.generateAccessToken("user-1")
+            val token = shortProvider.generateAccessToken("user-1", UserRole.BUYER)
             Thread.sleep(5)
             shouldThrow<ExpiredJwtException> {
                 shortProvider.getClaims(token)
@@ -48,7 +49,7 @@ class TokenProviderTest :
                 props.copy(secretKey = "completely-other-secret-key-1234567890")
             val wrongProvider = TokenProvider(wrongProps)
 
-            val wrongToken = wrongProvider.generateAccessToken("user-1")
+            val wrongToken = wrongProvider.generateAccessToken("user-1", UserRole.BUYER)
 
             shouldThrow<Exception> {
                 provider.getClaims(wrongToken)
@@ -64,7 +65,7 @@ class TokenProviderTest :
         }
 
         test("정상 토큰에서 prefix(Bearer ) 제거 후 파싱이 정상 동작한다") {
-            val token = provider.generateAccessToken("user-123")
+            val token = provider.generateAccessToken("user-123", UserRole.BUYER)
             val bearerToken = props.tokenPrefix + token
 
             val parsed =
@@ -73,5 +74,13 @@ class TokenProviderTest :
                 )
 
             parsed.subject shouldBe "user-123"
+        }
+
+        test("AccessToken에 roles 클레임이 포함된다") {
+            val token = provider.generateAccessToken("123", UserRole.BUYER)
+            val claims = provider.getClaims(token)
+
+            claims.subject shouldBe "123"
+            claims["roles"] shouldBe listOf("BUYER")
         }
     })

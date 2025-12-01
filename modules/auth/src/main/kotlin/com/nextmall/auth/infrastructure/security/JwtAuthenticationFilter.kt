@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
@@ -38,13 +39,14 @@ class JwtAuthenticationFilter(
         }
 
         val userId = claims.subject
-
+        val roles = (claims["roles"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+        val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
         if (SecurityContextHolder.getContext().authentication == null) {
             val auth =
                 UsernamePasswordAuthenticationToken(
                     userId,
                     null,
-                    emptyList(), // 현재는 권한 미사용(추후 확장)
+                    authorities,
                 ).apply {
                     details = WebAuthenticationDetailsSource().buildDetails(request)
                 }

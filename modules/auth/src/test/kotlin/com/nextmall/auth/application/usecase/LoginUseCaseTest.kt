@@ -46,7 +46,7 @@ class LoginUseCaseTest :
 
             every { userRepository.findByEmail("test@a.com") } returns user
             every { passwordEncoder.matches("plain", "encoded") } returns true
-            every { tokenProvider.generateAccessToken(any()) } returns "access"
+            every { tokenProvider.generateAccessToken(any(), any()) } returns "access"
             every { tokenProvider.generateRefreshToken(any()) } returns "refresh"
             every { rateLimitRepository.resetFailCount(any()) } just Runs
             every { rateLimitRepository.getFailCount(any()) } returns 0
