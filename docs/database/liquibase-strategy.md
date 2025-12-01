@@ -1,5 +1,5 @@
 # Liquibase 마이그레이션 운영 전략
-_Production Database Migration Guide_
+## Production Database Migration Guide
 
 ## 1. 개요
 NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통해 통합적으로 관리한다.
