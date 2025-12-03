@@ -8,5 +8,11 @@ import org.springframework.stereotype.Component
 class PasswordHasherImpl(
     private val passwordEncoder: PasswordEncoder,
 ) : PasswordHasher {
-    override fun encode(raw: String): String = passwordEncoder.encode(raw)
+    override fun encode(raw: String): String {
+        require(raw.isNotBlank()) { "Password cannot be blank." }
+
+        return checkNotNull(passwordEncoder.encode(raw)) {
+            "PasswordEncoder unexpectedly returned null."
+        }
+    }
 }

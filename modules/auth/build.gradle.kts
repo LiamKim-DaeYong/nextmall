@@ -17,7 +17,7 @@ dependencies {
     implementation(project(":modules:user"))
 
     implementation(libs.kotlin.reflect)
-    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.security)

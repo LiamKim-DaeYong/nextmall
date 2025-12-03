@@ -1,7 +1,6 @@
 package com.nextmall.user.presentation.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.nextmall.common.testsupport.PresentationTest
+import com.nextmall.common.testsupport.WebMvcTestSupport
 import com.nextmall.user.application.usecase.FindUserUseCase
 import com.nextmall.user.application.usecase.RegisterUserUseCase
 import com.nextmall.user.domain.model.UserRole
@@ -11,13 +10,16 @@ import com.nextmall.user.presentation.dto.UserResponse
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import tools.jackson.databind.ObjectMapper
 import java.time.OffsetDateTime
 
-@PresentationTest(UserController::class)
+@WebMvcTestSupport
+@WebMvcTest(UserController::class)
 class UserControllerTest(
     private val mockMvc: MockMvc,
     private val objectMapper: ObjectMapper,

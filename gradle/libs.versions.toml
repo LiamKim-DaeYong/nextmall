@@ -1,15 +1,16 @@
 [versions]
-kotlin = "2.1.0"
-spring-boot = "3.5.7"
-spring-dependency-management = "1.1.4"
-ktlint = "13.1.0"
-kotest = "6.0.4"
-kotest-spring = "6.0.4"
+kotlin = "2.2.21"
+spring-boot = "4.0.0"
+spring-dependency-management = "1.1.7"
+ktlint = "14.0.1"
+kotest = "6.0.7"
+kotest-spring = "6.0.7"
 mockk = "1.14.6"
-springmockk = "4.0.2"
+springmockk = "5.0.1"
 sonarqube = "7.1.0.6387"
 jjwt = "0.13.0"
-liquibase = "4.30.0"
+liquibase = "5.0.1"
+jooq = "10.1.1"
 
 [plugins]
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
@@ -19,6 +20,7 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
@@ -31,11 +33,11 @@ spring-boot = { module = "org.springframework.boot:spring-boot" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
-spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }

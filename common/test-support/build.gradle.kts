@@ -16,7 +16,8 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.context)
 
-    api(libs.spring.boot.starter.test)
+    api(libs.spring.boot.starter.webmvc.test)
+    api(libs.spring.boot.starter.data.jpa.test)
     api(libs.kotest.runner.junit5)
     api(libs.kotest.assertions.core)
     api(libs.kotest.framework.engine)

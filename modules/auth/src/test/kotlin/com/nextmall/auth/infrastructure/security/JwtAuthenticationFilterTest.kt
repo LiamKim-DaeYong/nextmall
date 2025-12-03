@@ -164,8 +164,8 @@ class JwtAuthenticationFilterTest :
             filter.doFilter(request, response, chain)
 
             val auth = SecurityContextHolder.getContext().authentication
-            auth.principal shouldBe "99"
-            auth.authorities.map { it.authority } shouldBe listOf("ROLE_ADMIN")
+            auth?.principal shouldBe "99"
+            auth?.authorities?.map { it.authority } shouldBe listOf("ROLE_ADMIN")
         }
 
         test("roles 클레임이 없으면 authorities는 비어있는 리스트가 된다") {
@@ -187,6 +187,6 @@ class JwtAuthenticationFilterTest :
             filter.doFilter(request, response, chain)
 
             val auth = SecurityContextHolder.getContext().authentication
-            auth.authorities shouldBe emptyList()
+            auth?.authorities shouldBe emptyList()
         }
     })
