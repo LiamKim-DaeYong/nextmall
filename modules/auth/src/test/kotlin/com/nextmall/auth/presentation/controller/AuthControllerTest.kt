@@ -1,21 +1,23 @@
 package com.nextmall.auth.presentation.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.nextmall.auth.application.usecase.LoginUseCase
 import com.nextmall.auth.application.usecase.LogoutUseCase
 import com.nextmall.auth.application.usecase.RefreshTokenUseCase
 import com.nextmall.auth.presentation.dto.LoginRequest
 import com.nextmall.auth.presentation.dto.RefreshTokenRequest
 import com.nextmall.auth.presentation.dto.TokenResponse
-import com.nextmall.common.testsupport.PresentationTest
+import com.nextmall.common.testsupport.WebMvcTestSupport
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import tools.jackson.databind.ObjectMapper
 
-@PresentationTest(AuthController::class)
+@WebMvcTestSupport
+@WebMvcTest(AuthController::class)
 class AuthControllerTest(
     private val mockMvc: MockMvc,
     private val objectMapper: ObjectMapper,
