@@ -11,7 +11,8 @@ class PasswordHasherImpl(
     override fun encode(raw: String): String {
         require(raw.isNotBlank()) { "Password cannot be blank." }
 
-        return passwordEncoder.encode(raw)
-            ?: throw IllegalStateException("PasswordEncoder unexpectedly returned null.")
+        return checkNotNull(passwordEncoder.encode(raw)) {
+            "PasswordEncoder unexpectedly returned null."
+        }
     }
 }
