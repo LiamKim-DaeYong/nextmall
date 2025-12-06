@@ -39,15 +39,15 @@ class JooqCodegenPlugin @Inject constructor(
         require(file.exists()) { "❌ nextmall-codegen.properties not found at project root!" }
 
         val props = java.util.Properties().apply {
-            load(file.inputStream())
+            file.inputStream().use { load(it) }
         }
 
         val cfg = CodegenConfig().apply {
-            url = props["db.url"].toString()
-            user = props["db.user"].toString()
-            password = props["db.password"].toString()
-            schema = props["db.schema"].toString()
-            driver = props["db.driver"].toString()
+            url = requireNotNull(props["db.url"]) { "db.url is required in nextmall-codegen.properties" }.toString()
+            user = requireNotNull(props["db.user"]) { "db.user is required in nextmall-codegen.properties" }.toString()
+            password = requireNotNull(props["db.password"]) { "db.password is required in nextmall-codegen.properties" }.toString()
+            schema = requireNotNull(props["db.schema"]) { "db.schema is required in nextmall-codegen.properties" }.toString()
+            driver = requireNotNull(props["db.driver"]) { "db.driver is required in nextmall-codegen.properties" }.toString()
         }
 
         log("Loaded codegen properties (schema=${cfg.schema}, url=${cfg.url})")
@@ -202,8 +202,10 @@ class JooqCodegenPlugin @Inject constructor(
             try {
                 val conn = java.sql.DriverManager.getConnection(cfg.url, cfg.user, cfg.password)
                 conn.use {
-                    // language=PostgreSQL
-                    conn.createStatement().executeQuery("SELECT 1")
+                    conn.createStatement().use { stmt ->
+                        // language=PostgreSQL
+                        stmt.executeQuery("SELECT 1")
+                    }
                 }
                 log("Postgres is fully ready (attempt ${attempt + 1})")
                 return

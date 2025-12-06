@@ -1,16 +1,20 @@
-HELP.md
-.gradle
+### Build ###
+.gradle/
 build/
+*/build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+
+### Generated Sources (jOOQ, kapt, ksp 등) ###
+**/build/generated/**
+**/generated/**
+**/jooq/**
 
 ### STS ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 bin/
@@ -18,7 +22,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -37,30 +41,35 @@ out/
 .vscode/
 
 ### Kotlin ###
-.kotlin
+.kotlin/
 
-# Logs
-logs
+### Logs ###
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dev-debug.log
-# Dependency directories
+
+### Node Modules ###
 node_modules/
-# Environment variables
+
+### Environment Variables ###
 .env
 docker/.env
-# Editor directories and files
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
-.DS_Store
 
-# Task files
+# Project-specific environment/config files
+# Development-only DB codegen config should NEVER be committed
+nextmall-codegen.properties
+*codegen.properties
+
+# Provide example template instead
+!nextmall-codegen.properties.example
+
+### OS specific ###
+.DS_Store
+Thumbs.db
+
+### Task files ###
 # tasks.json
-# tasks/ 
+# tasks/
