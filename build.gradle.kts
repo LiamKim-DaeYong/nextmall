@@ -34,14 +34,6 @@ val sonarExtraExcludes =
         "**/*.gradle.kts",
     )
 
-ktlint {
-    ignoreFailures.set(false)
-    filter {
-        exclude("**/build/**")
-        exclude("**/generated/**")
-    }
-}
-
 allprojects {
     group = "com.nextmall"
     version = "0.0.1-SNAPSHOT"
@@ -79,6 +71,15 @@ subprojects {
         apply(plugin = "jacoco")
     }
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        ignoreFailures.set(false)
+        filter {
+            exclude("**/build/**")
+            exclude("**/generated/**")
+            exclude("**/jooq/**")
+        }
+    }
 
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
@@ -164,4 +165,7 @@ tasks.named("sonar") {
 
 tasks.named("clean") {
     dependsOn(subprojects.mapNotNull { it.tasks.findByName("clean") })
+    doLast {
+        delete("${rootProject.projectDir}/buildSrc/build")
+    }
 }

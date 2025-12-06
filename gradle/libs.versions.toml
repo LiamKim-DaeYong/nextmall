@@ -11,6 +11,7 @@ sonarqube = "7.1.0.6387"
 jjwt = "0.13.0"
 liquibase = "5.0.1"
 jooq = "10.1.1"
+postgresql = "42.7.8"
 
 [plugins]
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
@@ -25,8 +26,9 @@ jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 h2 = { module = "com.h2database:h2" }
-postgresql = { module = "org.postgresql:postgresql" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
+jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 
 spring-context = { module = "org.springframework:spring-context" }
 spring-boot = { module = "org.springframework.boot:spring-boot" }
