@@ -75,22 +75,4 @@ open class UsersRecord() : UpdatableRecordImpl<UsersRecord>(Users.USERS) {
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()
     }
-
-    /**
-     * Create a detached, initialised UsersRecord
-     */
-    constructor(value: com.nextmall.jooq.tables.pojos.Users?): this() {
-        if (value != null) {
-            this.id = value.id
-            this.email = value.email
-            this.password = value.password
-            this.nickname = value.nickname
-            this.provider = value.provider
-            this.providerId = value.providerId
-            this.role = value.role
-            this.createdAt = value.createdAt
-            this.updatedAt = value.updatedAt
-            resetTouchedOnNotNull()
-        }
-    }
 }

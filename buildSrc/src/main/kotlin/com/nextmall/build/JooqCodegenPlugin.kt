@@ -35,23 +35,37 @@ class JooqCodegenPlugin @Inject constructor(
     // Load config
     // ----------------------------------------------------------
     private fun loadCodegenProperties(project: Project): CodegenConfig {
+        val isCi = System.getenv("CI") == "true"
         val file = project.rootProject.file("nextmall-codegen.properties")
-        require(file.exists()) { "❌ nextmall-codegen.properties not found at project root!" }
+
+        if (!file.exists()) {
+            if (isCi) {
+                log("⚠ nextmall-codegen.properties not found — CI mode detected, skipping codegen setup")
+                return CodegenConfig().apply {
+                    url = ""
+                    user = ""
+                    password = ""
+                    schema = ""
+                    driver = ""
+                }
+            } else {
+                throw IllegalArgumentException("❌ nextmall-codegen.properties not found at project root!")
+            }
+        }
 
         val props = java.util.Properties().apply {
             file.inputStream().use { load(it) }
         }
 
-        val cfg = CodegenConfig().apply {
+        return CodegenConfig().apply {
             url = requireNotNull(props["db.url"]) { "db.url is required in nextmall-codegen.properties" }.toString()
             user = requireNotNull(props["db.user"]) { "db.user is required in nextmall-codegen.properties" }.toString()
             password = requireNotNull(props["db.password"]) { "db.password is required in nextmall-codegen.properties" }.toString()
             schema = requireNotNull(props["db.schema"]) { "db.schema is required in nextmall-codegen.properties" }.toString()
             driver = requireNotNull(props["db.driver"]) { "db.driver is required in nextmall-codegen.properties" }.toString()
+        }.also {
+            log("Loaded codegen properties (schema=${it.schema}, url=${it.url})")
         }
-
-        log("Loaded codegen properties (schema=${cfg.schema}, url=${cfg.url})")
-        return cfg
     }
 
     // ----------------------------------------------------------

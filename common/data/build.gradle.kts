@@ -55,8 +55,8 @@ jooq {
                     }
 
                     generate.apply {
-                        isPojos = true
-                        isImmutablePojos = true
+                        isPojos = false
+                        isImmutablePojos = false
                         isDaos = false
                     }
 

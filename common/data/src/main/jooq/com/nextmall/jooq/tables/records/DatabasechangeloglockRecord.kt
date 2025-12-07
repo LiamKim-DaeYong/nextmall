@@ -50,17 +50,4 @@ open class DatabasechangeloglockRecord() : UpdatableRecordImpl<Databasechangelog
         this.lockedby = lockedby
         resetTouchedOnNotNull()
     }
-
-    /**
-     * Create a detached, initialised DatabasechangeloglockRecord
-     */
-    constructor(value: com.nextmall.jooq.tables.pojos.Databasechangeloglock?): this() {
-        if (value != null) {
-            this.id = value.id
-            this.locked = value.locked
-            this.lockgranted = value.lockgranted
-            this.lockedby = value.lockedby
-            resetTouchedOnNotNull()
-        }
-    }
 }

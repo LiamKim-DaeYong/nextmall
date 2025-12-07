@@ -93,27 +93,4 @@ open class DatabasechangelogRecord() : TableRecordImpl<DatabasechangelogRecord>(
         this.deploymentId = deploymentId
         resetTouchedOnNotNull()
     }
-
-    /**
-     * Create a detached, initialised DatabasechangelogRecord
-     */
-    constructor(value: com.nextmall.jooq.tables.pojos.Databasechangelog?): this() {
-        if (value != null) {
-            this.id = value.id
-            this.author = value.author
-            this.filename = value.filename
-            this.dateexecuted = value.dateexecuted
-            this.orderexecuted = value.orderexecuted
-            this.exectype = value.exectype
-            this.md5sum = value.md5sum
-            this.description = value.description
-            this.comments = value.comments
-            this.tag = value.tag
-            this.liquibase = value.liquibase
-            this.contexts = value.contexts
-            this.labels = value.labels
-            this.deploymentId = value.deploymentId
-            resetTouchedOnNotNull()
-        }
-    }
 }
