@@ -7,7 +7,6 @@ build/
 ### Generated Sources (jOOQ, kapt, ksp 등) ###
 **/build/generated/**
 **/generated/**
-**/jooq/**
 
 ### STS ###
 .apt_generated

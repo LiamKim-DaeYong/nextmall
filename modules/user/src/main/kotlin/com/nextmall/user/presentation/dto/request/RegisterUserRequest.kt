@@ -1,4 +1,4 @@
-package com.nextmall.user.presentation.dto
+package com.nextmall.user.presentation.dto.request
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -9,5 +9,6 @@ data class RegisterUserRequest(
     @field:NotBlank @field:Size(min = 8, max = 72) val password: String,
     @field:NotBlank val nickname: String,
 ) {
-    override fun toString(): String = "RegisterUserRequest(email='$email', password='***', nickname='$nickname')"
+    override fun toString(): String =
+        "RegisterUserRequest(email='$email', password='***', nickname='$nickname')"
 }

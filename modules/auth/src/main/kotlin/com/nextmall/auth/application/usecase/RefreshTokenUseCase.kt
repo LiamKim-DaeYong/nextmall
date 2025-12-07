@@ -5,15 +5,14 @@ import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.presentation.dto.TokenResponse
-import com.nextmall.user.domain.repository.UserRepository
+import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
 import org.springframework.stereotype.Service
-import kotlin.jvm.optionals.getOrElse
 
 @Service
 class RefreshTokenUseCase(
     private val tokenProvider: TokenProvider,
     private val refreshTokenStore: RefreshTokenStore,
-    private val userRepository: UserRepository,
+    private val credentialsRepository: UserCredentialsQueryRepository,
 ) {
     fun refresh(refreshToken: String): TokenResponse {
         val userId = tokenProvider.parseRefreshToken(refreshToken)
@@ -27,9 +26,8 @@ class RefreshTokenUseCase(
         }
 
         val user =
-            userRepository
-                .findById(userId)
-                .getOrElse { throw InvalidLoginException() }
+            credentialsRepository.findById(userId)
+                ?: throw InvalidLoginException()
 
         val newAccessToken = tokenProvider.generateAccessToken(userId.toString(), user.role)
         val newRefreshToken = tokenProvider.generateRefreshToken(userId.toString())

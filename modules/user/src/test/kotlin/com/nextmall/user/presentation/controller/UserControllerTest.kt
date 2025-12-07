@@ -1,12 +1,14 @@
 package com.nextmall.user.presentation.controller
 
 import com.nextmall.common.testsupport.WebMvcTestSupport
-import com.nextmall.user.application.usecase.FindUserUseCase
+import com.nextmall.user.application.query.FindUserQuery
+import com.nextmall.user.application.query.dto.UserView
 import com.nextmall.user.application.usecase.RegisterUserUseCase
 import com.nextmall.user.domain.model.UserRole
-import com.nextmall.user.presentation.dto.RegisterUserRequest
-import com.nextmall.user.presentation.dto.RegisterUserResponse
-import com.nextmall.user.presentation.dto.UserResponse
+import com.nextmall.user.presentation.dto.request.RegisterUserRequest
+import com.nextmall.user.presentation.dto.response.PublicUserResponse
+import com.nextmall.user.presentation.dto.response.RegisterUserResponse
+import com.nextmall.user.presentation.mapper.UserViewMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
@@ -26,7 +28,9 @@ class UserControllerTest(
     @MockkBean
     private val registerUserUseCase: RegisterUserUseCase,
     @MockkBean
-    private val findUserUseCase: FindUserUseCase,
+    private val findUserQuery: FindUserQuery,
+    @MockkBean
+    private val userViewMapper: UserViewMapper,
 ) : FunSpec({
 
         test("회원가입 요청이 성공하면 201 Created와 응답을 반환한다") {
@@ -70,29 +74,34 @@ class UserControllerTest(
                 }
         }
 
-        test("ID로 사용자 조회 시 유저 정보가 반환된다") {
+        test("ID로 사용자 조회 시 PublicUserResponse가 반환된다") {
             // given
-            val response =
-                UserResponse(
+            val userView =
+                UserView(
                     id = 1L,
                     email = "find@example.com",
                     nickname = "finder",
                     role = UserRole.BUYER.name,
+                    provider = "local",
+                    createdAt = OffsetDateTime.now(),
                 )
 
-            every { findUserUseCase.findById(1L) } returns response
+            val publicResponse =
+                PublicUserResponse(
+                    id = 1L,
+                    nickname = "finder",
+                )
+
+            every { findUserQuery.findById(1L) } returns userView
+            every { userViewMapper.toPublicUserResponse(userView) } returns publicResponse
 
             // when & then
             mockMvc
                 .get("/api/v1/users/1")
                 .andExpect {
                     status { isOk() }
-                    jsonPath("$.email") {
-                        value("find@example.com")
-                    }
-                    jsonPath("$.nickname") {
-                        value("finder")
-                    }
+                    jsonPath("$.id") { value(1L) }
+                    jsonPath("$.nickname") { value("finder") }
                 }
         }
     })
