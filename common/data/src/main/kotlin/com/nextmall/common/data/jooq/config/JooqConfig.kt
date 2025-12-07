@@ -18,7 +18,7 @@ class JooqConfig {
             renderNameCase = RenderNameCase.AS_IS
             statementType = StatementType.PREPARED_STATEMENT
             fetchSize = 200
-            queryTimeout = 3000
+            queryTimeout = 3
         }
 
     @Bean

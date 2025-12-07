@@ -56,7 +56,7 @@ fun <R : Record, T> SelectLimitStep<R>.fetchPage(
     size: Int,
     mapper: (R) -> T
 ): PageResult<T> {
-    val offset = page * size
+    val offset = page.toLong() * size
 
     // COUNT(*) query
     val total = DSL.using(this.configuration())

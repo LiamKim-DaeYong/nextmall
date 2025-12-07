@@ -63,10 +63,8 @@ jooq {
                     target.apply {
                         packageName = "com.nextmall.jooq"
                         directory =
-                            project.layout.buildDirectory
-                                .dir("generated/jooq")
-                                .get()
-                                .asFile
+                            project.projectDir
+                                .resolve("src/main/jooq")
                                 .absolutePath
                     }
                 }

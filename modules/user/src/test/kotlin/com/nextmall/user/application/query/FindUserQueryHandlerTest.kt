@@ -1,6 +1,7 @@
 package com.nextmall.user.application.query
 
 import com.nextmall.user.application.query.dto.UserView
+import com.nextmall.user.domain.exception.UserNotFoundException
 import com.nextmall.user.infrastructure.jooq.UserQueryRepositoryImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -55,7 +56,7 @@ class FindUserQueryHandlerTest :
             every { userQueryRepository.findById(999L) } returns null
 
             // when & then
-            shouldThrow<NoSuchElementException> {
+            shouldThrow<UserNotFoundException> {
                 useCase.findById(999L)
             }
         }
@@ -94,7 +95,7 @@ class FindUserQueryHandlerTest :
             every { userQueryRepository.findByEmail("nope@a.com") } returns null
 
             // when & then
-            shouldThrow<NoSuchElementException> {
+            shouldThrow<UserNotFoundException> {
                 useCase.findByEmail("nope@a.com")
             }
         }

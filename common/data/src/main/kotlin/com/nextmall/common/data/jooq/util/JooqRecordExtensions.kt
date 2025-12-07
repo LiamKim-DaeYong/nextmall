@@ -99,6 +99,8 @@ inline fun <R : Record, T> Result<R>.mapAll(crossinline mapper: (R) -> T): List<
 /**
  * Field-based mapping shortcut:
  *   result.mapAll(NAME)
+ *
+ * Null values are skipped for safety.
  */
 fun <R : Record, T> Result<R>.mapAll(field: Field<T?>): List<T> =
-    this.map { it.get(field) }
+    this.mapNotNull { it.get(field) }

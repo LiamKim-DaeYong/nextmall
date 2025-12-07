@@ -4,7 +4,7 @@ build/
 */build/
 !gradle/wrapper/gradle-wrapper.jar
 
-### Generated Sources (jOOQ, kapt, ksp 등) ###
+### Generated Sources (kapt, ksp 등) ###
 **/build/generated/**
 **/generated/**
 
@@ -57,13 +57,16 @@ node_modules/
 .env
 docker/.env
 
-# Project-specific environment/config files
-# Development-only DB codegen config should NEVER be committed
+### Project-specific (DO NOT COMMIT LOCAL DB CONFIG) ###
+# Development-only DB codegen config must NOT be committed
 nextmall-codegen.properties
-*codegen.properties
 
-# Provide example template instead
+# Example template SHOULD exist
 !nextmall-codegen.properties.example
+
+# Prevent accidental commits of CAUTIONALLY similar files
+# If someone names a file like local-codegen.properties, ignore it too
+*local-codegen.properties
 
 ### OS specific ###
 .DS_Store
