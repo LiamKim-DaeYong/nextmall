@@ -24,6 +24,7 @@ val coverageExcludes =
         "**/generated/**",
         "**/*Exception*",
         "**/exception/**",
+        "**/jooq/**",
     )
 
 val sonarExtraExcludes =
