@@ -5,7 +5,7 @@ import com.nextmall.user.application.port.output.PasswordHasher
 import com.nextmall.user.domain.exception.DuplicateEmailException
 import com.nextmall.user.domain.model.User
 import com.nextmall.user.domain.repository.UserRepository
-import com.nextmall.user.presentation.dto.RegisterUserResponse
+import com.nextmall.user.presentation.dto.response.RegisterUserResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.jooq)
+    alias(libs.plugins.jooq.plugin)
 
     id("nextmall.jooq-codegen")
 }
@@ -16,19 +16,25 @@ java {
 }
 
 dependencies {
+    implementation(project(":common:util"))
+
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.liquibase.core)
 
     jooqGenerator(libs.postgresql)
+
+    testImplementation("com.h2database:h2")
+    testImplementation(project(":common:test-support"))
 }
 
 jooq {
     configurations {
         create("main") {
-            jooqConfiguration.apply {
+            generateSchemaSourceOnCompilation.set(false)
 
+            jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.WARN
 
                 val cfg = project.extensions.getByType(CodegenConfig::class.java)
@@ -49,18 +55,16 @@ jooq {
                     }
 
                     generate.apply {
-                        isPojos = true
-                        isImmutablePojos = true
+                        isPojos = false
+                        isImmutablePojos = false
                         isDaos = false
                     }
 
                     target.apply {
                         packageName = "com.nextmall.jooq"
                         directory =
-                            project.layout.buildDirectory
-                                .dir("generated/jooq")
-                                .get()
-                                .asFile
+                            project.projectDir
+                                .resolve("src/main/jooq")
                                 .absolutePath
                     }
                 }

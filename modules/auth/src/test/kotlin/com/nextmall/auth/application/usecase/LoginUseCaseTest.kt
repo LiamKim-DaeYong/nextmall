@@ -6,9 +6,9 @@ import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.model.LoginIdentity
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
+import com.nextmall.user.application.query.dto.UserCredentials
 import com.nextmall.user.domain.model.AuthProvider
-import com.nextmall.user.domain.model.User
-import com.nextmall.user.domain.repository.UserRepository
+import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -23,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class LoginUseCaseTest :
     FunSpec({
 
-        val userRepository = mockk<UserRepository>()
+        val credentialsRepository = mockk<UserCredentialsQueryRepository>()
         val passwordEncoder = mockk<PasswordEncoder>()
         val tokenProvider = mockk<TokenProvider>()
         val rateLimitRepository = mockk<RateLimitRepository>()
@@ -32,10 +32,10 @@ class LoginUseCaseTest :
         lateinit var userCase: LoginUseCase
 
         beforeTest {
-            clearMocks(userRepository, passwordEncoder, tokenProvider, rateLimitRepository, refreshTokenStore)
+            clearMocks(credentialsRepository, passwordEncoder, tokenProvider, rateLimitRepository, refreshTokenStore)
             userCase =
                 LoginUseCase(
-                    userRepository = userRepository,
+                    credentialsRepository = credentialsRepository,
                     passwordEncoder = passwordEncoder,
                     tokenProvider = tokenProvider,
                     rateLimitRepository = rateLimitRepository,
@@ -45,9 +45,9 @@ class LoginUseCaseTest :
 
         test("정상 로그인 시 토큰 두 개가 발급되고 RefreshToken이 저장된다") {
             // given
-            val user = User(id = 1L, email = "test@a.com", password = "encoded", nickname = "tester")
+            val userCredentials = UserCredentials(id = 1L, password = "encoded", role = "BUYER")
 
-            every { userRepository.findByEmail("test@a.com") } returns user
+            every { credentialsRepository.findByEmail("test@a.com") } returns userCredentials
             every { passwordEncoder.matches("plain", "encoded") } returns true
             every { tokenProvider.generateAccessToken("1", any()) } returns "access"
             every { tokenProvider.generateRefreshToken("1") } returns "refresh"
@@ -70,9 +70,9 @@ class LoginUseCaseTest :
         }
 
         test("비밀번호가 일치하지 않으면 예외 발생") {
-            val user = User(id = 2L, email = "test2@a.com", password = "encoded", nickname = "tester")
+            val userCredentials = UserCredentials(id = 2L, password = "encoded", role = "BUYER")
 
-            every { userRepository.findByEmail("test2@a.com") } returns user
+            every { credentialsRepository.findByEmail("test2@a.com") } returns userCredentials
             every { passwordEncoder.matches(any(), any()) } returns false
             every { rateLimitRepository.getFailCount(any()) } returns 0
             every { rateLimitRepository.increaseFailCount(any()) } returns 0
@@ -83,7 +83,7 @@ class LoginUseCaseTest :
         }
 
         test("존재하지 않는 이메일이면 예외가 발생한다") {
-            every { userRepository.findByEmail("none@test.com") } returns null
+            every { credentialsRepository.findByEmail("none@test.com") } returns null
             every { rateLimitRepository.getFailCount(any()) } returns 0
             every { rateLimitRepository.increaseFailCount(any()) } returns 0
 
@@ -101,9 +101,9 @@ class LoginUseCaseTest :
         }
 
         test("비밀번호가 틀리면 실패 횟수가 증가한다") {
-            val user = User(id = 5L, email = "test5@a.com", password = "encoded", nickname = "nick")
+            val userCredentials = UserCredentials(id = 3L, password = "encoded", role = "BUYER")
 
-            every { userRepository.findByEmail("test5@a.com") } returns user
+            every { credentialsRepository.findByEmail("test5@a.com") } returns userCredentials
             every { passwordEncoder.matches(any(), any()) } returns false
             every { rateLimitRepository.getFailCount(any()) } returns 0
             every { rateLimitRepository.increaseFailCount(any()) } returns 1
@@ -120,9 +120,9 @@ class LoginUseCaseTest :
         }
 
         test("비밀번호가 없는 계정이면 실패 카운트가 증가하고 InvalidLoginException 발생") {
-            val user = User(id = 1L, email = "test6@a.com", password = null, nickname = "tester")
+            val userCredentials = UserCredentials(id = 4L, password = null, role = "BUYER")
 
-            every { userRepository.findByEmail("test6@a.com") } returns user
+            every { credentialsRepository.findByEmail("test6@a.com") } returns userCredentials
             every { rateLimitRepository.getFailCount(any()) } returns 0
             every { rateLimitRepository.increaseFailCount(any()) } returns 1
 

@@ -10,7 +10,7 @@ springmockk = "5.0.1"
 sonarqube = "7.1.0.6387"
 jjwt = "0.13.0"
 liquibase = "5.0.1"
-jooq = "10.1.1"
+jooq-plugin = "10.1.1"
 postgresql = "42.7.8"
 
 [plugins]
@@ -21,19 +21,19 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
-jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
+jooq-plugin = { id = "nu.studer.jooq", version.ref = "jooq-plugin" }
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 h2 = { module = "com.h2database:h2" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 
 spring-context = { module = "org.springframework:spring-context" }
 spring-boot = { module = "org.springframework.boot:spring-boot" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-starter-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }

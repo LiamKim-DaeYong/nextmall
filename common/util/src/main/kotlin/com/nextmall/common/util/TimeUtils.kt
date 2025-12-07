@@ -32,4 +32,16 @@ object TimeUtils {
 
     /** Converts an OffsetDateTime from KST to UTC */
     fun toUtc(offsetDateTime: OffsetDateTime): OffsetDateTime = offsetDateTime.withOffsetSameInstant(UTC_ZONE)
+
+    fun toUtcOrNull(localDateTime: LocalDateTime?): OffsetDateTime? =
+        localDateTime?.atOffset(UTC_ZONE)
+
+    fun toKstOrNull(localDateTime: LocalDateTime?): OffsetDateTime? =
+        localDateTime?.atOffset(DEFAULT_ZONE)
 }
+
+fun LocalDateTime.toUtc(): OffsetDateTime =
+    this.atOffset(TimeUtils.UTC_ZONE)
+
+fun LocalDateTime.toKst(): OffsetDateTime =
+    this.atOffset(TimeUtils.DEFAULT_ZONE)

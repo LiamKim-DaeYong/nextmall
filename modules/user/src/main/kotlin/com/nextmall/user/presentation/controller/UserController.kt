@@ -1,10 +1,11 @@
 package com.nextmall.user.presentation.controller
 
-import com.nextmall.user.application.usecase.FindUserUseCase
+import com.nextmall.user.application.query.FindUserQuery
 import com.nextmall.user.application.usecase.RegisterUserUseCase
-import com.nextmall.user.presentation.dto.RegisterUserRequest
-import com.nextmall.user.presentation.dto.RegisterUserResponse
-import com.nextmall.user.presentation.dto.UserResponse
+import com.nextmall.user.presentation.dto.response.PublicUserResponse
+import com.nextmall.user.presentation.dto.request.RegisterUserRequest
+import com.nextmall.user.presentation.dto.response.RegisterUserResponse
+import com.nextmall.user.presentation.mapper.UserViewMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/users")
 class UserController(
     private val registerUserUseCase: RegisterUserUseCase,
-    private val findUserUseCase: FindUserUseCase,
+    private val findUserQuery: FindUserQuery,
+    private val userViewMapper: UserViewMapper,
 ) {
     @PostMapping
     fun register(
@@ -38,9 +40,6 @@ class UserController(
     }
 
     @GetMapping("/{id}")
-    fun getById(
-        @PathVariable id: Long,
-    ): ResponseEntity<UserResponse> =
-        ResponseEntity
-            .ok(findUserUseCase.findById(id))
+    fun getPublicUser(@PathVariable id: Long): PublicUserResponse =
+        userViewMapper.toPublicUserResponse(findUserQuery.findById(id))
 }

@@ -3,7 +3,7 @@ package com.nextmall.auth.application.usecase
 import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
-import com.nextmall.user.domain.repository.UserRepository
+import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -12,19 +12,18 @@ import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import java.util.Optional
 
 class RefreshTokenUseCaseTest :
     FunSpec({
         val tokenProvider = mockk<TokenProvider>()
         val refreshTokenStore = mockk<RefreshTokenStore>()
-        val userRepository = mockk<UserRepository>()
+        val credentialsRepository = mockk<UserCredentialsQueryRepository>()
 
         lateinit var useCase: RefreshTokenUseCase
 
         beforeTest {
-            clearMocks(tokenProvider, refreshTokenStore, userRepository)
-            useCase = RefreshTokenUseCase(tokenProvider, refreshTokenStore, userRepository)
+            clearMocks(tokenProvider, refreshTokenStore, credentialsRepository)
+            useCase = RefreshTokenUseCase(tokenProvider, refreshTokenStore, credentialsRepository)
         }
 
         test("refresh 성공 시 새 토큰 반환") {
@@ -40,7 +39,7 @@ class RefreshTokenUseCaseTest :
             every { tokenProvider.generateRefreshToken("$userId") } returns newRefresh
             every { tokenProvider.refreshTokenTtlSeconds() } returns 3600
             every { refreshTokenStore.save(userId, newRefresh, any()) } just Runs
-            every { userRepository.findById(userId) } returns Optional.of(mockk(relaxed = true))
+            every { credentialsRepository.findById(userId) } returns mockk(relaxed = true)
 
             // when
             val result = useCase.refresh(refreshToken)

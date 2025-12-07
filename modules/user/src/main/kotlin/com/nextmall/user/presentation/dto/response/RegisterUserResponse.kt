@@ -1,4 +1,4 @@
-package com.nextmall.user.presentation.dto
+package com.nextmall.user.presentation.dto.response
 
 import com.nextmall.common.util.TimeUtils.DEFAULT_ZONE
 import com.nextmall.user.domain.model.User

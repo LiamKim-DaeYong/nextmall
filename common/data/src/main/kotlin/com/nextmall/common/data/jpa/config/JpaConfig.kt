@@ -13,4 +13,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @Configuration
 @EntityScan(basePackages = ["com.nextmall"])
 @EnableJpaRepositories(basePackages = ["com.nextmall"])
-class JpaConfiguration
+class JpaConfig
