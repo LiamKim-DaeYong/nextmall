@@ -43,5 +43,23 @@ object TimeUtils {
 fun LocalDateTime.toUtc(): OffsetDateTime =
     this.atOffset(TimeUtils.UTC_ZONE)
 
+fun LocalDateTime?.toUtcOrNull(): OffsetDateTime? =
+    this?.atOffset(TimeUtils.UTC_ZONE)
+
+fun OffsetDateTime.toUtc(): OffsetDateTime =
+    this.withOffsetSameInstant(ZoneOffset.UTC)
+
+fun OffsetDateTime?.toUtcOrNull(): OffsetDateTime? =
+    this?.withOffsetSameInstant(ZoneOffset.UTC)
+
 fun LocalDateTime.toKst(): OffsetDateTime =
     this.atOffset(TimeUtils.DEFAULT_ZONE)
+
+fun LocalDateTime?.toKstOrNull(): OffsetDateTime? =
+    this?.atOffset(TimeUtils.DEFAULT_ZONE)
+
+fun OffsetDateTime.toKst(): OffsetDateTime =
+    this.withOffsetSameInstant(TimeUtils.DEFAULT_ZONE)
+
+fun OffsetDateTime?.toKstOrNull(): OffsetDateTime? =
+    this?.withOffsetSameInstant(TimeUtils.DEFAULT_ZONE)

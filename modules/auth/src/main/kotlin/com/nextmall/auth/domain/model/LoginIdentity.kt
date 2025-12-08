@@ -1,6 +1,6 @@
 package com.nextmall.auth.domain.model
 
-import com.nextmall.user.domain.model.AuthProvider
+import com.nextmall.user.domain.entity.AuthProvider
 
 data class LoginIdentity(
     val provider: AuthProvider,

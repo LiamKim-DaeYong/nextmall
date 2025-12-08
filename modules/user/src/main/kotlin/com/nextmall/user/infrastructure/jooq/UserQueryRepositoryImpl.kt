@@ -5,7 +5,7 @@ import com.nextmall.common.data.jooq.util.getRequired
 import com.nextmall.common.data.jooq.util.getUtcFromOffset
 import com.nextmall.jooq.tables.references.USERS
 import com.nextmall.user.application.query.dto.UserView
-import com.nextmall.user.domain.repository.UserQueryRepository
+import com.nextmall.user.application.port.output.UserQueryRepository
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.stereotype.Repository

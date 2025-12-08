@@ -7,7 +7,7 @@ import com.nextmall.auth.domain.model.LoginIdentity
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
 import com.nextmall.auth.presentation.dto.TokenResponse
-import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
+import com.nextmall.user.application.port.output.UserCredentialsQueryRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 

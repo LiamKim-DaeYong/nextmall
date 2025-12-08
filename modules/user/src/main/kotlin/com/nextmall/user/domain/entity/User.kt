@@ -1,4 +1,4 @@
-package com.nextmall.user.domain.model
+package com.nextmall.user.domain.entity
 
 import com.nextmall.common.data.jpa.BaseEntity
 import jakarta.persistence.Column
@@ -23,12 +23,12 @@ class User(
     @Column(nullable = false)
     val nickname: String,
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    val provider: AuthProvider = AuthProvider.LOCAL,
-
-    @Column(nullable = true)
-    val providerId: String? = null,
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    val provider: AuthProvider = AuthProvider.LOCAL,
+//
+//    @Column(nullable = true)
+//    val providerId: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,7 +1,7 @@
 package com.nextmall.auth.domain.jwt
 
 import com.nextmall.auth.config.JwtProperties
-import com.nextmall.user.domain.model.UserRole
+import com.nextmall.user.domain.entity.UserRole
 import io.jsonwebtoken.ExpiredJwtException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec

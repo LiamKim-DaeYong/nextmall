@@ -1,8 +1,8 @@
-package com.nextmall.user.domain.repository
+package com.nextmall.user.application.port.output
 
 import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.common.testsupport.RepositoryTest
-import com.nextmall.user.domain.model.User
+import com.nextmall.user.domain.entity.User
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
