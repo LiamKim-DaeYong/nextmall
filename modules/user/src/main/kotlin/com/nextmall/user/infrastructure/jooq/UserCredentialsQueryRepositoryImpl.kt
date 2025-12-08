@@ -4,7 +4,7 @@ import com.nextmall.common.data.jooq.JooqRepository
 import com.nextmall.common.data.jooq.util.getRequired
 import com.nextmall.jooq.tables.references.USERS
 import com.nextmall.user.application.query.dto.UserCredentials
-import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
+import com.nextmall.user.application.port.output.UserCredentialsQueryRepository
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.stereotype.Repository

@@ -7,8 +7,8 @@ import com.nextmall.auth.domain.model.LoginIdentity
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
 import com.nextmall.auth.infrastructure.redis.RateLimitRepository
 import com.nextmall.user.application.query.dto.UserCredentials
-import com.nextmall.user.domain.model.AuthProvider
-import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
+import com.nextmall.user.domain.entity.AuthProvider
+import com.nextmall.user.application.port.output.UserCredentialsQueryRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

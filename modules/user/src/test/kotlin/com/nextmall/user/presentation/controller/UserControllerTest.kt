@@ -1,18 +1,18 @@
 package com.nextmall.user.presentation.controller
 
 import com.nextmall.common.testsupport.WebMvcTestSupport
+import com.nextmall.user.application.command.RegisterUserCommand
 import com.nextmall.user.application.query.FindUserQuery
 import com.nextmall.user.application.query.dto.UserView
-import com.nextmall.user.application.usecase.RegisterUserUseCase
-import com.nextmall.user.domain.model.UserRole
+import com.nextmall.user.application.command.dto.RegisterUserResult
+import com.nextmall.user.domain.entity.UserRole
 import com.nextmall.user.presentation.dto.request.RegisterUserRequest
-import com.nextmall.user.presentation.dto.response.PublicUserResponse
-import com.nextmall.user.presentation.dto.response.RegisterUserResponse
-import com.nextmall.user.presentation.mapper.UserViewMapper
+import com.nextmall.user.presentation.mapper.UserResponseMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -22,15 +22,14 @@ import java.time.OffsetDateTime
 
 @WebMvcTestSupport
 @WebMvcTest(UserController::class)
+@Import(UserResponseMapper::class)
 class UserControllerTest(
     private val mockMvc: MockMvc,
     private val objectMapper: ObjectMapper,
     @MockkBean
-    private val registerUserUseCase: RegisterUserUseCase,
+    private val registerUserCommand: RegisterUserCommand,
     @MockkBean
     private val findUserQuery: FindUserQuery,
-    @MockkBean
-    private val userViewMapper: UserViewMapper,
 ) : FunSpec({
 
         test("회원가입 요청이 성공하면 201 Created와 응답을 반환한다") {
@@ -42,8 +41,8 @@ class UserControllerTest(
                     nickname = "newbie",
                 )
 
-            val response =
-                RegisterUserResponse(
+            val result =
+                RegisterUserResult(
                     id = 1L,
                     email = "new@example.com",
                     nickname = "newbie",
@@ -51,12 +50,12 @@ class UserControllerTest(
                 )
 
             every {
-                registerUserUseCase.register(
+                registerUserCommand.register(
                     email = request.email,
                     password = request.password,
                     nickname = request.nickname,
                 )
-            } returns response
+            } returns result
 
             // when & then
             mockMvc
@@ -86,14 +85,7 @@ class UserControllerTest(
                     createdAt = OffsetDateTime.now(),
                 )
 
-            val publicResponse =
-                PublicUserResponse(
-                    id = 1L,
-                    nickname = "finder",
-                )
-
             every { findUserQuery.findById(1L) } returns userView
-            every { userViewMapper.toPublicUserResponse(userView) } returns publicResponse
 
             // when & then
             mockMvc

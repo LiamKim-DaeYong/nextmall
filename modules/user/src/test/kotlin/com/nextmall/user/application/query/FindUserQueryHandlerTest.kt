@@ -15,11 +15,11 @@ class FindUserQueryHandlerTest :
     FunSpec({
 
         val userQueryRepository = mockk<UserQueryRepositoryImpl>()
-        lateinit var useCase: FindUserQueryHandler
+        lateinit var handler: FindUserQueryHandler
 
         beforeTest {
             clearMocks(userQueryRepository)
-            useCase = FindUserQueryHandler(userQueryRepository)
+            handler = FindUserQueryHandler(userQueryRepository)
         }
 
         // -------------------------------------------------------------------------
@@ -42,7 +42,7 @@ class FindUserQueryHandlerTest :
             every { userQueryRepository.findById(1L) } returns userView
 
             // when
-            val result = useCase.findById(1L)
+            val result = handler.findById(1L)
 
             // then
             result.id shouldBe 1L
@@ -57,7 +57,7 @@ class FindUserQueryHandlerTest :
 
             // when & then
             shouldThrow<UserNotFoundException> {
-                useCase.findById(999L)
+                handler.findById(999L)
             }
         }
 
@@ -81,7 +81,7 @@ class FindUserQueryHandlerTest :
             every { userQueryRepository.findByEmail("hello@a.com") } returns userView
 
             // when
-            val result = useCase.findByEmail("hello@a.com")
+            val result = handler.findByEmail("hello@a.com")
 
             // then
             result.id shouldBe 10L
@@ -96,7 +96,7 @@ class FindUserQueryHandlerTest :
 
             // when & then
             shouldThrow<UserNotFoundException> {
-                useCase.findByEmail("nope@a.com")
+                handler.findByEmail("nope@a.com")
             }
         }
     })

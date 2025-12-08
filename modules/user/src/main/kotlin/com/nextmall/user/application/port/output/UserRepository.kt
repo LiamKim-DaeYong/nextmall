@@ -1,6 +1,6 @@
-package com.nextmall.user.domain.repository
+package com.nextmall.user.application.port.output
 
-import com.nextmall.user.domain.model.User
+import com.nextmall.user.domain.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepository : JpaRepository<User, Long> {

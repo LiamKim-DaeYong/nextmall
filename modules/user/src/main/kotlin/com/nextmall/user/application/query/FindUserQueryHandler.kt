@@ -2,7 +2,7 @@ package com.nextmall.user.application.query
 
 import com.nextmall.user.application.query.dto.UserView
 import com.nextmall.user.domain.exception.UserNotFoundException
-import com.nextmall.user.domain.repository.UserQueryRepository
+import com.nextmall.user.application.port.output.UserQueryRepository
 import org.springframework.stereotype.Service
 
 @Service

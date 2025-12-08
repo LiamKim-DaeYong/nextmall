@@ -1,4 +1,4 @@
-package com.nextmall.user.domain.repository
+package com.nextmall.user.application.port.output
 
 import com.nextmall.user.application.query.dto.UserView
 

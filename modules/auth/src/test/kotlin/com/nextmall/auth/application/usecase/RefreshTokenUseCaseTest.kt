@@ -3,7 +3,7 @@ package com.nextmall.auth.application.usecase
 import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
 import com.nextmall.auth.domain.jwt.TokenProvider
 import com.nextmall.auth.domain.refresh.RefreshTokenStore
-import com.nextmall.user.domain.repository.UserCredentialsQueryRepository
+import com.nextmall.user.application.port.output.UserCredentialsQueryRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
