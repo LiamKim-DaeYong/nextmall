@@ -1,11 +1,13 @@
 package com.nextmall.auth.presentation.controller
 
-import com.nextmall.auth.application.usecase.LoginUseCase
-import com.nextmall.auth.application.usecase.LogoutUseCase
-import com.nextmall.auth.application.usecase.RefreshTokenUseCase
-import com.nextmall.auth.presentation.dto.LoginRequest
-import com.nextmall.auth.presentation.dto.RefreshTokenRequest
-import com.nextmall.auth.presentation.dto.TokenResponse
+import com.nextmall.auth.application.command.login.LoginCommandParam
+import com.nextmall.auth.application.command.logout.LogoutCommandHandler
+import com.nextmall.auth.port.input.login.LoginCommand
+import com.nextmall.auth.port.input.token.RefreshTokenCommand
+import com.nextmall.auth.presentation.request.LoginRequest
+import com.nextmall.auth.presentation.request.RefreshTokenRequest
+import com.nextmall.auth.presentation.response.TokenResponse
+import com.nextmall.auth.presentation.mapper.AuthResponseMapper
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,39 +18,43 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
-    private val loginUseCase: LoginUseCase,
-    private val refreshTokenUseCase: RefreshTokenUseCase,
-    private val logoutUseCase: LogoutUseCase,
+    private val loginCommand: LoginCommand,
+    private val refreshTokenCommand: RefreshTokenCommand,
+    private val logoutCommandHandler: LogoutCommandHandler,
+    private val mapper: AuthResponseMapper,
 ) {
     @PostMapping("/login")
     fun login(
         @Valid @RequestBody request: LoginRequest,
     ): ResponseEntity<TokenResponse> {
-        val tokenResponse =
-            loginUseCase.login(
-                email = request.email,
-                password = request.password,
+        val param =
+            LoginCommandParam(
+                provider = request.provider,
+                principal = request.principal,
+                credential = request.credential,
             )
 
+        val result = loginCommand.login(param)
+
         return ResponseEntity
-            .ok(tokenResponse)
+            .ok(mapper.toTokenResponse(result))
     }
 
     @PostMapping("/refresh")
     fun refresh(
         @Valid @RequestBody request: RefreshTokenRequest,
     ): ResponseEntity<TokenResponse> {
-        val response = refreshTokenUseCase.refresh(request.refreshToken)
+        val result = refreshTokenCommand.refreshToken(request.refreshToken)
 
         return ResponseEntity
-            .ok(response)
+            .ok(mapper.toTokenResponse(result))
     }
 
     @PostMapping("/logout")
     fun logout(
         @Valid @RequestBody request: RefreshTokenRequest,
     ): ResponseEntity<Unit> {
-        logoutUseCase.logout(request.refreshToken)
+        logoutCommandHandler.logout(request.refreshToken)
 
         return ResponseEntity
             .ok()
