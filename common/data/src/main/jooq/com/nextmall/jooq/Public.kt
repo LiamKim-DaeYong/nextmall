@@ -4,6 +4,7 @@
 package com.nextmall.jooq
 
 
+import com.nextmall.jooq.tables.AuthUserAccounts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Users
@@ -30,6 +31,11 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
     }
 
     /**
+     * The table <code>public.auth_user_accounts</code>.
+     */
+    val AUTH_USER_ACCOUNTS: AuthUserAccounts get() = AuthUserAccounts.AUTH_USER_ACCOUNTS
+
+    /**
      * The table <code>public.databasechangelog</code>.
      */
     val DATABASECHANGELOG: Databasechangelog get() = Databasechangelog.DATABASECHANGELOG
@@ -47,6 +53,7 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
+        AuthUserAccounts.AUTH_USER_ACCOUNTS,
         Databasechangelog.DATABASECHANGELOG,
         Databasechangeloglock.DATABASECHANGELOGLOCK,
         Users.USERS

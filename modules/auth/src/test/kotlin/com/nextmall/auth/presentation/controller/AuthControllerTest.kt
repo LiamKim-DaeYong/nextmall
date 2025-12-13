@@ -1,11 +1,14 @@
 package com.nextmall.auth.presentation.controller
 
-import com.nextmall.auth.application.usecase.LoginUseCase
-import com.nextmall.auth.application.usecase.LogoutUseCase
-import com.nextmall.auth.application.usecase.RefreshTokenUseCase
-import com.nextmall.auth.presentation.dto.LoginRequest
-import com.nextmall.auth.presentation.dto.RefreshTokenRequest
-import com.nextmall.auth.presentation.dto.TokenResponse
+import com.nextmall.auth.application.command.logout.LogoutCommandHandler
+import com.nextmall.auth.application.command.token.TokenResult
+import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.auth.port.input.login.LoginCommand
+import com.nextmall.auth.port.input.token.RefreshTokenCommand
+import com.nextmall.auth.presentation.mapper.AuthResponseMapper
+import com.nextmall.auth.presentation.request.LoginRequest
+import com.nextmall.auth.presentation.request.RefreshTokenRequest
+import com.nextmall.auth.presentation.response.TokenResponse
 import com.nextmall.common.testsupport.WebMvcTestSupport
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
@@ -21,20 +24,25 @@ import tools.jackson.databind.ObjectMapper
 class AuthControllerTest(
     private val mockMvc: MockMvc,
     private val objectMapper: ObjectMapper,
-    @MockkBean
-    private val loginUseCase: LoginUseCase,
-    @MockkBean
-    private val refreshTokenUseCase: RefreshTokenUseCase,
-    @MockkBean
-    private val logoutUseCase: LogoutUseCase,
+    @MockkBean private val loginCommand: LoginCommand,
+    @MockkBean private val refreshTokenCommand: RefreshTokenCommand,
+    @MockkBean private val logoutCommandHandler: LogoutCommandHandler,
+    @MockkBean private val mapper: AuthResponseMapper,
 ) : FunSpec({
 
         test("로그인 요청이 성공하면 토큰이 반환된다") {
             // given
             val request =
                 LoginRequest(
-                    email = "user@example.com",
-                    password = "password",
+                    provider = AuthProvider.LOCAL,
+                    principal = "user@example.com",
+                    credential = "password",
+                )
+
+            val commandResult =
+                TokenResult(
+                    accessToken = "accessToken123",
+                    refreshToken = "refreshToken123",
                 )
 
             val response =
@@ -43,7 +51,8 @@ class AuthControllerTest(
                     refreshToken = "refreshToken123",
                 )
 
-            every { loginUseCase.login(any(), any()) } returns response
+            every { loginCommand.login(any()) } returns commandResult
+            every { mapper.toTokenResponse(commandResult) } returns response
 
             // when & then
             mockMvc
@@ -52,20 +61,19 @@ class AuthControllerTest(
                     content = objectMapper.writeValueAsString(request)
                 }.andExpect {
                     status { isOk() }
-                    jsonPath("$.accessToken") {
-                        value("accessToken123")
-                    }
-                    jsonPath("$.refreshToken") {
-                        value("refreshToken123")
-                    }
+                    jsonPath("$.accessToken") { value("accessToken123") }
+                    jsonPath("$.refreshToken") { value("refreshToken123") }
                 }
         }
 
         test("refresh 성공 시 새 accessToken, refreshToken 반환") {
             // given
-            val request =
-                RefreshTokenRequest(
-                    refreshToken = "old-refresh-token",
+            val request = RefreshTokenRequest(refreshToken = "old-refresh-token")
+
+            val commandResult =
+                TokenResult(
+                    accessToken = "new-access",
+                    refreshToken = "new-refresh",
                 )
 
             val response =
@@ -74,7 +82,8 @@ class AuthControllerTest(
                     refreshToken = "new-refresh",
                 )
 
-            every { refreshTokenUseCase.refresh("old-refresh-token") } returns response
+            every { refreshTokenCommand.refreshToken("old-refresh-token") } returns commandResult
+            every { mapper.toTokenResponse(commandResult) } returns response
 
             // when & then
             mockMvc
@@ -83,24 +92,20 @@ class AuthControllerTest(
                     content = objectMapper.writeValueAsString(request)
                 }.andExpect {
                     status { isOk() }
-                    jsonPath("$.accessToken") {
-                        value("new-access")
-                    }
-                    jsonPath("$.refreshToken") {
-                        value("new-refresh")
-                    }
+                    jsonPath("$.accessToken") { value("new-access") }
+                    jsonPath("$.refreshToken") { value("new-refresh") }
                 }
         }
 
         test("로그아웃 성공 시 200을 반환한다") {
-            val req = RefreshTokenRequest("old-rt")
+            val request = RefreshTokenRequest("old-rt")
 
-            every { logoutUseCase.logout("old-rt") } returns Unit
+            every { logoutCommandHandler.logout("old-rt") } returns Unit
 
             mockMvc
                 .post("/api/v1/auth/logout") {
                     contentType = MediaType.APPLICATION_JSON
-                    content = objectMapper.writeValueAsString(req)
+                    content = objectMapper.writeValueAsString(request)
                 }.andExpect {
                     status { isOk() }
                 }

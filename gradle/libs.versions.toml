@@ -1,54 +1,51 @@
 [versions]
-kotlin = "2.2.21"
-spring-boot = "4.0.0"
-spring-dependency-management = "1.1.7"
-ktlint = "14.0.1"
+jjwt = "0.13.0"
+jooq-plugin = "10.1.1"
 kotest = "6.0.7"
 kotest-spring = "6.0.7"
-mockk = "1.14.6"
-springmockk = "5.0.1"
-sonarqube = "7.1.0.6387"
-jjwt = "0.13.0"
+ktlint = "14.0.1"
+kotlin = "2.2.21"
 liquibase = "5.0.1"
-jooq-plugin = "10.1.1"
+mockk = "1.14.6"
 postgresql = "42.7.8"
+sonarqube = "7.1.0.6387"
+spring-boot = "4.0.0"
+spring-dependency-management = "1.1.7"
+springmockk = "5.0.1"
 
 [plugins]
-kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+jooq-plugin = { id = "nu.studer.jooq", version.ref = "jooq-plugin" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
-jooq-plugin = { id = "nu.studer.jooq", version.ref = "jooq-plugin" }
 
 [libraries]
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 h2 = { module = "com.h2database:h2" }
-postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
-liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
-
-spring-context = { module = "org.springframework:spring-context" }
-spring-boot = { module = "org.springframework.boot:spring-boot" }
-spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
-spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
-spring-boot-starter-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq" }
-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
-spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
-spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
-spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
-spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
-spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
-
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
-
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-extensions-spring = { module = "io.kotest:kotest-extensions-spring", version.ref = "kotest-spring" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+spring-boot = { module = "org.springframework.boot:spring-boot" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+spring-context = { module = "org.springframework:spring-context" }
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }

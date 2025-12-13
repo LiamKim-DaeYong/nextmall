@@ -26,33 +26,17 @@ open class UsersRecord() : UpdatableRecordImpl<UsersRecord>(Users.USERS) {
         set(value): Unit = set(1, value)
         get(): String? = get(1) as String?
 
-    open var password: String?
+    open var nickname: String?
         set(value): Unit = set(2, value)
         get(): String? = get(2) as String?
 
-    open var nickname: String?
-        set(value): Unit = set(3, value)
-        get(): String? = get(3) as String?
-
-    open var provider: String?
-        set(value): Unit = set(4, value)
-        get(): String? = get(4) as String?
-
-    open var providerId: String?
-        set(value): Unit = set(5, value)
-        get(): String? = get(5) as String?
-
-    open var role: String?
-        set(value): Unit = set(6, value)
-        get(): String? = get(6) as String?
-
     open var createdAt: OffsetDateTime?
-        set(value): Unit = set(7, value)
-        get(): OffsetDateTime? = get(7) as OffsetDateTime?
+        set(value): Unit = set(3, value)
+        get(): OffsetDateTime? = get(3) as OffsetDateTime?
 
     open var updatedAt: OffsetDateTime?
-        set(value): Unit = set(8, value)
-        get(): OffsetDateTime? = get(8) as OffsetDateTime?
+        set(value): Unit = set(4, value)
+        get(): OffsetDateTime? = get(4) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -63,14 +47,10 @@ open class UsersRecord() : UpdatableRecordImpl<UsersRecord>(Users.USERS) {
     /**
      * Create a detached, initialised UsersRecord
      */
-    constructor(id: Long? = null, email: String? = null, password: String? = null, nickname: String? = null, provider: String? = null, providerId: String? = null, role: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(id: Long? = null, email: String? = null, nickname: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.id = id
         this.email = email
-        this.password = password
         this.nickname = nickname
-        this.provider = provider
-        this.providerId = providerId
-        this.role = role
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()

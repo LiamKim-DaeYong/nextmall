@@ -5,23 +5,22 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
-import com.nextmall.jooq.indexes.IDX_USERS_EMAIL
-import com.nextmall.jooq.keys.UK_USERS_PROVIDER_PROVIDER_ID
+import com.nextmall.jooq.keys.AUTH_USER_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID
 import com.nextmall.jooq.keys.USERS_PKEY
+import com.nextmall.jooq.tables.AuthUserAccounts.AuthUserAccountsPath
 import com.nextmall.jooq.tables.records.UsersRecord
 
 import java.time.OffsetDateTime
 
 import kotlin.collections.Collection
-import kotlin.collections.List
 
 import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Identity
-import org.jooq.Index
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -34,6 +33,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -83,32 +83,12 @@ open class Users(
     /**
      * The column <code>public.users.email</code>.
      */
-    val EMAIL: TableField<UsersRecord, String?> = createField(DSL.name("email"), SQLDataType.VARCHAR(255).nullable(false), this, "")
-
-    /**
-     * The column <code>public.users.password</code>.
-     */
-    val PASSWORD: TableField<UsersRecord, String?> = createField(DSL.name("password"), SQLDataType.VARCHAR(255), this, "")
+    val EMAIL: TableField<UsersRecord, String?> = createField(DSL.name("email"), SQLDataType.VARCHAR(255), this, "")
 
     /**
      * The column <code>public.users.nickname</code>.
      */
     val NICKNAME: TableField<UsersRecord, String?> = createField(DSL.name("nickname"), SQLDataType.VARCHAR(100).nullable(false), this, "")
-
-    /**
-     * The column <code>public.users.provider</code>.
-     */
-    val PROVIDER: TableField<UsersRecord, String?> = createField(DSL.name("provider"), SQLDataType.VARCHAR(20).nullable(false), this, "")
-
-    /**
-     * The column <code>public.users.provider_id</code>.
-     */
-    val PROVIDER_ID: TableField<UsersRecord, String?> = createField(DSL.name("provider_id"), SQLDataType.VARCHAR(255), this, "")
-
-    /**
-     * The column <code>public.users.role</code>.
-     */
-    val ROLE: TableField<UsersRecord, String?> = createField(DSL.name("role"), SQLDataType.VARCHAR(20).nullable(false), this, "")
 
     /**
      * The column <code>public.users.created_at</code>.
@@ -138,11 +118,38 @@ open class Users(
      * Create a <code>public.users</code> table reference
      */
     constructor(): this(DSL.name("users"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, USERS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class UsersPath : Users, Path<UsersRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<UsersRecord>): super(alias, aliased)
+        override fun `as`(alias: String): UsersPath = UsersPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): UsersPath = UsersPath(alias, this)
+        override fun `as`(alias: Table<*>): UsersPath = UsersPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
-    override fun getIndexes(): List<Index> = listOf(IDX_USERS_EMAIL)
     override fun getIdentity(): Identity<UsersRecord, Long?> = super.getIdentity() as Identity<UsersRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
-    override fun getUniqueKeys(): List<UniqueKey<UsersRecord>> = listOf(UK_USERS_PROVIDER_PROVIDER_ID)
+
+    private lateinit var _authUserAccounts: AuthUserAccountsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.auth_user_accounts</code> table
+     */
+    fun authUserAccounts(): AuthUserAccountsPath {
+        if (!this::_authUserAccounts.isInitialized)
+            _authUserAccounts = AuthUserAccountsPath(this, null, AUTH_USER_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID.inverseKey)
+
+        return _authUserAccounts;
+    }
+
+    val authUserAccounts: AuthUserAccountsPath
+        get(): AuthUserAccountsPath = authUserAccounts()
     override fun `as`(alias: String): Users = Users(DSL.name(alias), this)
     override fun `as`(alias: Name): Users = Users(alias, this)
     override fun `as`(alias: Table<*>): Users = Users(alias.qualifiedName, this)
