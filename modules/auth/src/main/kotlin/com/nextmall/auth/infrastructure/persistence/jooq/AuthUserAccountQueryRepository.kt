@@ -21,7 +21,6 @@ class AuthUserAccountQueryRepository(
         AUTH_USER_ACCOUNTS.PROVIDER,
         AUTH_USER_ACCOUNTS.PROVIDER_ACCOUNT_ID,
         AUTH_USER_ACCOUNTS.PASSWORD_HASH,
-        AUTH_USER_ACCOUNTS.CREATED_AT,
     )
 
     override fun findByProviderAndAccountId(
@@ -34,7 +33,6 @@ class AuthUserAccountQueryRepository(
                 AUTH_USER_ACCOUNTS.PROVIDER.eq(provider.name),
                 AUTH_USER_ACCOUNTS.PROVIDER_ACCOUNT_ID.eq(providerAccountId),
             )
-            .limit(1)
             .fetchOne { it.toAuthUserAccountContext() }
     }
 

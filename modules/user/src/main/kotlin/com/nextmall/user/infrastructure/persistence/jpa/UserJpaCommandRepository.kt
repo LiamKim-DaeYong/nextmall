@@ -9,8 +9,6 @@ import kotlin.jvm.optionals.getOrNull
 @Repository
 interface SpringDataUserJpaRepository : JpaRepository<User, Long> {
     fun existsByEmail(email: String): Boolean
-
-    fun findByEmail(email: String): User?
 }
 
 @Repository
@@ -22,9 +20,6 @@ class UserJpaCommandRepository(
 
     override fun existsByEmail(email: String): Boolean =
         jpa.existsByEmail(email)
-
-    override fun findByEmail(email: String): User? =
-        jpa.findByEmail(email)
 
     override fun findById(userId: Long): User? =
         jpa.findById(userId).getOrNull()

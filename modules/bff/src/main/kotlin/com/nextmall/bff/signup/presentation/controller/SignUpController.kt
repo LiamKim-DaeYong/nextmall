@@ -26,7 +26,7 @@ class SignUpController(
         val param =
             SignUpCommandParam(
                 provider = AuthProvider.LOCAL,
-                providerAccountId = request.email,
+                providerAccountId = request.email.trim().lowercase(),
                 password = request.password,
                 nickname = request.nickname,
             )

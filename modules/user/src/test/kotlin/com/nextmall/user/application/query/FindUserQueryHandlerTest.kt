@@ -57,41 +57,4 @@ class FindUserQueryHandlerTest :
                 handler.findById(999L)
             }
         }
-
-        // -------------------------------------------------------------------------
-        // findByEmail 테스트
-        // -------------------------------------------------------------------------
-        test("Email 기반 조회 - 정상적으로 사용자 정보를 반환한다") {
-            // given
-            val now = OffsetDateTime.parse("2025-01-01T12:00:00Z")
-
-            val userContext =
-                UserContext(
-                    id = 10L,
-                    email = "hello@a.com",
-                    nickname = "emailTester",
-                    createdAt = now,
-                )
-
-            every { userQueryPort.findByEmail("hello@a.com") } returns userContext
-
-            // when
-            val result = handler.findByEmail("hello@a.com")
-
-            // then
-            result.id shouldBe 10L
-            result.email shouldBe "hello@a.com"
-            result.nickname shouldBe "emailTester"
-            result.createdAt shouldBe now
-        }
-
-        test("Email 기반 조회 - 존재하지 않는 사용자면 예외를 던진다") {
-            // given
-            every { userQueryPort.findByEmail("nope@a.com") } returns null
-
-            // when & then
-            shouldThrow<UserNotFoundException> {
-                handler.findByEmail("nope@a.com")
-            }
-        }
     })

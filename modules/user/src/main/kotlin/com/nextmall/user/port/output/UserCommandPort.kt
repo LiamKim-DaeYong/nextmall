@@ -7,7 +7,5 @@ interface UserCommandPort {
 
     fun existsByEmail(email: String): Boolean
 
-    fun findByEmail(email: String): User?
-
     fun findById(userId: Long): User?
 }

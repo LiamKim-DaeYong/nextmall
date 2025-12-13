@@ -12,8 +12,4 @@ class FindUserQueryHandler(
     override fun findById(id: Long): UserContext =
         userQueryPort.findById(id)
             ?: throw UserNotFoundException("User not found: $id")
-
-    override fun findByEmail(email: String): UserContext =
-        userQueryPort.findByEmail(email)
-            ?: throw UserNotFoundException("User not found. email=$email")
 }
