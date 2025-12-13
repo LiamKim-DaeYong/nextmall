@@ -32,6 +32,5 @@ class UserJooqQueryRepository(
             id = getRequired(USERS.ID),
             nickname = getRequired(USERS.NICKNAME),
             email = get(USERS.EMAIL),
-            createdAt = getUtcFromOffset(USERS.CREATED_AT)
         )
 }

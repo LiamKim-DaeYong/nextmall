@@ -11,7 +11,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import java.time.OffsetDateTime
 
 @WebMvcTestSupport
 @WebMvcTest(UserController::class)
@@ -28,7 +27,6 @@ class UserControllerTest(
                     id = 1L,
                     email = "find@example.com",
                     nickname = "finder",
-                    createdAt = OffsetDateTime.now(),
                 )
 
             every { findUserQuery.findById(1L) } returns userContext
