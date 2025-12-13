@@ -27,20 +27,20 @@ class UserJooqQueryRepository(
             .from(USERS)
             .where(USERS.EMAIL.eq(email))
             .limit(1)
-            .fetchOne { it.toUserView() }
+            .fetchOne { it.toUserContext() }
 
     override fun findById(id: Long): UserContext? =
         dsl.select(*fields)
             .from(USERS)
             .where(USERS.ID.eq(id))
             .limit(1)
-            .fetchOne { it.toUserView() }
+            .fetchOne { it.toUserContext() }
 
-    private fun Record.toUserView() =
+    private fun Record.toUserContext() =
         UserContext(
             id = getRequired(USERS.ID),
-            email = getRequired(USERS.EMAIL),
             nickname = getRequired(USERS.NICKNAME),
+            email = get(USERS.EMAIL),
             createdAt = getUtcFromOffset(USERS.CREATED_AT)
         )
 }

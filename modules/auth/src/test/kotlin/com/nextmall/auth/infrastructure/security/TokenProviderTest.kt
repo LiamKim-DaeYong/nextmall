@@ -45,7 +45,7 @@ class TokenProviderTest :
         }
 
         test("만료된 access token은 parseAccessToken 시 null을 반환한다") {
-            val shortProps = props.copy(accessTokenExpiration = 1)
+            val shortProps = props.copy(accessTokenExpiration = 50)
             val shortProvider: TokenProvider = JwtTokenProvider(shortProps)
 
             val token =
@@ -54,7 +54,7 @@ class TokenProviderTest :
                     roles = listOf("BUYER"),
                 )
 
-            Thread.sleep(5)
+            Thread.sleep(200)
 
             val claims = shortProvider.parseAccessToken(token)
 

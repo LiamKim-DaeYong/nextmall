@@ -35,10 +35,10 @@ class AuthUserAccountQueryRepository(
                 AUTH_USER_ACCOUNTS.PROVIDER_ACCOUNT_ID.eq(providerAccountId),
             )
             .limit(1)
-            .fetchOne { it.toAuthUserAccountView() }
+            .fetchOne { it.toAuthUserAccountContext() }
     }
 
-    private fun Record.toAuthUserAccountView() =
+    private fun Record.toAuthUserAccountContext() =
         AuthUserAccountContext(
             id = getRequired(AUTH_USER_ACCOUNTS.ID),
             userId = getRequired(AUTH_USER_ACCOUNTS.USER_ID),

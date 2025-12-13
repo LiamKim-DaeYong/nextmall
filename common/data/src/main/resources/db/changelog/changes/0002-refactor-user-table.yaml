@@ -4,6 +4,11 @@ databaseChangeLog:
       author: Liamkim
 
       changes:
+        - modifyDataType:
+            tableName: users
+            columnName: id
+            newDataType: BIGINT
+
         - dropUniqueConstraint:
             tableName: users
             constraintName: uk_users_provider_provider_id

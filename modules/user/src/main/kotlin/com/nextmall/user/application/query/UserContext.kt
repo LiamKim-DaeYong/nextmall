@@ -4,7 +4,7 @@ import java.time.OffsetDateTime
 
 data class UserContext(
     val id: Long,
-    val email: String,
     val nickname: String,
+    val email: String?,
     val createdAt: OffsetDateTime,
 )

@@ -14,23 +14,23 @@ import jakarta.persistence.UniqueConstraint
 @Table(
     name = "auth_user_accounts",
     uniqueConstraints = [
-        UniqueConstraint(columnNames = ["provider", "providerAccountId"]),
+        UniqueConstraint(columnNames = ["provider", "provider_account_id"]),
     ],
 )
 class AuthUserAccount(
     @Id
     val id: Long,
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     val userId: Long,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val provider: AuthProvider,
 
-    @Column(nullable = false)
+    @Column(name = "provider_account_id", nullable = false)
     val providerAccountId: String,
 
-    @Column(nullable = true)
+    @Column(name = "password_hash", nullable = true)
     val passwordHash: String? = null,
 ) : BaseEntity()
