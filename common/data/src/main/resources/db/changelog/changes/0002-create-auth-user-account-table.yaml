@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 0003-create-auth-user-account-table
-      author: Liamkim
+      id: 0002-create-auth-user-account-table
+      author: LiamKim
       changes:
         - createTable:
             tableName: auth_user_accounts
@@ -40,12 +40,14 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
 
               - column:
                   name: updated_at
                   type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
 
@@ -61,8 +63,3 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_auth_user_accounts_user_id
             onDelete: CASCADE
-
-        - addCheckConstraint:
-            tableName: auth_user_accounts
-            constraintName: ck_auth_user_accounts_provider
-            constraintBody: provider IN ('LOCAL', 'KAKAO', 'NAVER', 'GOOGLE', 'APPLE')

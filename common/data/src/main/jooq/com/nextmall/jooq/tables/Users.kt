@@ -17,7 +17,6 @@ import kotlin.collections.Collection
 import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
-import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Path
@@ -78,7 +77,7 @@ open class Users(
     /**
      * The column <code>public.users.id</code>.
      */
-    val ID: TableField<UsersRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val ID: TableField<UsersRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.users.email</code>.
@@ -132,7 +131,6 @@ open class Users(
         override fun `as`(alias: Table<*>): UsersPath = UsersPath(alias.qualifiedName, this)
     }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
-    override fun getIdentity(): Identity<UsersRecord, Long?> = super.getIdentity() as Identity<UsersRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
 
     private lateinit var _authUserAccounts: AuthUserAccountsPath
