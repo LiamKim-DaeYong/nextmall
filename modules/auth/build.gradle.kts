@@ -26,7 +26,6 @@ dependencies {
     implementation(project(":common:data"))
     implementation(project(":common:identifier"))
     implementation(project(":common:redis"))
-    implementation(project(":modules:user"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)

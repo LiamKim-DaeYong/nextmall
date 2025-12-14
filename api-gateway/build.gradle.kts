@@ -6,10 +6,10 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common:data"))
-    implementation(project(":modules:auth"))
-    implementation(project(":modules:user"))
-    implementation(project(":modules:bff"))
-
     implementation(libs.spring.boot.starter.webmvc)
+
+    runtimeOnly(project(":common:data"))
+    runtimeOnly(project(":modules:auth"))
+    runtimeOnly(project(":modules:user"))
+    runtimeOnly(project(":modules:bff"))
 }
