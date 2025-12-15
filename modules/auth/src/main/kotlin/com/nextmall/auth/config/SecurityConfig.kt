@@ -80,6 +80,8 @@ class SecurityConfig(
                     // Admin endpoints will be protected once role claims are included in tokens.
                     .requestMatchers("/api/v1/admin/**")
                     .authenticated()
+                    .anyRequest()
+                    .authenticated()
             }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java,
