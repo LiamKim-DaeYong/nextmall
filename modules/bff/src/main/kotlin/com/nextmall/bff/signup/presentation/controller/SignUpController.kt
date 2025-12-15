@@ -1,6 +1,6 @@
 package com.nextmall.bff.signup.presentation.controller
 
-import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.bff.integration.auth.AuthProvider
 import com.nextmall.bff.signup.application.command.SignUpCommandHandler
 import com.nextmall.bff.signup.application.command.SignUpCommandParam
 import com.nextmall.bff.signup.presentation.request.LocalSignUpRequest
@@ -20,7 +20,7 @@ class SignUpController(
     private val signUpCommandHandler: SignUpCommandHandler,
 ) {
     @PostMapping("/local")
-    fun local(
+    suspend fun local(
         @Valid @RequestBody request: LocalSignUpRequest,
     ): ResponseEntity<SignUpResponse> {
         val param =
@@ -38,7 +38,8 @@ class SignUpController(
             .body(
                 SignUpResponse(
                     userId = result.userId,
-                    authAccountId = result.authAccountId,
+                    accessToken = result.accessToken,
+                    refreshToken = result.refreshToken,
                 ),
             )
     }

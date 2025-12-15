@@ -2,6 +2,7 @@ package com.nextmall.user.application.command.create
 
 import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.user.domain.entity.User
+import com.nextmall.user.domain.model.UserStatus
 import com.nextmall.user.port.input.CreateUserCommand
 import com.nextmall.user.port.output.UserCommandPort
 import org.springframework.stereotype.Service
@@ -21,9 +22,10 @@ class CreateUserCommandHandler(
                 id = idGenerator.generate(),
                 nickname = param.nickname,
                 email = param.email,
+                status = UserStatus.PENDING,
             )
 
         val saved = userCommandPort.save(user)
-        return CreateUserResult.Companion.from(saved)
+        return CreateUserResult(saved)
     }
 }

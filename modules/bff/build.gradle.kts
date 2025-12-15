@@ -21,12 +21,12 @@ tasks.named<Jar>("jar") {
 }
 
 dependencies {
+    implementation(project(":common:integration"))
     implementation(project(":common:util"))
 
-    implementation(project(":modules:auth"))
-    implementation(project(":modules:user"))
-
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)

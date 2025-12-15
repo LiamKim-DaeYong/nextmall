@@ -17,7 +17,7 @@ class CreateAuthUserAccountCommandHandler(
     @Transactional
     override fun create(
         param: CreateAuthUserAccountCommandParam,
-    ): CreateAuthUserAccountResult {
+    ) {
         val authUserAccount =
             AuthUserAccount(
                 id = idGenerator.generate(),
@@ -27,7 +27,6 @@ class CreateAuthUserAccountCommandHandler(
                 passwordHash = param.password?.let { passwordEncoder.encode(it) },
             )
 
-        val saved = authUserAccountCommandPort.save(authUserAccount)
-        return CreateAuthUserAccountResult.Companion.from(saved)
+        authUserAccountCommandPort.save(authUserAccount)
     }
 }

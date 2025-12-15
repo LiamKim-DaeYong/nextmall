@@ -3,7 +3,8 @@ package com.nextmall.user.presentation.controller
 import com.nextmall.common.testsupport.WebMvcTestSupport
 import com.nextmall.user.application.query.UserContext
 import com.nextmall.user.port.input.FindUserQuery
-import com.nextmall.user.presentation.mapper.UserResponseMapper
+import com.nextmall.user.presentation.public.mapper.PublicUserResponseMapper
+import com.nextmall.user.presentation.public.controller.PublicUserController
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.every
@@ -13,8 +14,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 @WebMvcTestSupport
-@WebMvcTest(UserController::class)
-@Import(UserResponseMapper::class)
+@WebMvcTest(PublicUserController::class)
+@Import(PublicUserResponseMapper::class)
 class UserControllerTest(
     private val mockMvc: MockMvc,
     @MockkBean
