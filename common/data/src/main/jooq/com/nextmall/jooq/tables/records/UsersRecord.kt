@@ -30,13 +30,17 @@ open class UsersRecord() : UpdatableRecordImpl<UsersRecord>(Users.USERS) {
         set(value): Unit = set(2, value)
         get(): String? = get(2) as String?
 
-    open var createdAt: OffsetDateTime?
+    open var status: String?
         set(value): Unit = set(3, value)
-        get(): OffsetDateTime? = get(3) as OffsetDateTime?
+        get(): String? = get(3) as String?
 
-    open var updatedAt: OffsetDateTime?
+    open var createdAt: OffsetDateTime?
         set(value): Unit = set(4, value)
         get(): OffsetDateTime? = get(4) as OffsetDateTime?
+
+    open var updatedAt: OffsetDateTime?
+        set(value): Unit = set(5, value)
+        get(): OffsetDateTime? = get(5) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -47,10 +51,11 @@ open class UsersRecord() : UpdatableRecordImpl<UsersRecord>(Users.USERS) {
     /**
      * Create a detached, initialised UsersRecord
      */
-    constructor(id: Long? = null, email: String? = null, nickname: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(id: Long? = null, email: String? = null, nickname: String? = null, status: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.id = id
         this.email = email
         this.nickname = nickname
+        this.status = status
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()

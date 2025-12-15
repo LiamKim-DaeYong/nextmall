@@ -1,9 +1,12 @@
-server:
-  port: 8080
-
 spring:
   jpa:
     properties:
       hibernate:
         format_sql: false
         show_sql: false
+
+integration:
+  user:
+    base-url: ${USER_SERVICE_URL}
+  auth:
+    base-url: ${AUTH_SERVICE_URL}

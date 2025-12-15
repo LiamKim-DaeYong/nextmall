@@ -1,41 +1,47 @@
 package com.nextmall.bff.signup.application.command
 
-import com.nextmall.auth.application.command.account.CreateAuthUserAccountCommandParam
-import com.nextmall.auth.port.input.account.CreateAuthUserAccountCommand
+import com.nextmall.bff.integration.auth.AuthServiceClient
+import com.nextmall.bff.integration.user.UserServiceClient
 import com.nextmall.bff.signup.application.result.SignUpResult
-import com.nextmall.user.application.command.create.CreateUserCommandParam
-import com.nextmall.user.port.input.CreateUserCommand
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class SignUpCommandHandler(
-    private val createUserCommand: CreateUserCommand,
-    private val createAuthUserAccountCommand: CreateAuthUserAccountCommand,
+    private val userServiceClient: UserServiceClient,
+    private val authServiceClient: AuthServiceClient,
 ) {
-    @Transactional
-    fun handle(param: SignUpCommandParam): SignUpResult {
-        val user =
-            createUserCommand.create(
-                CreateUserCommandParam(
-                    nickname = param.nickname,
-                    email = null,
-                ),
+    suspend fun handle(param: SignUpCommandParam): SignUpResult {
+        // 1. User 생성 (PENDING)
+        val userId =
+            userServiceClient.createUser(
+                nickname = param.nickname,
+                email = null,
             )
 
-        val authUserAccount =
-            createAuthUserAccountCommand.create(
-                CreateAuthUserAccountCommandParam(
-                    userId = user.id,
-                    provider = param.provider,
-                    providerAccountId = param.providerAccountId,
-                    password = param.password,
-                ),
+        try {
+            // 2. Auth 계정 생성
+            authServiceClient.createAccount(
+                userId = userId,
+                provider = param.provider,
+                providerAccountId = param.providerAccountId,
+                password = param.password,
             )
 
-        return SignUpResult(
-            userId = user.id,
-            authAccountId = authUserAccount.id,
-        )
+            // 3. User 활성화
+            userServiceClient.activateUser(userId)
+
+            // 4. 토큰 발급 (로그인 처리)
+            val token = authServiceClient.issueToken(userId)
+
+            return SignUpResult(
+                userId = userId,
+                accessToken = token.accessToken,
+                refreshToken = token.refreshToken,
+            )
+        } catch (ex: Exception) {
+            // 5. 실패 시 보상 처리
+            userServiceClient.markSignupFailed(userId)
+            throw ex
+        }
     }
 }

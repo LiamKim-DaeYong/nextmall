@@ -7,12 +7,9 @@ data class CreateUserResult(
     val nickname: String,
     val email: String?,
 ) {
-    companion object {
-        fun from(user: User): CreateUserResult =
-            CreateUserResult(
-                id = user.id,
-                email = user.email,
-                nickname = user.nickname,
-            )
-    }
+    constructor(user: User) : this(
+        id = user.id,
+        nickname = user.nickname,
+        email = user.email,
+    )
 }

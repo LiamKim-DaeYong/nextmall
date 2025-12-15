@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository
 import kotlin.jvm.optionals.getOrNull
 
 @Repository
-interface SpringDataUserJpaRepository : JpaRepository<User, Long> {
-    fun existsByEmail(email: String): Boolean
-}
+interface SpringDataUserJpaRepository : JpaRepository<User, Long>
 
 @Repository
 class UserJpaCommandRepository(
@@ -17,9 +15,6 @@ class UserJpaCommandRepository(
 ) : UserCommandPort {
     override fun save(user: User): User =
         jpa.save(user)
-
-    override fun existsByEmail(email: String): Boolean =
-        jpa.existsByEmail(email)
 
     override fun findById(userId: Long): User? =
         jpa.findById(userId).getOrNull()

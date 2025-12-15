@@ -1,6 +1,6 @@
 package com.nextmall.bff.signup.presentation.request
 
-import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.bff.integration.auth.AuthProvider
 
 data class SocialSignUpRequest(
     val provider: AuthProvider,

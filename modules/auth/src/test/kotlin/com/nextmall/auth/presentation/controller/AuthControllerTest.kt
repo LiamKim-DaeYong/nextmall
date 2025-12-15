@@ -5,10 +5,11 @@ import com.nextmall.auth.application.command.token.TokenResult
 import com.nextmall.auth.domain.model.AuthProvider
 import com.nextmall.auth.port.input.login.LoginCommand
 import com.nextmall.auth.port.input.token.RefreshTokenCommand
-import com.nextmall.auth.presentation.mapper.AuthResponseMapper
-import com.nextmall.auth.presentation.request.LoginRequest
-import com.nextmall.auth.presentation.request.RefreshTokenRequest
-import com.nextmall.auth.presentation.response.TokenResponse
+import com.nextmall.auth.presentation.public.mapper.AuthResponseMapper
+import com.nextmall.auth.presentation.public.controller.AuthController
+import com.nextmall.auth.presentation.public.request.LoginRequest
+import com.nextmall.auth.presentation.public.request.RefreshTokenRequest
+import com.nextmall.auth.presentation.public.response.TokenResponse
 import com.nextmall.common.testsupport.WebMvcTestSupport
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.FunSpec
