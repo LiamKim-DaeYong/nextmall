@@ -7,6 +7,6 @@ spring:
 
 integration:
   user:
-    base-url: http://localhost:8080
+    base-url: ${USER_SERVICE_URL}
   auth:
-    base-url: http://localhost:8080
+    base-url: ${AUTH_SERVICE_URL}

@@ -27,11 +27,11 @@ class SignUpCommandHandler(
                 password = param.password,
             )
 
-            // 3. 토큰 발급 (로그인 처리)
-            val token = authServiceClient.issueToken(userId)
-
-            // 4. User 활성화
+            // 3. User 활성화
             userServiceClient.activateUser(userId)
+
+            // 4. 토큰 발급 (로그인 처리)
+            val token = authServiceClient.issueToken(userId)
 
             return SignUpResult(
                 userId = userId,
@@ -39,7 +39,7 @@ class SignUpCommandHandler(
                 refreshToken = token.refreshToken,
             )
         } catch (ex: Exception) {
-            // 5. 실패 시 보상 처리 (delete ❌, 상태 변경 ⭕)
+            // 5. 실패 시 보상 처리
             userServiceClient.markSignupFailed(userId)
             throw ex
         }

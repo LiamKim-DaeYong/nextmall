@@ -90,6 +90,11 @@ open class Users(
     val NICKNAME: TableField<UsersRecord, String?> = createField(DSL.name("nickname"), SQLDataType.VARCHAR(100).nullable(false), this, "")
 
     /**
+     * The column <code>public.users.status</code>.
+     */
+    val STATUS: TableField<UsersRecord, String?> = createField(DSL.name("status"), SQLDataType.VARCHAR(20).nullable(false), this, "")
+
+    /**
      * The column <code>public.users.created_at</code>.
      */
     val CREATED_AT: TableField<UsersRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")

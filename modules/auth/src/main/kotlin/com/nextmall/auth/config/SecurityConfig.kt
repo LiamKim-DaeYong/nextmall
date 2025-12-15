@@ -76,9 +76,9 @@ class SecurityConfig(
                     .permitAll()
                     .requestMatchers("/internal/**")
                     .permitAll() // TEMP
+                    // TODO: Role/Authority model will be introduced.
+                    // Admin endpoints will be protected once role claims are included in tokens.
                     .requestMatchers("/api/v1/admin/**")
-                    .hasRole("ADMIN")
-                    .anyRequest()
                     .authenticated()
             }.addFilterBefore(
                 jwtAuthenticationFilter,
