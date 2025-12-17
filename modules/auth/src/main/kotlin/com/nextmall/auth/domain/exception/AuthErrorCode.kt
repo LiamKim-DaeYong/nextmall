@@ -20,6 +20,12 @@ enum class AuthErrorCode(
         category = ErrorCategory.AUTH,
     ),
 
+    DUPLICATE_ACCOUNT(
+        code = "AUTH_409",
+        message = "Account already exists.",
+        category = ErrorCategory.BUSINESS,
+    ),
+
     TOO_MANY_LOGIN_ATTEMPTS(
         code = "AUTH_429",
         message = "Too many login attempts. Please try again later.",

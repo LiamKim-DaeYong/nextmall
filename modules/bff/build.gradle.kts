@@ -21,6 +21,7 @@ tasks.named<Jar>("jar") {
 }
 
 dependencies {
+    implementation(project(":common:exception"))
     implementation(project(":common:integration"))
     implementation(project(":common:util"))
 
