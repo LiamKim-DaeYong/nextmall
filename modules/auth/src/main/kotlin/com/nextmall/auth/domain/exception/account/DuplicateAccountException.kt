@@ -13,5 +13,4 @@ import com.nextmall.common.exception.base.BaseException
  * 이 예외는 동시성 환경에서도 안전한 처리를 위해
  * 사전 조회가 아닌 DB 제약 위반을 기준으로 발생한다.
  */
-class DuplicateAccountException :
-    BaseException(AuthErrorCode.DUPLICATE_ACCOUNT)
+class DuplicateAccountException : BaseException(AuthErrorCode.DUPLICATE_ACCOUNT)

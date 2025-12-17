@@ -16,7 +16,6 @@ class CreateAuthUserAccountCommandHandler(
     private val passwordEncoder: PasswordEncoder,
     private val authUserAccountCommandPort: AuthUserAccountCommandPort,
 ) : CreateAuthUserAccountCommand {
-
     @Transactional
     override fun create(param: CreateAuthUserAccountCommandParam) {
         val authUserAccount =

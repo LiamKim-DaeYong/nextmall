@@ -11,5 +11,5 @@ class FindUserQueryHandler(
 ) : FindUserQuery {
     override fun findById(id: Long): UserContext =
         userQueryPort.findById(id)
-            ?: throw UserNotFoundException("User not found: $id")
+            ?: throw UserNotFoundException()
 }
