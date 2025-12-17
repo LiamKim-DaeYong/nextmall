@@ -1,8 +1,9 @@
 package com.nextmall.auth.domain.exception.login
 
+import com.nextmall.auth.domain.exception.AuthErrorCode
+import com.nextmall.common.exception.base.BaseException
+
 /**
- * Thrown when a login attempt fails due to invalid credentials.
+ * 잘못된 인증 정보로 인해 로그인이 실패했을 때 발생하는 예외
  */
-class InvalidLoginException(
-    message: String = "Invalid email or password.",
-) : RuntimeException(message)
+class InvalidLoginException : BaseException(AuthErrorCode.INVALID_CREDENTIAL)

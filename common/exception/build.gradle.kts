@@ -4,6 +4,4 @@ plugins {
 
 dependencies {
     implementation(kotlin("stdlib"))
-
-    compileOnly(libs.spring.boot.starter.webmvc)
 }
