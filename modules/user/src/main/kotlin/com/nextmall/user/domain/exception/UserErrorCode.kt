@@ -8,8 +8,9 @@ enum class UserErrorCode(
     override val message: String,
     override val category: ErrorCategory,
 ) : ErrorCode {
+
     USER_NOT_FOUND(
-        code = "USER_404",
+        code = "USER_NOT_FOUND",
         message = "User not found",
         category = ErrorCategory.BUSINESS,
     ),

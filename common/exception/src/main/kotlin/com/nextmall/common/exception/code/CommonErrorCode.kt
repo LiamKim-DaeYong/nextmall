@@ -5,6 +5,16 @@ enum class CommonErrorCode(
     override val message: String,
     override val category: ErrorCategory,
 ) : ErrorCode {
-    INTERNAL_ERROR("COMMON_500", "Internal server error", ErrorCategory.SYSTEM),
-    INVALID_REQUEST("COMMON_400", "Invalid request", ErrorCategory.VALIDATION),
+
+    INTERNAL_ERROR(
+        code = "COMMON_INTERNAL_ERROR",
+        message = "Internal server error",
+        category = ErrorCategory.SYSTEM,
+    ),
+
+    INVALID_REQUEST(
+        code = "COMMON_INVALID_REQUEST",
+        message = "Invalid request",
+        category = ErrorCategory.VALIDATION,
+    ),
 }

@@ -1,6 +1,7 @@
 package com.nextmall.auth.infrastructure.security
 
 import com.nextmall.auth.config.JwtProperties
+import com.nextmall.auth.domain.exception.token.InvalidRefreshTokenException
 import com.nextmall.auth.domain.model.TokenClaims
 import com.nextmall.auth.infrastructure.security.exception.InvalidJwtConfigException
 import com.nextmall.auth.port.output.token.TokenProvider
@@ -91,10 +92,10 @@ class JwtTokenProvider(
     override fun parseRefreshToken(token: String): Long {
         val claims =
             getClaims(token)
-                ?: throw InvalidJwtConfigException()
+                ?: throw InvalidRefreshTokenException()
 
         return claims.subject.toLongOrNull()
-            ?: throw InvalidJwtConfigException()
+            ?: throw InvalidRefreshTokenException()
     }
 
     override fun refreshTokenTtlSeconds(): Long =
