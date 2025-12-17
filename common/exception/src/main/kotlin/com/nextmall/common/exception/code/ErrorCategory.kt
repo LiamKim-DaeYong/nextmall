@@ -4,5 +4,5 @@ enum class ErrorCategory {
     AUTH,
     VALIDATION,
     BUSINESS,
-    SYSTEM
+    SYSTEM,
 }
