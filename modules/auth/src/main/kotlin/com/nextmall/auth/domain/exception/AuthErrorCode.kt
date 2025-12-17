@@ -8,7 +8,6 @@ enum class AuthErrorCode(
     override val message: String,
     override val category: ErrorCategory,
 ) : ErrorCode {
-
     INVALID_CREDENTIAL(
         code = "AUTH_INVALID_CREDENTIAL",
         message = "Invalid email or password.",

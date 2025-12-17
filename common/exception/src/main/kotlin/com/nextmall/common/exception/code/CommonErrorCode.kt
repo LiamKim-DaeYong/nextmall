@@ -5,7 +5,6 @@ enum class CommonErrorCode(
     override val message: String,
     override val category: ErrorCategory,
 ) : ErrorCode {
-
     INTERNAL_ERROR(
         code = "COMMON_INTERNAL_ERROR",
         message = "Internal server error",
