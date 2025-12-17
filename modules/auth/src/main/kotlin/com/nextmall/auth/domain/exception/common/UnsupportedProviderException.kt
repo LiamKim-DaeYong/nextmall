@@ -1,7 +1,9 @@
 package com.nextmall.auth.domain.exception.common
 
-import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.auth.domain.exception.AuthErrorCode
+import com.nextmall.common.exception.base.BaseException
 
-class UnsupportedProviderException(
-    val provider: AuthProvider,
-) : RuntimeException("Authentication provider '$provider' is not supported")
+/**
+ * 지원하지 않는 인증 제공자가 요청되었을 때 발생하는 예외
+ */
+class UnsupportedProviderException : BaseException(AuthErrorCode.UNSUPPORTED_PROVIDER)

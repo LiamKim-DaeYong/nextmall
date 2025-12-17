@@ -7,10 +7,11 @@ plugins {
 
 dependencies {
     implementation(project(":common:data"))
+    implementation(project(":common:exception"))
 
     implementation(project(":modules:auth"))
-    implementation(project(":modules:user"))
     implementation(project(":modules:bff"))
+    implementation(project(":modules:user"))
 
     implementation(libs.spring.boot.starter.webmvc)
 }

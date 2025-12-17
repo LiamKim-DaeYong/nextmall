@@ -17,7 +17,7 @@ class LoginCommandHandler(
     override fun login(param: LoginCommandParam): TokenResult {
         val strategy =
             strategies.firstOrNull { it.supports(param.provider) }
-                ?: throw UnsupportedProviderException(param.provider)
+                ?: throw UnsupportedProviderException()
 
         val authUserAccountView = strategy.login(param)
 

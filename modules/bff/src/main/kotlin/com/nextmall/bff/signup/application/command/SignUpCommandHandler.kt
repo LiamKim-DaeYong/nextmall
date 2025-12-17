@@ -3,6 +3,7 @@ package com.nextmall.bff.signup.application.command
 import com.nextmall.bff.integration.auth.AuthServiceClient
 import com.nextmall.bff.integration.user.UserServiceClient
 import com.nextmall.bff.signup.application.result.SignUpResult
+import com.nextmall.common.exception.base.BaseException
 import org.springframework.stereotype.Service
 
 @Service
@@ -38,7 +39,7 @@ class SignUpCommandHandler(
                 accessToken = token.accessToken,
                 refreshToken = token.refreshToken,
             )
-        } catch (ex: Exception) {
+        } catch (ex: BaseException) {
             // 5. 실패 시 보상 처리
             userServiceClient.markSignupFailed(userId)
             throw ex

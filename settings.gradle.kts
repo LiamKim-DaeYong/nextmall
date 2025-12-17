@@ -15,6 +15,7 @@ include("common:integration") // 외부 서비스 통신을 위한 공통 통합
 
 // ──────────────── Common Infrastructure ────────────────
 include("common:data") // 데이터 접근 공통 인프라 (JPA, jOOQ 등)
+include("common:exception") // 공통 예외 정의 및 계약
 include("common:redis") // Redis 공통 인프라 설정
 include("common:util") // 범용 유틸리티 (시간, 문자열, JSON 등)
 include("common:identifier") // 식별자 생성 및 관리
