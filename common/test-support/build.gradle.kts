@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.spring.context)
 
     api(libs.spring.boot.starter.webmvc.test)
+    api(libs.spring.boot.starter.webclient.test)
     api(libs.spring.boot.starter.data.jpa.test)
     api(libs.kotest.runner.junit5)
     api(libs.kotest.assertions.core)

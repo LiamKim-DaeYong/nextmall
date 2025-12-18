@@ -14,4 +14,6 @@ dependencies {
     implementation(project(":modules:user"))
 
     implementation(libs.spring.boot.starter.webmvc)
+
+    testImplementation(project(":common:test-support"))
 }
