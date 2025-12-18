@@ -1,11 +1,11 @@
 package com.nextmall.common.integration.exception
 
-import com.nextmall.common.exception.base.BaseException
-
 class TimeoutException(
+    context: IntegrationErrorContext,
     cause: Throwable? = null,
-) : BaseException(
+) : IntegrationException(
         errorCode = IntegrationErrorCode.TIMEOUT,
         expected = false,
         cause = cause,
+        context = context,
     )

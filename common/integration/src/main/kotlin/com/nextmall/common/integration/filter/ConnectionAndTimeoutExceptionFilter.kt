@@ -1,6 +1,8 @@
 package com.nextmall.common.integration.filter
 
 import com.nextmall.common.integration.exception.ConnectionFailedException
+import com.nextmall.common.integration.exception.IntegrationErrorContext
+import com.nextmall.common.integration.exception.IntegrationException
 import com.nextmall.common.integration.exception.TimeoutException
 import io.netty.handler.timeout.ReadTimeoutException
 import io.netty.handler.timeout.WriteTimeoutException
@@ -16,23 +18,43 @@ object ConnectionAndTimeoutExceptionFilter {
             next
                 .exchange(request)
                 .onErrorMap { throwable ->
-                    mapToIntegrationException(throwable)
+                    throwable as? IntegrationException
+                        ?: mapToIntegrationException(request.url().toString(), throwable)
                 }
         }
 
-    private fun mapToIntegrationException(throwable: Throwable): Throwable =
+    private fun mapToIntegrationException(
+        url: String,
+        throwable: Throwable,
+    ): Throwable =
         when (throwable) {
             is JdkTimeoutException,
             is ReadTimeoutException,
             is WriteTimeoutException,
             ->
-                TimeoutException(cause = throwable)
+                TimeoutException(
+                    context =
+                        IntegrationErrorContext(
+                            url = url,
+                            statusCode = null,
+                            responseBody = null,
+                        ),
+                    cause = throwable,
+                )
 
             is ConnectException,
             is UnknownHostException,
             is NoRouteToHostException,
             ->
-                ConnectionFailedException(cause = throwable)
+                ConnectionFailedException(
+                    context =
+                        IntegrationErrorContext(
+                            url = url,
+                            statusCode = null,
+                            responseBody = null,
+                        ),
+                    cause = throwable,
+                )
 
             else -> throwable
         }

@@ -1,11 +1,11 @@
 package com.nextmall.common.integration.exception
 
-import com.nextmall.common.exception.base.BaseException
-
 class ClientErrorException(
+    context: IntegrationErrorContext,
     cause: Throwable? = null,
-) : BaseException(
+) : IntegrationException(
         errorCode = IntegrationErrorCode.CLIENT_ERROR,
         expected = false,
         cause = cause,
+        context = context,
     )
