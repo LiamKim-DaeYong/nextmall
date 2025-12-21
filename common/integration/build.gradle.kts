@@ -23,6 +23,7 @@ tasks.named<Jar>("jar") {
 dependencies {
     api(libs.spring.boot.starter.webclient)
 
+    implementation(project(":common:exception"))
     implementation(project(":common:util"))
     implementation(libs.kotlin.reflect)
 

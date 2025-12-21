@@ -1,5 +1,7 @@
 package com.nextmall.common.integration.config
 
+import com.nextmall.common.integration.filter.ConnectionAndTimeoutExceptionFilter
+import com.nextmall.common.integration.filter.HttpStatusExceptionFilter
 import com.nextmall.common.integration.support.WebClientFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,6 +16,8 @@ class WebClientBaseConfig {
         WebClient
             .builder()
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .filter(HttpStatusExceptionFilter.filter())
+            .filter(ConnectionAndTimeoutExceptionFilter.filter())
 
     @Bean
     fun webClientFactory(
