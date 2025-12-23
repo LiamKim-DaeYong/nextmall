@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: bff-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/bff/**
