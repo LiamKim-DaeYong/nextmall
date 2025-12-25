@@ -12,5 +12,5 @@ fun SignUpResult.toResponse() =
     SignUpResponse(
         userId = userId,
         accessToken = accessToken,
-        refreshToken = refreshToken
+        refreshToken = refreshToken,
     )
