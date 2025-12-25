@@ -7,7 +7,6 @@ plugins {
 
 dependencies {
     implementation(project(":modules:bff"))
-
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
 }
