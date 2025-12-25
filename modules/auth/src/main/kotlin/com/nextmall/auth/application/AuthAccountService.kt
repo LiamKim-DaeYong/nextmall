@@ -1,0 +1,56 @@
+package com.nextmall.auth.application
+
+import com.nextmall.auth.domain.account.AuthAccount
+import com.nextmall.auth.domain.account.AuthProvider
+import com.nextmall.auth.domain.exception.DuplicateAuthAccountException
+import com.nextmall.auth.infrastructure.persistence.jpa.AuthAccountJpaRepository
+import com.nextmall.common.identifier.IdGenerator
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+
+@Service
+class AuthAccountService(
+    private val idGenerator: IdGenerator,
+    private val authAccountJpaRepository: AuthAccountJpaRepository,
+    private val passwordEncoder: PasswordEncoder,
+) {
+    /**
+     * 인증 계정을 생성한다.
+     *
+     * - 사용자(userId)는 이미 생성된 상태여야 한다.
+     * - 동일한 provider + providerAccountId 조합은 허용되지 않는다.
+     */
+    @Transactional
+    fun createAccount(
+        userId: Long,
+        provider: AuthProvider,
+        providerAccountId: String,
+        password: String?,
+    ) {
+        validateAccountNotExists(provider, providerAccountId)
+
+        val encodedPassword =
+            password?.let { passwordEncoder.encode(it) }
+
+        val account =
+            AuthAccount(
+                id = idGenerator.generate(),
+                userId = userId,
+                provider = provider,
+                providerAccountId = providerAccountId,
+                passwordHash = encodedPassword,
+            )
+
+        authAccountJpaRepository.save(account)
+    }
+
+    private fun validateAccountNotExists(
+        provider: AuthProvider,
+        providerAccountId: String,
+    ) {
+        if (authAccountJpaRepository.existsByProviderAndProviderAccountId(provider, providerAccountId)) {
+            throw DuplicateAuthAccountException()
+        }
+    }
+}

@@ -6,6 +6,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common:exception"))
     implementation(libs.spring.cloud.gateway)
 }
 

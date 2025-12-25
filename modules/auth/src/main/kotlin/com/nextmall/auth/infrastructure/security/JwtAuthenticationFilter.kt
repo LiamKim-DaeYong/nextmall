@@ -1,7 +1,6 @@
 package com.nextmall.auth.infrastructure.security
 
 import com.nextmall.auth.config.JwtProperties
-import com.nextmall.auth.port.output.token.TokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -13,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.time.Instant
 
 class JwtAuthenticationFilter(
-    private val tokenProvider: TokenProvider,
+    private val tokenProvider: JwtTokenProvider,
     private val jwtProperties: JwtProperties,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(

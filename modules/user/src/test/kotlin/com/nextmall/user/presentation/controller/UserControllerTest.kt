@@ -1,7 +1,7 @@
 package com.nextmall.user.presentation.controller
 
 import com.nextmall.common.testsupport.WebMvcTestSupport
-import com.nextmall.user.application.query.UserContext
+import com.nextmall.user.application.query.UserView
 import com.nextmall.user.port.input.FindUserQuery
 import com.nextmall.user.presentation.public.mapper.PublicUserResponseMapper
 import com.nextmall.user.presentation.public.controller.PublicUserController
@@ -23,14 +23,14 @@ class UserControllerTest(
 ) : FunSpec({
         test("ID로 사용자 조회 시 PublicUserResponse가 반환된다") {
             // given
-            val userContext =
-                UserContext(
+            val userView =
+                UserView(
                     id = 1L,
                     email = "find@example.com",
                     nickname = "finder",
                 )
 
-            every { findUserQuery.findById(1L) } returns userContext
+            every { findUserQuery.findById(1L) } returns userView
 
             // when & then
             mockMvc
