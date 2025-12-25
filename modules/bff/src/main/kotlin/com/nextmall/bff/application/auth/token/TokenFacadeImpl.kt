@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class TokenFacadeImpl(
-    private val authServiceClient: WebClientAuthServiceClient
+    private val authServiceClient: WebClientAuthServiceClient,
 ) : TokenFacade {
-
     override suspend fun logout(refreshToken: String) {
         authServiceClient.logout(refreshToken)
     }

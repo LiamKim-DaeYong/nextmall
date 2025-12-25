@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class GatewayRouteConfig {
-
     @Bean
     fun route(builder: RouteLocatorBuilder): RouteLocator =
-        builder.routes()
+        builder
+            .routes()
             .route("test-bff") {
-                it.path("/api/v1/**")
+                it
+                    .path("/api/v1/**")
                     .filters { f -> f.stripPrefix(2) }
                     .uri("http://localhost:8082")
-            }
-            .build()
+            }.build()
 }

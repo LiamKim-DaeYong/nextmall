@@ -3,7 +3,6 @@ package com.nextmall.bff.client.auth
 import com.nextmall.bff.client.auth.response.TokenClientResult
 
 interface AuthServiceClient {
-
     /**
      * 인증 계정을 생성한다.
      *

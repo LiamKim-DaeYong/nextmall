@@ -35,7 +35,6 @@ class AuthController(
     suspend fun logout(
         @Valid @RequestBody request: LogoutRequest,
     ): ResponseEntity<Unit> {
-
         tokenFacade.logout(request.refreshToken)
         return ResponseEntity.noContent().build()
     }
@@ -45,7 +44,8 @@ class AuthController(
         @Valid @RequestBody request: RefreshTokenRequest,
     ): ResponseEntity<TokenResponse> =
         ResponseEntity.ok(
-            tokenFacade.refresh(request.refreshToken)
-                .toResponse()
+            tokenFacade
+                .refresh(request.refreshToken)
+                .toResponse(),
         )
 }

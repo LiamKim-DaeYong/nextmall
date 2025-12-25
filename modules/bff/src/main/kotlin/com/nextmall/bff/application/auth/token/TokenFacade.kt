@@ -1,9 +1,6 @@
 package com.nextmall.bff.application.auth.token
 
-import com.nextmall.bff.application.auth.token.TokenResult
-
 interface TokenFacade {
-
     /**
      * 로그아웃을 처리한다.
      *

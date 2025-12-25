@@ -3,7 +3,6 @@ package com.nextmall.bff.application.auth.login
 import com.nextmall.bff.application.auth.token.TokenResult
 
 interface LoginFacade {
-
     /**
      * 사용자 로그인을 처리한다.
      *
