@@ -1,6 +1,6 @@
 package com.nextmall.auth.infrastructure.cache
 
-import com.nextmall.auth.domain.model.LoginIdentity
+import com.nextmall.auth.application.login.LoginIdentity
 import com.nextmall.common.redis.RedisOperator
 import org.springframework.stereotype.Repository
 import java.time.Duration

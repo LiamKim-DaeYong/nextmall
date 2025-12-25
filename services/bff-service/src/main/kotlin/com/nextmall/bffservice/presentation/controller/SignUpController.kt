@@ -1,11 +1,11 @@
 package com.nextmall.bffservice.presentation.controller
 
 import com.nextmall.bff.application.signup.SignUpFacade
-import com.nextmall.bffservice.presentation.request.LocalSignUpRequest
-import com.nextmall.bffservice.presentation.request.SocialSignUpRequest
-import com.nextmall.bffservice.presentation.request.toCommand
-import com.nextmall.bffservice.presentation.response.SignUpResponse
-import com.nextmall.bffservice.presentation.response.toResponse
+import com.nextmall.bffservice.presentation.request.signup.LocalSignUpRequest
+import com.nextmall.bffservice.presentation.request.signup.SocialSignUpRequest
+import com.nextmall.bffservice.presentation.request.signup.toCommand
+import com.nextmall.bffservice.presentation.response.signup.SignUpResponse
+import com.nextmall.bffservice.presentation.response.signup.toResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/sign-up")
 class SignUpController(
-    private val signUpFacade: SignUpFacade
+    private val signUpFacade: SignUpFacade,
 ) {
     @PostMapping("/local")
     suspend fun local(

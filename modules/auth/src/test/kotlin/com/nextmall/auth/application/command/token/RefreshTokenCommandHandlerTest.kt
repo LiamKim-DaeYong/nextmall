@@ -1,6 +1,6 @@
 package com.nextmall.auth.application.command.token
 
-import com.nextmall.auth.domain.exception.token.InvalidRefreshTokenException
+import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
 import com.nextmall.auth.port.output.token.RefreshTokenStore
 import com.nextmall.auth.port.output.token.TokenProvider
 import io.kotest.assertions.throwables.shouldThrow

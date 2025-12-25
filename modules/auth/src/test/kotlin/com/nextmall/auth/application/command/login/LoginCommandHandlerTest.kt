@@ -1,9 +1,9 @@
 package com.nextmall.auth.application.command.login
 
-import com.nextmall.auth.application.command.login.strategy.AuthLoginStrategy
-import com.nextmall.auth.application.query.account.AuthUserAccountContext
-import com.nextmall.auth.domain.exception.common.UnsupportedProviderException
-import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.auth.application.login.LoginStrategy
+import com.nextmall.auth.application.query.account.AuthAccountContext
+import com.nextmall.auth.application.exception.UnsupportedProviderException
+import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.auth.port.output.token.RefreshTokenStore
 import com.nextmall.auth.port.output.token.TokenProvider
 import io.kotest.assertions.throwables.shouldThrow
@@ -19,7 +19,7 @@ import io.mockk.verify
 class LoginCommandHandlerTest :
     FunSpec({
 
-        val strategy = mockk<AuthLoginStrategy>()
+        val strategy = mockk<LoginStrategy>()
         val tokenProvider = mockk<TokenProvider>()
         val refreshTokenStore = mockk<RefreshTokenStore>()
 
@@ -46,7 +46,7 @@ class LoginCommandHandlerTest :
                 )
 
             val account =
-                AuthUserAccountContext(
+                AuthAccountContext(
                     id = 1L,
                     userId = 1L,
                     provider = AuthProvider.LOCAL,
