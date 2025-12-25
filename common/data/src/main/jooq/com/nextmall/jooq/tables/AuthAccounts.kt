@@ -6,8 +6,8 @@ package com.nextmall.jooq.tables
 
 import com.nextmall.jooq.Public
 import com.nextmall.jooq.keys.AUTH_ACCOUNTS_PKEY
-import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID
-import com.nextmall.jooq.keys.UK_AUTH_USER_ACCOUNTS_PROVIDER_ACCOUNT_ID
+import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID
+import com.nextmall.jooq.keys.UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID
 import com.nextmall.jooq.tables.Users.UsersPath
 import com.nextmall.jooq.tables.records.AuthAccountsRecord
 
@@ -144,14 +144,14 @@ open class AuthAccounts(
     }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<AuthAccountsRecord> = AUTH_ACCOUNTS_PKEY
-    override fun getUniqueKeys(): List<UniqueKey<AuthAccountsRecord>> = listOf(UK_AUTH_USER_ACCOUNTS_PROVIDER_ACCOUNT_ID)
-    override fun getReferences(): List<ForeignKey<AuthAccountsRecord, *>> = listOf(AUTH_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID)
+    override fun getUniqueKeys(): List<UniqueKey<AuthAccountsRecord>> = listOf(UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID)
+    override fun getReferences(): List<ForeignKey<AuthAccountsRecord, *>> = listOf(AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID)
 
     /**
      * Get the implicit join path to the <code>public.users</code> table.
      */
     fun users(): UsersPath = users
-    val users: UsersPath by lazy { UsersPath(this, AUTH_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID, null) }
+    val users: UsersPath by lazy { UsersPath(this, AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID, null) }
     override fun `as`(alias: String): AuthAccounts = AuthAccounts(DSL.name(alias), this)
     override fun `as`(alias: Name): AuthAccounts = AuthAccounts(alias, this)
     override fun `as`(alias: Table<*>): AuthAccounts = AuthAccounts(alias.qualifiedName, this)

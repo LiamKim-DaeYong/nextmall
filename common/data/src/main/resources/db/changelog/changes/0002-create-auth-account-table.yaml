@@ -54,12 +54,12 @@ databaseChangeLog:
         - addUniqueConstraint:
             tableName: auth_accounts
             columnNames: provider, provider_account_id
-            constraintName: uk_auth_user_accounts_provider_account_id
+            constraintName: uk_auth_accounts_provider_account_id
 
         - addForeignKeyConstraint:
             baseTableName: auth_accounts
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_auth_user_accounts_user_id
+            constraintName: fk_auth_accounts_user_id
             onDelete: CASCADE

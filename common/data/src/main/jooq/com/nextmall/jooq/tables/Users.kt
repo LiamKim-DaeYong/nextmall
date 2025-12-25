@@ -5,7 +5,7 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
-import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID
+import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID
 import com.nextmall.jooq.keys.USERS_PKEY
 import com.nextmall.jooq.tables.AuthAccounts.AuthAccountsPath
 import com.nextmall.jooq.tables.records.UsersRecord
@@ -146,7 +146,7 @@ open class Users(
      */
     fun authAccounts(): AuthAccountsPath {
         if (!this::_authAccounts.isInitialized)
-            _authAccounts = AuthAccountsPath(this, null, AUTH_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID.inverseKey)
+            _authAccounts = AuthAccountsPath(this, null, AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID.inverseKey)
 
         return _authAccounts;
     }
