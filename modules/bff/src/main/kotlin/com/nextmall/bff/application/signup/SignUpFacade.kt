@@ -1,7 +1,6 @@
 package com.nextmall.bff.application.signup
 
 interface SignUpFacade {
-
     /**
      * 회원가입을 처리한다.
      *

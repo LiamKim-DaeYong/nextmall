@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 class LoginFacadeImpl(
     private val authServiceClient: AuthServiceClient,
 ) : LoginFacade {
-
     override suspend fun login(command: LoginCommand): TokenResult {
         val token =
             authServiceClient.login(
