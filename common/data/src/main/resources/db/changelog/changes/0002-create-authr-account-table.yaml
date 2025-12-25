@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 0002-create-auth-user-account-table
+      id: 0002-create-auth-account-table
       author: LiamKim
       changes:
         - createTable:
-            tableName: auth_user_accounts
+            tableName: auth_accounts
             columns:
               - column:
                   name: id
@@ -52,14 +52,14 @@ databaseChangeLog:
                     nullable: false
 
         - addUniqueConstraint:
-            tableName: auth_user_accounts
+            tableName: auth_accounts
             columnNames: provider, provider_account_id
-            constraintName: uk_auth_user_accounts_provider_account_id
+            constraintName: uk_auth_accounts_provider_account_id
 
         - addForeignKeyConstraint:
-            baseTableName: auth_user_accounts
+            baseTableName: auth_accounts
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_auth_user_accounts_user_id
+            constraintName: fk_auth_accounts_user_id
             onDelete: CASCADE

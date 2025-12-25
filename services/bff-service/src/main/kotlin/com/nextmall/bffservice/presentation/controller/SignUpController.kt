@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/sign-up")
 class SignUpController(
-    private val signUpFacade: SignUpFacade
+    private val signUpFacade: SignUpFacade,
 ) {
     @PostMapping("/local")
     suspend fun local(

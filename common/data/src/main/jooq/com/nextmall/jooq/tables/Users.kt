@@ -5,9 +5,9 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
-import com.nextmall.jooq.keys.AUTH_USER_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID
+import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID
 import com.nextmall.jooq.keys.USERS_PKEY
-import com.nextmall.jooq.tables.AuthUserAccounts.AuthUserAccountsPath
+import com.nextmall.jooq.tables.AuthAccounts.AuthAccountsPath
 import com.nextmall.jooq.tables.records.UsersRecord
 
 import java.time.OffsetDateTime
@@ -138,21 +138,21 @@ open class Users(
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
 
-    private lateinit var _authUserAccounts: AuthUserAccountsPath
+    private lateinit var _authAccounts: AuthAccountsPath
 
     /**
      * Get the implicit to-many join path to the
-     * <code>public.auth_user_accounts</code> table
+     * <code>public.auth_accounts</code> table
      */
-    fun authUserAccounts(): AuthUserAccountsPath {
-        if (!this::_authUserAccounts.isInitialized)
-            _authUserAccounts = AuthUserAccountsPath(this, null, AUTH_USER_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID.inverseKey)
+    fun authAccounts(): AuthAccountsPath {
+        if (!this::_authAccounts.isInitialized)
+            _authAccounts = AuthAccountsPath(this, null, AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID.inverseKey)
 
-        return _authUserAccounts;
+        return _authAccounts;
     }
 
-    val authUserAccounts: AuthUserAccountsPath
-        get(): AuthUserAccountsPath = authUserAccounts()
+    val authAccounts: AuthAccountsPath
+        get(): AuthAccountsPath = authAccounts()
     override fun `as`(alias: String): Users = Users(DSL.name(alias), this)
     override fun `as`(alias: Name): Users = Users(alias, this)
     override fun `as`(alias: Table<*>): Users = Users(alias.qualifiedName, this)

@@ -5,10 +5,10 @@
 package com.nextmall.jooq.keys
 
 
-import com.nextmall.jooq.tables.AuthUserAccounts
+import com.nextmall.jooq.tables.AuthAccounts
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Users
-import com.nextmall.jooq.tables.records.AuthUserAccountsRecord
+import com.nextmall.jooq.tables.records.AuthAccountsRecord
 import com.nextmall.jooq.tables.records.DatabasechangeloglockRecord
 import com.nextmall.jooq.tables.records.UsersRecord
 
@@ -24,8 +24,8 @@ import org.jooq.impl.QOM.ForeignKeyRule
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val AUTH_USER_ACCOUNTS_PKEY: UniqueKey<AuthUserAccountsRecord> = Internal.createUniqueKey(AuthUserAccounts.AUTH_USER_ACCOUNTS, DSL.name("auth_user_accounts_pkey"), arrayOf(AuthUserAccounts.AUTH_USER_ACCOUNTS.ID), true)
-val UK_AUTH_USER_ACCOUNTS_PROVIDER_ACCOUNT_ID: UniqueKey<AuthUserAccountsRecord> = Internal.createUniqueKey(AuthUserAccounts.AUTH_USER_ACCOUNTS, DSL.name("uk_auth_user_accounts_provider_account_id"), arrayOf(AuthUserAccounts.AUTH_USER_ACCOUNTS.PROVIDER, AuthUserAccounts.AUTH_USER_ACCOUNTS.PROVIDER_ACCOUNT_ID), true)
+val AUTH_ACCOUNTS_PKEY: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("auth_accounts_pkey"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.ID), true)
+val UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("uk_auth_accounts_provider_account_id"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.PROVIDER, AuthAccounts.AUTH_ACCOUNTS.PROVIDER_ACCOUNT_ID), true)
 val DATABASECHANGELOGLOCK_PKEY: UniqueKey<DatabasechangeloglockRecord> = Internal.createUniqueKey(Databasechangeloglock.DATABASECHANGELOGLOCK, DSL.name("databasechangeloglock_pkey"), arrayOf(Databasechangeloglock.DATABASECHANGELOGLOCK.ID), true)
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)
 
@@ -33,4 +33,4 @@ val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, D
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
-val AUTH_USER_ACCOUNTS__FK_AUTH_USER_ACCOUNTS_USER_ID: ForeignKey<AuthUserAccountsRecord, UsersRecord> = Internal.createForeignKey(AuthUserAccounts.AUTH_USER_ACCOUNTS, DSL.name("fk_auth_user_accounts_user_id"), arrayOf(AuthUserAccounts.AUTH_USER_ACCOUNTS.USER_ID), com.nextmall.jooq.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true, ForeignKeyRule.CASCADE, ForeignKeyRule.NO_ACTION)
+val AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID: ForeignKey<AuthAccountsRecord, UsersRecord> = Internal.createForeignKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("fk_auth_accounts_user_id"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.USER_ID), com.nextmall.jooq.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true, ForeignKeyRule.CASCADE, ForeignKeyRule.NO_ACTION)
