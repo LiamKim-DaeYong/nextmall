@@ -1,9 +1,8 @@
 package com.nextmall.user.application.command
 
 import com.nextmall.common.identifier.IdGenerator
-import com.nextmall.user.application.command.create.CreateUserCommandHandler
 import com.nextmall.user.application.command.create.CreateUserCommandParam
-import com.nextmall.user.domain.entity.User
+import com.nextmall.user.domain.User
 import com.nextmall.user.port.output.UserCommandPort
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

@@ -25,14 +25,14 @@ class FindUserQueryHandlerTest :
         // -------------------------------------------------------------------------
         test("ID 기반 조회 - 정상적으로 사용자 정보를 반환한다") {
             // given
-            val userContext =
-                UserContext(
+            val userView =
+                UserView(
                     id = 1L,
                     email = "test@a.com",
                     nickname = "tester",
                 )
 
-            every { userQueryPort.findById(1L) } returns userContext
+            every { userQueryPort.findById(1L) } returns userView
 
             // when
             val result = handler.findById(1L)

@@ -13,11 +13,11 @@ class RedisRefreshTokenStoreTest :
     FunSpec({
 
         val redisOperator = mockk<RedisOperator>()
-        lateinit var store: RedisRefreshTokenStore
+        lateinit var store: RefreshTokenRepository
 
         beforeTest {
             io.mockk.clearMocks(redisOperator)
-            store = RedisRefreshTokenStore(redisOperator)
+            store = RefreshTokenRepository(redisOperator)
         }
 
         test("save는 RedisOperator.setValue를 호출한다") {

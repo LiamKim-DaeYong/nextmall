@@ -1,6 +1,6 @@
 package com.nextmall.auth.infrastructure.cache
 
-import com.nextmall.auth.domain.model.LoginIdentity
+import com.nextmall.auth.application.login.LoginIdentity
 import com.nextmall.common.redis.RedisOperator
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

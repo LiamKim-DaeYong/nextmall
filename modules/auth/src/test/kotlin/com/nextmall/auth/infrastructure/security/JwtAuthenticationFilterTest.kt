@@ -1,7 +1,7 @@
 package com.nextmall.auth.infrastructure.security
 
 import com.nextmall.auth.config.JwtProperties
-import com.nextmall.auth.domain.model.TokenClaims
+import com.nextmall.auth.domain.token.TokenClaims
 import com.nextmall.auth.port.output.token.TokenProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull

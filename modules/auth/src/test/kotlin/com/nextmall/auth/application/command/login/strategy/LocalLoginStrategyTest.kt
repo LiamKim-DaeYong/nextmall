@@ -1,11 +1,11 @@
 package com.nextmall.auth.application.command.login.strategy
 
-import com.nextmall.auth.application.command.login.LoginCommandParam
-import com.nextmall.auth.application.query.account.AuthUserAccountContext
-import com.nextmall.auth.domain.exception.login.InvalidLoginException
-import com.nextmall.auth.domain.exception.login.TooManyLoginAttemptsException
-import com.nextmall.auth.domain.model.AuthProvider
-import com.nextmall.auth.domain.model.LoginIdentity
+import com.nextmall.auth.application.query.account.AuthAccountContext
+import com.nextmall.auth.application.exception.InvalidLoginException
+import com.nextmall.auth.application.exception.TooManyLoginAttemptsException
+import com.nextmall.auth.domain.account.AuthProvider
+import com.nextmall.auth.application.login.LoginIdentity
+import com.nextmall.auth.application.login.LocalLoginStrategy
 import com.nextmall.auth.infrastructure.cache.RateLimitRepository
 import com.nextmall.auth.port.output.account.AuthUserAccountQueryPort
 import io.kotest.assertions.throwables.shouldThrow
@@ -50,7 +50,7 @@ class LocalLoginStrategyTest :
             val identity = LoginIdentity.local("test@test.com")
 
             val account =
-                AuthUserAccountContext(
+                AuthAccountContext(
                     id = 1L,
                     userId = 1L,
                     provider = AuthProvider.LOCAL,
@@ -89,7 +89,7 @@ class LocalLoginStrategyTest :
             val identity = LoginIdentity.local("fail@test.com")
 
             val account =
-                AuthUserAccountContext(
+                AuthAccountContext(
                     id = 2L,
                     userId = 2L,
                     provider = AuthProvider.LOCAL,

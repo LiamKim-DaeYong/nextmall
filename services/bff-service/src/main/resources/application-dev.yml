@@ -1,5 +1,5 @@
 client:
   user:
-    base-url: http://localhost:8080
+    base-url: http://localhost:8083
   auth:
-    base-url: http://localhost:8080
+    base-url: http://localhost:8081

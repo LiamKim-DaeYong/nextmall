@@ -1,8 +1,8 @@
 package com.nextmall.auth.presentation.controller
 
 import com.nextmall.auth.application.command.logout.LogoutCommandHandler
-import com.nextmall.auth.application.command.token.TokenResult
-import com.nextmall.auth.domain.model.AuthProvider
+import com.nextmall.auth.application.token.TokenResult
+import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.auth.port.input.login.LoginCommand
 import com.nextmall.auth.port.input.token.RefreshTokenCommand
 import com.nextmall.auth.presentation.public.mapper.AuthResponseMapper

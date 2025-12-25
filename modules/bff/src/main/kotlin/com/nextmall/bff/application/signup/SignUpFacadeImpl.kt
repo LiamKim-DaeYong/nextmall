@@ -30,7 +30,7 @@ class SignUpFacadeImpl(
             userServiceClient.activateUser(userId)
 
             // 4. 토큰 발급 (로그인 처리)
-            val token = authServiceClient.issueToken(userId)
+            val token = authServiceClient.issueTokenForUser(userId)
 
             return SignUpResult(
                 userId = userId,

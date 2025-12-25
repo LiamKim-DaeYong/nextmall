@@ -1,17 +1,17 @@
 package com.nextmall.auth.infrastructure.persistence.jpa
 
-import com.nextmall.auth.domain.entity.AuthUserAccount
-import com.nextmall.auth.port.output.account.AuthUserAccountCommandPort
+import com.nextmall.auth.domain.account.AuthAccount
+import com.nextmall.auth.domain.account.AuthProvider
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
 
-@Repository
-interface SpringDataAuthUserAccountJpaRepository : JpaRepository<AuthUserAccount, Long>
+interface AuthAccountJpaRepository : JpaRepository<AuthAccount, Long> {
+    fun existsByProviderAndProviderAccountId(
+        provider: AuthProvider,
+        providerAccountId: String,
+    ): Boolean
 
-@Repository
-class AuthUserAccountJpaCommandRepository(
-    private val jpa: SpringDataAuthUserAccountJpaRepository,
-) : AuthUserAccountCommandPort {
-    override fun saveAndFlush(authUserAccount: AuthUserAccount): AuthUserAccount =
-        jpa.saveAndFlush(authUserAccount)
+    fun findByProviderAndProviderAccountId(
+        provider: AuthProvider,
+        providerAccountId: String,
+    ): AuthAccount?
 }

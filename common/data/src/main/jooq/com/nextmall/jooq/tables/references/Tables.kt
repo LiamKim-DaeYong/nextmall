@@ -5,7 +5,7 @@
 package com.nextmall.jooq.tables.references
 
 
-import com.nextmall.jooq.tables.AuthUserAccounts
+import com.nextmall.jooq.tables.AuthAccounts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Users
@@ -13,9 +13,9 @@ import com.nextmall.jooq.tables.Users
 
 
 /**
- * The table <code>public.auth_user_accounts</code>.
+ * The table <code>public.auth_accounts</code>.
  */
-val AUTH_USER_ACCOUNTS: AuthUserAccounts = AuthUserAccounts.AUTH_USER_ACCOUNTS
+val AUTH_ACCOUNTS: AuthAccounts = AuthAccounts.AUTH_ACCOUNTS
 
 /**
  * The table <code>public.databasechangelog</code>.

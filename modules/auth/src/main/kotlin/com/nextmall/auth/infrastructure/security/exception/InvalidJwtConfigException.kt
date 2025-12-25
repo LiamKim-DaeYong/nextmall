@@ -1,6 +1,6 @@
 package com.nextmall.auth.infrastructure.security.exception
 
-import com.nextmall.auth.domain.exception.AuthErrorCode
+import com.nextmall.auth.application.exception.AuthErrorCode
 import com.nextmall.common.exception.base.BaseException
 
 /**
