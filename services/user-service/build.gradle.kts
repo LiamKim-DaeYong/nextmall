@@ -9,9 +9,6 @@ dependencies {
     implementation(project(":common:exception"))
     implementation(project(":modules:user"))
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.reactor)
-
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
 }

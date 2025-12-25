@@ -22,9 +22,8 @@ class LocalLoginStrategy(
         credential: String?,
     ): Long {
         val email = identifier
-        val password = credential ?: ""
-
         val identity = LoginIdentity.Companion.local(email)
+        val password = credential ?: fail(identity)
 
         // 1) 실패 횟수 체크
         val failCount = rateLimitRepository.getFailCount(identity)
@@ -32,26 +31,25 @@ class LocalLoginStrategy(
 
         // 2) 계정 조회
         val account =
-            authAccountJpaRepository
-                .findByProviderAndProviderAccountId(AuthProvider.LOCAL, email)
-                ?: run {
-                    rateLimitRepository.increaseFailCount(identity)
-                    throw InvalidLoginException()
-                }
+            authAccountJpaRepository.findByProviderAndProviderAccountId(AuthProvider.LOCAL, email)
+                ?: fail(identity)
 
         // 3) 패스워드 비교
-        val passwordHash =
-            account.passwordHash ?: throw InvalidLoginException()
+        val passwordHash = account.passwordHash ?: throw IllegalStateException("LOCAL account must have passwordHash")
 
         if (!passwordEncoder.matches(password, passwordHash)) {
-            rateLimitRepository.increaseFailCount(identity)
-            throw InvalidLoginException()
+            fail(identity)
         }
 
         // 4) 실패 카운트 초기화
         rateLimitRepository.resetFailCount(identity)
 
         return account.userId
+    }
+
+    private fun fail(identity: LoginIdentity): Nothing {
+        rateLimitRepository.increaseFailCount(identity)
+        throw InvalidLoginException()
     }
 
     companion object {

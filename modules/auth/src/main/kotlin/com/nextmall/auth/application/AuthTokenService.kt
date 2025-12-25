@@ -1,6 +1,5 @@
 package com.nextmall.auth.application
 
-import com.nextmall.auth.application.exception.InvalidLoginException
 import com.nextmall.auth.application.exception.UnsupportedProviderException
 import com.nextmall.auth.application.login.LoginStrategy
 import com.nextmall.auth.application.token.TokenResult
@@ -9,14 +8,12 @@ import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
 import com.nextmall.auth.infrastructure.cache.RefreshTokenRepository
 import com.nextmall.auth.infrastructure.security.JwtTokenProvider
 import org.slf4j.LoggerFactory
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthTokenService(
     private val loginStrategies: List<LoginStrategy>,
-    private val passwordEncoder: PasswordEncoder,
     private val tokenProvider: JwtTokenProvider,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
@@ -79,24 +76,6 @@ class AuthTokenService(
         } catch (e: Exception) {
             // 로깅만 하고 Exception 흡수
             logger.warn("Failed to revoke refresh token (ignored): {}", e.message)
-        }
-    }
-
-    private fun validateCredential(
-        provider: AuthProvider,
-        credential: String?,
-        passwordHash: String?,
-    ) {
-        if (provider != AuthProvider.LOCAL) {
-            return
-        }
-
-        if (credential.isNullOrBlank() || passwordHash.isNullOrBlank()) {
-            throw InvalidLoginException()
-        }
-
-        if (!passwordEncoder.matches(credential, passwordHash)) {
-            throw InvalidLoginException()
         }
     }
 

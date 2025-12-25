@@ -2,6 +2,7 @@ package com.nextmall.authservice.presentation.controller
 
 import com.nextmall.auth.application.AuthAccountService
 import com.nextmall.authservice.presentation.request.CreateAuthAccountRequest
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,8 +14,8 @@ class AuthAccountController(
     private val authAccountService: AuthAccountService,
 ) {
     @PostMapping
-    suspend fun createAccount(
-        @RequestBody request: CreateAuthAccountRequest,
+    fun createAccount(
+        @Valid @RequestBody request: CreateAuthAccountRequest,
     ) {
         authAccountService.createAccount(
             userId = request.userId,
