@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GatewayGlobalExceptionHandler {
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(Exception::class)
     fun handleGatewayException(ex: Exception): ResponseEntity<ErrorResponse> {

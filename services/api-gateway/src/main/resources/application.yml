@@ -4,5 +4,21 @@ server:
 spring:
   application:
     name: api-gateway
-  main:
-    web-application-type: reactive
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+gateway:
+  security:
+    permit-all-paths:
+      # Auth / Public APIs
+      - /api/v1/auth/login
+      - /api/v1/sign-up/**
+      - /api/v1/token/refresh
+
+      # Health check
+      - /actuator/health
+      - /actuator/info

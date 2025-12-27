@@ -1,10 +1,10 @@
 name: SonarCloud Analysis
 
-#on:
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   sonar:
@@ -47,54 +47,54 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run tests with coverage
-        run: ./gradlew clean test jacocoRootReport --no-daemon --stacktrace
-
-      - name: Debug coverage report
-        run: |
-          echo "=== Root build directory ==="
-          ls -la build/ || echo "No build directory in root"
-
-          echo "=== Looking for jacoco directories ==="
-          find . -name "jacoco" -type d 2>/dev/null || echo "No jacoco directories found"
-
-          echo "=== Looking for .exec files ==="
-          find . -name "*.exec" 2>/dev/null || echo "No .exec files found"
-
-          echo "=== Looking for XML reports ==="
-          find . -name "*.xml" -path "*/jacoco/*" 2>/dev/null || echo "No XML reports found"
-
-      - name: Verify coverage report exists
-        run: |
-          REPORT_PATH="build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
-          if [ ! -f "$REPORT_PATH" ]; then
-            echo "Coverage report not found at: $REPORT_PATH"
-            
-            find . -name "jacocoRootReport.xml" 2>/dev/null && echo "Found alternative paths above" || echo "No jacocoRootReport.xml found anywhere"
-            
-            echo "ERROR: Coverage report generation failed!"
-            exit 1
-          else
-            echo "Coverage report found successfully!"
-          fi
-
-      - name: SonarCloud Scan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          HEAD_REF: ${{ github.head_ref }}
-          BASE_REF: ${{ github.base_ref }}
-          REF_NAME: ${{ github.ref_name }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            ./gradlew sonar --no-daemon --stacktrace \
-              -Dsonar.organization=$SONAR_ORGANIZATION \
-              -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
-              -Dsonar.pullrequest.branch="$HEAD_REF" \
-              -Dsonar.pullrequest.base="$BASE_REF"
-          else
-            ./gradlew sonar --no-daemon --stacktrace \
-              -Dsonar.organization=$SONAR_ORGANIZATION \
-              -Dsonar.branch.name="$REF_NAME"
-          fi
+#      - name: Run tests with coverage
+#        run: ./gradlew clean test jacocoRootReport --no-daemon --stacktrace
+#
+#      - name: Debug coverage report
+#        run: |
+#          echo "=== Root build directory ==="
+#          ls -la build/ || echo "No build directory in root"
+#
+#          echo "=== Looking for jacoco directories ==="
+#          find . -name "jacoco" -type d 2>/dev/null || echo "No jacoco directories found"
+#
+#          echo "=== Looking for .exec files ==="
+#          find . -name "*.exec" 2>/dev/null || echo "No .exec files found"
+#
+#          echo "=== Looking for XML reports ==="
+#          find . -name "*.xml" -path "*/jacoco/*" 2>/dev/null || echo "No XML reports found"
+#
+#      - name: Verify coverage report exists
+#        run: |
+#          REPORT_PATH="build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+#          if [ ! -f "$REPORT_PATH" ]; then
+#            echo "Coverage report not found at: $REPORT_PATH"
+#
+#            find . -name "jacocoRootReport.xml" 2>/dev/null && echo "Found alternative paths above" || echo "No jacocoRootReport.xml found anywhere"
+#
+#            echo "ERROR: Coverage report generation failed!"
+#            exit 1
+#          else
+#            echo "Coverage report found successfully!"
+#          fi
+#
+#      - name: SonarCloud Scan
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          HEAD_REF: ${{ github.head_ref }}
+#          BASE_REF: ${{ github.base_ref }}
+#          REF_NAME: ${{ github.ref_name }}
+#          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+#        run: |
+#          if [ "${{ github.event_name }}" = "pull_request" ]; then
+#            ./gradlew sonar --no-daemon --stacktrace \
+#              -Dsonar.organization=$SONAR_ORGANIZATION \
+#              -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
+#              -Dsonar.pullrequest.branch="$HEAD_REF" \
+#              -Dsonar.pullrequest.base="$BASE_REF"
+#          else
+#            ./gradlew sonar --no-daemon --stacktrace \
+#              -Dsonar.organization=$SONAR_ORGANIZATION \
+#              -Dsonar.branch.name="$REF_NAME"
+#          fi

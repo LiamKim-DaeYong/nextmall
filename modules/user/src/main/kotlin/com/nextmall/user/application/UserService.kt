@@ -18,7 +18,7 @@ class UserService(
     private val userJpaRepository: UserJpaRepository,
     private val userJooqRepository: UserJooqRepository,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     /**
      * 사용자 조회
