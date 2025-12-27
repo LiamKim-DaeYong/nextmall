@@ -29,7 +29,6 @@ class SecurityConfig(
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
-            // CORS is handled explicitly at gateway
             .cors { }
             .authorizeExchange {
                 properties.permitAllPaths.forEach { path ->

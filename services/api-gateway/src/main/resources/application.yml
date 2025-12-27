@@ -9,13 +9,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: gateway,health,info
+        include: health,info,gateway
 
 gateway:
   security:
     permit-all-paths:
+      # Auth / Public APIs
       - /api/v1/auth/login
       - /api/v1/sign-up/**
       - /api/v1/token/refresh
-      - /health
-      - /actuator/**
+
+      # Health check
+      - /actuator/health
+      - /actuator/info
