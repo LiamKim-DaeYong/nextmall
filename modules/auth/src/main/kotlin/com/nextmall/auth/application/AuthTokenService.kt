@@ -17,7 +17,7 @@ class AuthTokenService(
     private val tokenProvider: JwtTokenProvider,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     /**
      * 로그인: 인증 정보를 검증하고 토큰을 발급한다.
@@ -82,7 +82,7 @@ class AuthTokenService(
     private fun issueAndStoreTokens(
         userId: Long,
     ): TokenResult {
-        val accessToken = tokenProvider.generateAccessToken(userId = userId, roles = emptyList()) //  TODO: roles 처리
+        val accessToken = tokenProvider.generateAccessToken(userId = userId, roles = emptyList())
         val refreshToken = tokenProvider.generateRefreshToken(userId = userId)
 
         refreshTokenRepository.save(
