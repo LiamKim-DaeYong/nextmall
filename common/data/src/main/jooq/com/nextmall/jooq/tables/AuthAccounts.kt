@@ -102,6 +102,11 @@ open class AuthAccounts(
     val PASSWORD_HASH: TableField<AuthAccountsRecord, String?> = createField(DSL.name("password_hash"), SQLDataType.VARCHAR(255), this, "")
 
     /**
+     * The column <code>public.auth_accounts.status</code>.
+     */
+    val STATUS: TableField<AuthAccountsRecord, String?> = createField(DSL.name("status"), SQLDataType.VARCHAR(20).nullable(false), this, "")
+
+    /**
      * The column <code>public.auth_accounts.created_at</code>.
      */
     val CREATED_AT: TableField<AuthAccountsRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")

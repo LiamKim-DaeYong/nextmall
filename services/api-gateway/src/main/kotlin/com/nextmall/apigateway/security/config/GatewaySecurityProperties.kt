@@ -1,4 +1,4 @@
-package com.nextmall.apigateway.security
+package com.nextmall.apigateway.security.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

@@ -1,8 +1,11 @@
 package com.nextmall.authservice.presentation.controller
 
 import com.nextmall.auth.application.AuthAccountService
-import com.nextmall.authservice.presentation.request.CreateAuthAccountRequest
+import com.nextmall.authservice.presentation.request.account.CreateAuthAccountRequest
+import com.nextmall.authservice.presentation.response.account.CreateAuthAccountResponse
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,12 +19,17 @@ class AuthAccountController(
     @PostMapping
     fun createAccount(
         @Valid @RequestBody request: CreateAuthAccountRequest,
-    ) {
-        authAccountService.createAccount(
-            userId = request.userId,
-            provider = request.provider,
-            providerAccountId = request.providerAccountId,
-            password = request.password,
-        )
+    ): ResponseEntity<CreateAuthAccountResponse> {
+        val authAccountId =
+            authAccountService.createAccount(
+                userId = request.userId,
+                provider = request.provider,
+                providerAccountId = request.providerAccountId,
+                password = request.password,
+            )
+
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(CreateAuthAccountResponse(authAccountId))
     }
 }

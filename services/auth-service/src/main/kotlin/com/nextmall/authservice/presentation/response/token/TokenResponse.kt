@@ -1,4 +1,4 @@
-package com.nextmall.authservice.presentation.response
+package com.nextmall.authservice.presentation.response.token
 
 data class TokenResponse(
     val accessToken: String,

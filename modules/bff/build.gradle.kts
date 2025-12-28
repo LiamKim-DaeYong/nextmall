@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.webmvc)
 
     testImplementation(project(":common:test-support"))

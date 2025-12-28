@@ -7,8 +7,15 @@ import org.springframework.boot.security.autoconfigure.ReactiveUserDetailsServic
 
 @SpringBootApplication(
     exclude = [ReactiveUserDetailsServiceAutoConfiguration::class],
+    scanBasePackages = [
+        "com.nextmall.apigateway",
+        "com.nextmall.common",
+    ],
 )
-@ConfigurationPropertiesScan
+@ConfigurationPropertiesScan(
+    "com.nextmall.apigateway",
+    "com.nextmall.common",
+)
 class ApiGatewayApplication
 
 fun main(args: Array<String>) {

@@ -13,7 +13,7 @@ interface AuthServiceClient {
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    )
+    ): Long
 
     /**
      * 인증 정보를 검증하고 토큰을 발급한다.
@@ -38,8 +38,8 @@ interface AuthServiceClient {
      *
      * 회원가입 직후 자동 로그인 등 내부 흐름에서 사용된다.
      */
-    suspend fun issueTokenForUser(
-        userId: Long,
+    suspend fun issueToken(
+        authAccountId: Long,
     ): TokenClientResult
 
     /**

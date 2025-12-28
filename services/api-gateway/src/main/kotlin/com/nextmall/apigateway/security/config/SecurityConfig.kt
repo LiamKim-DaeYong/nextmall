@@ -1,4 +1,4 @@
-package com.nextmall.apigateway.security
+package com.nextmall.apigateway.security.config
 
 import com.nextmall.apigateway.security.filter.JwtPresenceAuthenticationFilter
 import org.springframework.context.annotation.Bean

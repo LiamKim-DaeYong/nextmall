@@ -19,18 +19,19 @@ class SignUpFacadeImpl(
 
         try {
             // 2. Auth 계정 생성
-            authServiceClient.createAccount(
-                userId = userId,
-                provider = command.provider,
-                providerAccountId = command.providerAccountId,
-                password = command.password,
-            )
+            val authAccountId =
+                authServiceClient.createAccount(
+                    userId = userId,
+                    provider = command.provider,
+                    providerAccountId = command.providerAccountId,
+                    password = command.password,
+                )
 
             // 3. User 활성화
             userServiceClient.activateUser(userId)
 
             // 4. 토큰 발급 (로그인 처리)
-            val token = authServiceClient.issueTokenForUser(userId)
+            val token = authServiceClient.issueToken(authAccountId)
 
             return SignUpResult(
                 userId = userId,

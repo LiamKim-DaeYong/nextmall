@@ -1,6 +1,5 @@
 package com.nextmall.auth.domain.account
 
-import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.common.data.jpa.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -33,4 +32,8 @@ class AuthAccount(
 
     @Column(name = "password_hash", nullable = true)
     val passwordHash: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    val status: AuthAccountStatus,
 ) : BaseEntity()

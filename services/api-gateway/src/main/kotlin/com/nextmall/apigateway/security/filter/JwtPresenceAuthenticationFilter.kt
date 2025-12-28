@@ -1,6 +1,6 @@
 package com.nextmall.apigateway.security.filter
 
-import com.nextmall.apigateway.security.GatewaySecurityProperties
+import com.nextmall.apigateway.security.config.GatewaySecurityProperties
 import com.nextmall.apigateway.security.support.JwtPresenceAuthenticationConverter
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod

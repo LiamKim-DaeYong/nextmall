@@ -10,17 +10,17 @@ class RefreshTokenRepository(
 ) {
     fun save(
         refreshToken: String,
-        userId: Long,
+        authAccountId: Long,
         ttlSeconds: Long,
     ) {
         redisOperator.setValue(
             key = buildKey(refreshToken),
-            value = userId.toString(),
+            value = authAccountId.toString(),
             ttl = Duration.ofSeconds(ttlSeconds),
         )
     }
 
-    fun findUserId(
+    fun findAuthAccountId(
         refreshToken: String,
     ): Long? =
         redisOperator

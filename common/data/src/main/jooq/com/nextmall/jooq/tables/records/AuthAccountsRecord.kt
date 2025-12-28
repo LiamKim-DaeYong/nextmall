@@ -38,13 +38,17 @@ open class AuthAccountsRecord() : UpdatableRecordImpl<AuthAccountsRecord>(AuthAc
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
 
-    open var createdAt: OffsetDateTime?
+    open var status: String?
         set(value): Unit = set(5, value)
-        get(): OffsetDateTime? = get(5) as OffsetDateTime?
+        get(): String? = get(5) as String?
 
-    open var updatedAt: OffsetDateTime?
+    open var createdAt: OffsetDateTime?
         set(value): Unit = set(6, value)
         get(): OffsetDateTime? = get(6) as OffsetDateTime?
+
+    open var updatedAt: OffsetDateTime?
+        set(value): Unit = set(7, value)
+        get(): OffsetDateTime? = get(7) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -55,12 +59,13 @@ open class AuthAccountsRecord() : UpdatableRecordImpl<AuthAccountsRecord>(AuthAc
     /**
      * Create a detached, initialised AuthAccountsRecord
      */
-    constructor(id: Long? = null, userId: Long? = null, provider: String? = null, providerAccountId: String? = null, passwordHash: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(id: Long? = null, userId: Long? = null, provider: String? = null, providerAccountId: String? = null, passwordHash: String? = null, status: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.id = id
         this.userId = userId
         this.provider = provider
         this.providerAccountId = providerAccountId
         this.passwordHash = passwordHash
+        this.status = status
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()
