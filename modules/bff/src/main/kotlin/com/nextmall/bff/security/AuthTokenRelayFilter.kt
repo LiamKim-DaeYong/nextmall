@@ -10,12 +10,10 @@ import reactor.core.publisher.Mono
 class AuthTokenRelayFilter(
     private val tokenProvider: AuthTokenProvider,
 ) : ExchangeFilterFunction {
-
     override fun filter(
         request: ClientRequest,
         next: ExchangeFunction,
     ): Mono<ClientResponse> {
-
         val token = tokenProvider.currentToken()
 
         if (token.isNullOrBlank()) {

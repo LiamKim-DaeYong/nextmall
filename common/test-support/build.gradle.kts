@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":common:identifier"))
 
     implementation(platform(libs.spring.boot.dependencies))
+    implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
     implementation(libs.spring.context)
     implementation(libs.kotlin.reflect)

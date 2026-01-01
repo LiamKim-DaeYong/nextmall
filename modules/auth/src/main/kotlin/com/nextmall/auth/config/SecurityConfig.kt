@@ -16,7 +16,7 @@ class SecurityConfig {
 
     @Bean
     fun securityFilterChain(
-        http: HttpSecurity
+        http: HttpSecurity,
     ): SecurityFilterChain =
         http
             .csrf { it.disable() }
@@ -25,6 +25,5 @@ class SecurityConfig {
             .authorizeHttpRequests {
                 it.requestMatchers("/auth/**").permitAll()
                 it.anyRequest().denyAll()
-            }
-            .build()
+            }.build()
 }

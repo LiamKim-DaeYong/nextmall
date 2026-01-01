@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class SecurityContextAuthTokenProvider : AuthTokenProvider {
-
     override fun currentToken(): String? =
         SecurityContextHolder
             .getContext()

@@ -8,5 +8,5 @@ package com.nextmall.common.security.principal
  */
 data class AuthenticatedPrincipal(
     val subject: String,
-    val userId: String
+    val userId: String,
 )

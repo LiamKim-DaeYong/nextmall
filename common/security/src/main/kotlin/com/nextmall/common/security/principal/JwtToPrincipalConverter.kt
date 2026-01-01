@@ -11,17 +11,18 @@ import org.springframework.security.oauth2.jwt.Jwt
  * 만을 사용하여 인증된 사용자 식별 정보를 생성한다.
  */
 class JwtToPrincipalConverter : AuthenticationTokenToPrincipalConverter<Jwt> {
-
     override fun convert(token: Jwt): AuthenticatedPrincipal {
-        val subject = token.subject
-            ?: throw IllegalArgumentException("JWT subject(claim 'sub')가 존재하지 않습니다.")
+        val subject =
+            token.subject
+                ?: throw IllegalArgumentException("JWT subject(claim 'sub')가 존재하지 않습니다.")
 
-        val userId = token.getClaimAsString("userId")
-            ?: throw IllegalArgumentException("JWT claim 'userId'가 존재하지 않습니다.")
+        val userId =
+            token.getClaimAsString("userId")
+                ?: throw IllegalArgumentException("JWT claim 'userId'가 존재하지 않습니다.")
 
         return AuthenticatedPrincipal(
             subject = subject,
-            userId = userId
+            userId = userId,
         )
     }
 }

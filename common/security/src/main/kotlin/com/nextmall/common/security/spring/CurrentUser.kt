@@ -14,5 +14,5 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 @Retention(AnnotationRetention.RUNTIME)
 @AuthenticationPrincipal
 annotation class CurrentUser(
-    val required: Boolean = true
+    val required: Boolean = true,
 )

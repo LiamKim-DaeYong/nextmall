@@ -31,7 +31,9 @@ class SignUpController(
     }
 
     @PostMapping("/social")
-    fun social(@RequestBody request: SocialSignUpRequest): ResponseEntity<SignUpResponse> =
+    fun social(
+        @RequestBody request: SocialSignUpRequest,
+    ): ResponseEntity<SignUpResponse> =
         ResponseEntity
             .status(HttpStatus.NOT_IMPLEMENTED)
             .build()

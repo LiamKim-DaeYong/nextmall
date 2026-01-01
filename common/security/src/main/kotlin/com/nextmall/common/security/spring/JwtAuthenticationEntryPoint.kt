@@ -12,11 +12,10 @@ import org.springframework.security.web.AuthenticationEntryPoint
  * 에러 코드, 메시지, i18n 등은 이후 단계에서 확장한다.
  */
 class JwtAuthenticationEntryPoint : AuthenticationEntryPoint {
-
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authException: AuthenticationException
+        authException: AuthenticationException,
     ) {
         response.status = HttpServletResponse.SC_UNAUTHORIZED
     }

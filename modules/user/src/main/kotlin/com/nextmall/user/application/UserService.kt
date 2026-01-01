@@ -17,7 +17,6 @@ class UserService(
     private val userJpaRepository: UserJpaRepository,
     private val userJooqRepository: UserJooqRepository,
 ) {
-
     /**
      * 사용자 조회
      */

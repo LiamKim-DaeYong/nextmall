@@ -12,7 +12,6 @@ class WebClientUserServiceClient(
     authenticatedWebClientFactory: AuthenticatedWebClientFactory,
     properties: UserServiceClientProperties,
 ) : UserServiceClient {
-
     private val client = authenticatedWebClientFactory.create(properties.baseUrl)
 
     override suspend fun getUser(
