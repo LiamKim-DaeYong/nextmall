@@ -1,5 +1,5 @@
 package com.nextmall.bff.client.auth.response
 
-data class CreateAuthAccountClientResult(
+data class CreateAuthAccountClientResponse(
     val authAccountId: Long,
 )

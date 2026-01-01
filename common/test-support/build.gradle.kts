@@ -13,9 +13,9 @@ dependencies {
     implementation(project(":common:identifier"))
 
     implementation(platform(libs.spring.boot.dependencies))
-    implementation(libs.spring.boot.starter.data.jpa)
-    implementation(libs.kotlin.reflect)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
     implementation(libs.spring.context)
+    implementation(libs.kotlin.reflect)
 
     api(libs.spring.boot.starter.webmvc.test)
     api(libs.spring.boot.starter.webclient.test)

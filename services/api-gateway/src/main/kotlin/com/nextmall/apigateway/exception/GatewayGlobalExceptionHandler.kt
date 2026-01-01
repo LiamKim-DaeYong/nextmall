@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GatewayGlobalExceptionHandler {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(Exception::class)
     fun handleGatewayException(ex: Exception): ResponseEntity<ErrorResponse> {
-        logger.error("Unhandled exception occurred in API Gateway", ex)
+        log.error("Unhandled exception occurred in API Gateway", ex)
 
         val errorCode = CommonErrorCode.INTERNAL_ERROR
 

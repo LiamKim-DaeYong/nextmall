@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component
 class GetUserFacadeImpl(
     private val userServiceClient: UserServiceClient,
 ) : GetUserFacade {
-    override suspend fun getUser(userId: Long): UserViewResult {
-        val user = userServiceClient.getUser(userId)
+    override suspend fun getUser(
+        userId: Long,
+        authorization: String,
+    ): UserViewResult {
+        val user = userServiceClient.getUser(userId, authorization)
 
         return UserViewResult(
             id = user.id,

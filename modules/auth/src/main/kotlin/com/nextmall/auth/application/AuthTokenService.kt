@@ -17,7 +17,7 @@ class AuthTokenService(
     private val tokenProvider: JwtTokenProvider,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     /**
      * 로그인: 인증 정보를 검증하고 토큰을 발급한다.
@@ -75,7 +75,7 @@ class AuthTokenService(
             refreshTokenRepository.delete(refreshToken)
         } catch (e: Exception) {
             // 로깅만 하고 Exception 흡수
-            logger.warn("Failed to revoke refresh token (ignored): {}", e.message)
+            log.warn("Failed to revoke refresh token (ignored): {}", e.message)
         }
     }
 
@@ -85,9 +85,8 @@ class AuthTokenService(
         val accessToken =
             tokenProvider.generateAccessToken(
                 authAccountId = authAccountId,
-                roles = emptyList(),
+                roles = listOf("ROLE_USER"),
             )
-
 
         val refreshToken =
             tokenProvider.generateRefreshToken(

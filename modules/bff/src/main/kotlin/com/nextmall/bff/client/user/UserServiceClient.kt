@@ -1,6 +1,6 @@
 package com.nextmall.bff.client.user
 
-import com.nextmall.bff.client.user.response.UserViewClientResult
+import com.nextmall.bff.client.user.response.UserViewClientResponse
 
 interface UserServiceClient {
     /**
@@ -9,7 +9,8 @@ interface UserServiceClient {
      */
     suspend fun getUser(
         userId: Long,
-    ): UserViewClientResult
+        authorization: String,
+    ): UserViewClientResponse
 
     /**
      * 사용자를 생성한다.

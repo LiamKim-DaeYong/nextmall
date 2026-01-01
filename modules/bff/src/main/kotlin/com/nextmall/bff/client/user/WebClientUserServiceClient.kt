@@ -2,8 +2,9 @@ package com.nextmall.bff.client.user
 
 import com.nextmall.bff.client.user.request.CreateUserClientRequest
 import com.nextmall.bff.client.user.response.CreateUserClientResponse
-import com.nextmall.bff.client.user.response.UserViewClientResult
+import com.nextmall.bff.client.user.response.UserViewClientResponse
 import com.nextmall.common.integration.support.WebClientFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
@@ -16,12 +17,14 @@ class WebClientUserServiceClient(
 
     override suspend fun getUser(
         userId: Long,
-    ): UserViewClientResult =
+        authorization: String,
+    ): UserViewClientResponse =
         client
             .get()
             .uri(USER_GET_URI, userId)
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .retrieve()
-            .awaitBody<UserViewClientResult>()
+            .awaitBody<UserViewClientResponse>()
 
     override suspend fun createUser(
         nickname: String,

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class AuthGlobalExceptionHandler(
     private val httpStatusMapper: HttpStatusMapper,
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(BaseException::class)
     fun handleBaseException(ex: BaseException): ResponseEntity<ErrorResponse> {
@@ -33,7 +33,7 @@ class AuthGlobalExceptionHandler(
     fun handleUnexpectedException(ex: Exception): ResponseEntity<ErrorResponse> {
         val errorCode = CommonErrorCode.INTERNAL_ERROR
 
-        logger.error("Unexpected exception", ex)
+        log.error("Unexpected exception", ex)
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)

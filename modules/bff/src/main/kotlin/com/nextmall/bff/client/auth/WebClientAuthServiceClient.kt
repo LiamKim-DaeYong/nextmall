@@ -5,8 +5,8 @@ import com.nextmall.bff.client.auth.request.IssueTokenClientRequest
 import com.nextmall.bff.client.auth.request.LoginClientRequest
 import com.nextmall.bff.client.auth.request.RefreshTokenClientRequest
 import com.nextmall.bff.client.auth.request.RevokeTokenClientRequest
-import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResult
-import com.nextmall.bff.client.auth.response.TokenClientResult
+import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResponse
+import com.nextmall.bff.client.auth.response.TokenClientResponse
 import com.nextmall.common.integration.support.WebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
@@ -35,14 +35,14 @@ class WebClientAuthServiceClient(
                     password = password,
                 ),
             ).retrieve()
-            .awaitBody<CreateAuthAccountClientResult>()
+            .awaitBody<CreateAuthAccountClientResponse>()
             .authAccountId
 
     override suspend fun login(
         provider: AuthProvider,
         principal: String,
         credential: String?,
-    ): TokenClientResult =
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_LOGIN_URI)
@@ -68,7 +68,7 @@ class WebClientAuthServiceClient(
 
     override suspend fun issueToken(
         authAccountId: Long,
-    ): TokenClientResult =
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
@@ -78,7 +78,7 @@ class WebClientAuthServiceClient(
 
     override suspend fun refresh(
         refreshToken: String,
-    ): TokenClientResult =
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_REFRESH_URI)
