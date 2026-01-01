@@ -3,26 +3,24 @@ package com.nextmall.bff.client.user
 import com.nextmall.bff.client.user.request.CreateUserClientRequest
 import com.nextmall.bff.client.user.response.CreateUserClientResponse
 import com.nextmall.bff.client.user.response.UserViewClientResponse
-import com.nextmall.common.integration.support.WebClientFactory
-import org.springframework.http.HttpHeaders
+import com.nextmall.bff.security.AuthenticatedWebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientUserServiceClient(
-    webClientFactory: WebClientFactory,
+    authenticatedWebClientFactory: AuthenticatedWebClientFactory,
     properties: UserServiceClientProperties,
 ) : UserServiceClient {
-    private val client = webClientFactory.create(properties.baseUrl)
+
+    private val client = authenticatedWebClientFactory.create(properties.baseUrl)
 
     override suspend fun getUser(
         userId: Long,
-        authorization: String,
     ): UserViewClientResponse =
         client
             .get()
             .uri(USER_GET_URI, userId)
-            .header(HttpHeaders.AUTHORIZATION, authorization)
             .retrieve()
             .awaitBody<UserViewClientResponse>()
 

@@ -9,14 +9,13 @@ class GetUserFacadeImpl(
 ) : GetUserFacade {
     override suspend fun getUser(
         userId: Long,
-        authorization: String,
     ): UserViewResult {
-        val user = userServiceClient.getUser(userId, authorization)
+        val userView = userServiceClient.getUser(userId)
 
         return UserViewResult(
-            id = user.id,
-            nickname = user.nickname,
-            email = user.email,
+            id = userView.id,
+            nickname = userView.nickname,
+            email = userView.email,
         )
     }
 }

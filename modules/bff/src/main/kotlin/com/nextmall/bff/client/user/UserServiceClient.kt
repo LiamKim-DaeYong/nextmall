@@ -9,7 +9,6 @@ interface UserServiceClient {
      */
     suspend fun getUser(
         userId: Long,
-        authorization: String,
     ): UserViewClientResponse
 
     /**
