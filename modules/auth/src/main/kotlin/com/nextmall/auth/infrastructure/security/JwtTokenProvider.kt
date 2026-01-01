@@ -29,7 +29,7 @@ class JwtTokenProvider(
 
     // --- AccessToken 생성 ---
     fun generateAccessToken(
-        userId: Long,
+        authAccountId: Long,
         roles: List<String>,
     ): String {
         val now = Date()
@@ -37,7 +37,7 @@ class JwtTokenProvider(
 
         return Jwts
             .builder()
-            .subject(userId.toString())
+            .subject(authAccountId.toString())
             .issuedAt(now)
             .expiration(expiry)
             .claim("roles", roles)
@@ -46,13 +46,13 @@ class JwtTokenProvider(
     }
 
     // --- RefreshToken 생성 ---
-    fun generateRefreshToken(userId: Long): String {
+    fun generateRefreshToken(authAccountId: Long): String {
         val now = Date()
         val expiry = Date(now.time + jwtProperties.refreshTokenExpiration)
 
         return Jwts
             .builder()
-            .subject(userId.toString())
+            .subject(authAccountId.toString())
             .issuedAt(now)
             .expiration(expiry)
             .signWith(key)
@@ -64,7 +64,7 @@ class JwtTokenProvider(
         val claims = getClaims(token) ?: return null
 
         return TokenClaims(
-            userId = claims.subject.toLong(),
+            authAccountId = claims.subject.toLong(),
             roles = (claims["roles"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
             expirationTime = claims.expiration.toInstant(),
         )

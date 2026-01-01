@@ -22,4 +22,5 @@ include("common:exception") // 공통 예외 정의 및 에러 계약
 include("common:identifier") // 식별자 생성 및 관리
 include("common:redis") // Redis 공통 인프라
 include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
+include("common:security") // 공통 인증 인프라 (AuthN only)
 include("common:test-support") // 테스트 공통 환경 및 테스트 유틸

@@ -8,7 +8,6 @@ import com.nextmall.user.domain.exception.UserNotFoundException
 import com.nextmall.user.domain.model.UserStatus
 import com.nextmall.user.infrastructure.persistence.jooq.UserJooqRepository
 import com.nextmall.user.infrastructure.persistence.jpa.UserJpaRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,8 +17,6 @@ class UserService(
     private val userJpaRepository: UserJpaRepository,
     private val userJooqRepository: UserJooqRepository,
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     /**
      * 사용자 조회
      */

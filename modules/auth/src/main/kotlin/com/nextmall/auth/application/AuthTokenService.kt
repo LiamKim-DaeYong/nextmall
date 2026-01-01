@@ -17,7 +17,7 @@ class AuthTokenService(
     private val tokenProvider: JwtTokenProvider,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     /**
      * 로그인: 인증 정보를 검증하고 토큰을 발급한다.
@@ -32,9 +32,9 @@ class AuthTokenService(
             loginStrategies.firstOrNull { it.supports(provider) }
                 ?: throw UnsupportedProviderException()
 
-        val userId = strategy.authenticate(identifier, credential)
+        val authAccountId = strategy.authenticate(identifier, credential)
 
-        return issueAndStoreTokens(userId)
+        return issueAndStoreTokens(authAccountId)
     }
 
     /**
@@ -42,10 +42,10 @@ class AuthTokenService(
      * 회원가입 직후 자동 로그인 흐름에서 사용된다.
      */
     @Transactional
-    fun issueForUser(
-        userId: Long,
+    fun issueForAuthAccount(
+        authAccountId: Long,
     ): TokenResult =
-        issueAndStoreTokens(userId)
+        issueAndStoreTokens(authAccountId)
 
     /**
      * RefreshToken을 사용해 토큰을 재발급한다.
@@ -54,14 +54,14 @@ class AuthTokenService(
     fun refresh(
         refreshToken: String,
     ): TokenResult {
-        val userId =
-            refreshTokenRepository.findUserId(refreshToken)
+        val authAccountId =
+            refreshTokenRepository.findAuthAccountId(refreshToken)
                 ?: throw InvalidRefreshTokenException()
 
         // 토큰 재사용 방지: 기존 refreshToken은 즉시 폐기
         refreshTokenRepository.delete(refreshToken)
 
-        return issueAndStoreTokens(userId)
+        return issueAndStoreTokens(authAccountId)
     }
 
     /**
@@ -75,19 +75,27 @@ class AuthTokenService(
             refreshTokenRepository.delete(refreshToken)
         } catch (e: Exception) {
             // 로깅만 하고 Exception 흡수
-            logger.warn("Failed to revoke refresh token (ignored): {}", e.message)
+            log.warn("Failed to revoke refresh token (ignored): {}", e.message)
         }
     }
 
     private fun issueAndStoreTokens(
-        userId: Long,
+        authAccountId: Long,
     ): TokenResult {
-        val accessToken = tokenProvider.generateAccessToken(userId = userId, roles = emptyList())
-        val refreshToken = tokenProvider.generateRefreshToken(userId = userId)
+        val accessToken =
+            tokenProvider.generateAccessToken(
+                authAccountId = authAccountId,
+                roles = listOf("ROLE_USER"),
+            )
+
+        val refreshToken =
+            tokenProvider.generateRefreshToken(
+                authAccountId = authAccountId,
+            )
 
         refreshTokenRepository.save(
             refreshToken = refreshToken,
-            userId = userId,
+            authAccountId = authAccountId,
             ttlSeconds = tokenProvider.refreshTokenTtlSeconds(),
         )
 

@@ -44,7 +44,7 @@ class LocalLoginStrategy(
         // 4) 실패 카운트 초기화
         rateLimitRepository.resetFailCount(identity)
 
-        return account.userId
+        return account.id
     }
 
     private fun fail(identity: LoginIdentity): Nothing {

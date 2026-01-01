@@ -37,7 +37,7 @@ class JwtAuthenticationFilter(
             return
         }
 
-        val userId = claims.userId.toString()
+        val userId = claims.authAccountId.toString()
         val authorities =
             claims.roles
                 .map { SimpleGrantedAuthority("ROLE_$it") }

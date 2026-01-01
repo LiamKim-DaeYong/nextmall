@@ -30,7 +30,7 @@ class TokenProviderTest :
 
             claims shouldBe
                 TokenClaims(
-                    userId = 123L,
+                    authAccountId = 123L,
                     roles = listOf("BUYER"),
                     expirationTime = claims!!.expirationTime,
                 )
@@ -69,7 +69,7 @@ class TokenProviderTest :
 
             val token =
                 otherProvider.generateAccessToken(
-                    userId = 1L,
+                    authAccountId = 1L,
                     roles = listOf("BUYER"),
                 )
 

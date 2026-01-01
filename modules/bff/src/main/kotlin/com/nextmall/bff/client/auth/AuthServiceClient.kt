@@ -1,6 +1,6 @@
 package com.nextmall.bff.client.auth
 
-import com.nextmall.bff.client.auth.response.TokenClientResult
+import com.nextmall.bff.client.auth.response.TokenClientResponse
 
 interface AuthServiceClient {
     /**
@@ -13,7 +13,7 @@ interface AuthServiceClient {
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    )
+    ): Long
 
     /**
      * 인증 정보를 검증하고 토큰을 발급한다.
@@ -24,7 +24,7 @@ interface AuthServiceClient {
         provider: AuthProvider,
         principal: String,
         credential: String?,
-    ): TokenClientResult
+    ): TokenClientResponse
 
     /**
      * RefreshToken을 무효화한다. (로그아웃)
@@ -38,14 +38,14 @@ interface AuthServiceClient {
      *
      * 회원가입 직후 자동 로그인 등 내부 흐름에서 사용된다.
      */
-    suspend fun issueTokenForUser(
-        userId: Long,
-    ): TokenClientResult
+    suspend fun issueToken(
+        authAccountId: Long,
+    ): TokenClientResponse
 
     /**
      * RefreshToken을 사용해 토큰을 재발급한다.
      */
     suspend fun refresh(
         refreshToken: String,
-    ): TokenClientResult
+    ): TokenClientResponse
 }

@@ -5,24 +5,25 @@ import com.nextmall.bff.client.auth.request.IssueTokenClientRequest
 import com.nextmall.bff.client.auth.request.LoginClientRequest
 import com.nextmall.bff.client.auth.request.RefreshTokenClientRequest
 import com.nextmall.bff.client.auth.request.RevokeTokenClientRequest
-import com.nextmall.bff.client.auth.response.TokenClientResult
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResponse
+import com.nextmall.bff.client.auth.response.TokenClientResponse
+import com.nextmall.bff.security.AuthenticatedWebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientAuthServiceClient(
-    webClientFactory: WebClientFactory,
+    authenticatedWebClientFactory: AuthenticatedWebClientFactory,
     properties: AuthServiceClientProperties,
 ) : AuthServiceClient {
-    private val client = webClientFactory.create(properties.baseUrl)
+    private val client = authenticatedWebClientFactory.create(properties.baseUrl)
 
     override suspend fun createAccount(
         userId: Long,
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    ) {
+    ): Long =
         client
             .post()
             .uri(AUTH_INTERNAL_CREATE_ACCOUNT_URI)
@@ -34,14 +35,14 @@ class WebClientAuthServiceClient(
                     password = password,
                 ),
             ).retrieve()
-            .awaitBody<Unit>()
-    }
+            .awaitBody<CreateAuthAccountClientResponse>()
+            .authAccountId
 
     override suspend fun login(
         provider: AuthProvider,
         principal: String,
         credential: String?,
-    ): TokenClientResult =
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_LOGIN_URI)
@@ -65,19 +66,19 @@ class WebClientAuthServiceClient(
             .awaitBody<Unit>()
     }
 
-    override suspend fun issueTokenForUser(
-        userId: Long,
-    ): TokenClientResult =
+    override suspend fun issueToken(
+        authAccountId: Long,
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
-            .bodyValue(IssueTokenClientRequest(userId))
+            .bodyValue(IssueTokenClientRequest(authAccountId))
             .retrieve()
             .awaitBody()
 
     override suspend fun refresh(
         refreshToken: String,
-    ): TokenClientResult =
+    ): TokenClientResponse =
         client
             .post()
             .uri(AUTH_INTERNAL_REFRESH_URI)

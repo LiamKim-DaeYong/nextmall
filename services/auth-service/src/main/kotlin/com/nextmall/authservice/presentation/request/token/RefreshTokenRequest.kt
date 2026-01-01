@@ -1,4 +1,4 @@
-package com.nextmall.authservice.presentation.request
+package com.nextmall.authservice.presentation.request.token
 
 import jakarta.validation.constraints.NotBlank
 

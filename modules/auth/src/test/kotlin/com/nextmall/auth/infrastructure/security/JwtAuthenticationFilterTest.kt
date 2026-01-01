@@ -79,7 +79,7 @@ class JwtAuthenticationFilterTest :
         test("만료된 토큰이면 인증하지 않는다") {
             val expiredClaims =
                 TokenClaims(
-                    userId = 1L,
+                    authAccountId = 1L,
                     roles = listOf("USER"),
                     expirationTime = Instant.now().minusSeconds(10),
                 )
@@ -102,7 +102,7 @@ class JwtAuthenticationFilterTest :
         test("유효한 토큰이면 SecurityContext에 인증 정보가 설정된다") {
             val claims =
                 TokenClaims(
-                    userId = 99L,
+                    authAccountId = 99L,
                     roles = listOf("ADMIN"),
                     expirationTime = Instant.now().plusSeconds(60),
                 )
@@ -132,7 +132,7 @@ class JwtAuthenticationFilterTest :
 
             val claims =
                 TokenClaims(
-                    userId = 123L,
+                    authAccountId = 123L,
                     roles = listOf("ADMIN"),
                     expirationTime = Instant.now().plusSeconds(60),
                 )
@@ -155,7 +155,7 @@ class JwtAuthenticationFilterTest :
         test("roles가 비어 있으면 authorities도 비어 있다") {
             val claims =
                 TokenClaims(
-                    userId = 88L,
+                    authAccountId = 88L,
                     roles = emptyList(),
                     expirationTime = Instant.now().plusSeconds(60),
                 )

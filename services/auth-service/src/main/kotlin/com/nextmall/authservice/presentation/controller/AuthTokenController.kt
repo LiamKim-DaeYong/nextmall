@@ -1,10 +1,10 @@
 package com.nextmall.authservice.presentation.controller
 
 import com.nextmall.auth.application.AuthTokenService
-import com.nextmall.authservice.presentation.request.IssueTokenRequest
-import com.nextmall.authservice.presentation.request.LoginRequest
-import com.nextmall.authservice.presentation.request.RefreshTokenRequest
-import com.nextmall.authservice.presentation.response.TokenResponse
+import com.nextmall.authservice.presentation.request.token.IssueTokenRequest
+import com.nextmall.authservice.presentation.request.token.LoginRequest
+import com.nextmall.authservice.presentation.request.token.RefreshTokenRequest
+import com.nextmall.authservice.presentation.response.token.TokenResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -67,7 +67,7 @@ class AuthTokenController(
         @Valid @RequestBody request: IssueTokenRequest,
     ): ResponseEntity<TokenResponse> {
         val result =
-            authTokenService.issueForUser(request.userId)
+            authTokenService.issueForAuthAccount(request.authAccountId)
 
         return ResponseEntity.ok(
             TokenResponse(

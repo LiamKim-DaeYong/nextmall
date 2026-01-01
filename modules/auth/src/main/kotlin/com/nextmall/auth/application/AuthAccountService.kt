@@ -1,6 +1,7 @@
 package com.nextmall.auth.application
 
 import com.nextmall.auth.domain.account.AuthAccount
+import com.nextmall.auth.domain.account.AuthAccountStatus
 import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.auth.domain.exception.DuplicateAuthAccountException
 import com.nextmall.auth.infrastructure.persistence.jpa.AuthAccountJpaRepository
@@ -27,7 +28,7 @@ class AuthAccountService(
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    ) {
+    ): Long {
         validateAccountNotExists(provider, providerAccountId)
 
         val encodedPassword =
@@ -40,9 +41,12 @@ class AuthAccountService(
                 provider = provider,
                 providerAccountId = providerAccountId,
                 passwordHash = encodedPassword,
+                status = AuthAccountStatus.ACTIVE,
             )
 
         authAccountJpaRepository.save(account)
+
+        return account.id
     }
 
     private fun validateAccountNotExists(
