@@ -21,3 +21,7 @@ spring:
 nextmall:
   identifier:
     node-id: ${NODE_ID}
+
+token:
+  service:
+    secret-key: ${TOKEN_SERVICE_SECRET}

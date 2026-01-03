@@ -7,16 +7,16 @@ import com.nextmall.bff.client.auth.request.RefreshTokenClientRequest
 import com.nextmall.bff.client.auth.request.RevokeTokenClientRequest
 import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResponse
 import com.nextmall.bff.client.auth.response.TokenClientResponse
-import com.nextmall.bff.security.AuthenticatedWebClientFactory
+import com.nextmall.bff.security.ServiceWebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientAuthServiceClient(
-    authenticatedWebClientFactory: AuthenticatedWebClientFactory,
+    serviceWebClientFactory: ServiceWebClientFactory,
     properties: AuthServiceClientProperties,
 ) : AuthServiceClient {
-    private val client = authenticatedWebClientFactory.create(properties.baseUrl)
+    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
 
     override suspend fun createAccount(
         userId: Long,
@@ -87,6 +87,7 @@ class WebClientAuthServiceClient(
             .awaitBody()
 
     companion object {
+        private const val TARGET_SERVICE = "auth-service"
         private const val AUTH_INTERNAL_CREATE_ACCOUNT_URI = "/auth/accounts"
         private const val AUTH_INTERNAL_LOGIN_URI = "/auth/tokens/login"
         private const val AUTH_INTERNAL_LOGOUT_URI = "/auth/tokens/logout"

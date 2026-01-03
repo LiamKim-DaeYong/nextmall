@@ -1,43 +1,34 @@
 package com.nextmall.auth.infrastructure.security
 
-import com.nextmall.auth.config.JwtProperties
+import com.nextmall.auth.config.UserTokenIssuerProperties
 import com.nextmall.auth.domain.token.TokenClaims
-import com.nextmall.auth.infrastructure.security.exception.InvalidJwtConfigException
+import com.nextmall.common.security.jwt.SecretKeyDecoder
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
-import java.util.Base64
 import java.util.Date
 
 @Component
 class JwtTokenProvider(
-    private val jwtProperties: JwtProperties,
+    private val userTokenProperties: UserTokenIssuerProperties,
 ) {
-    private val key =
-        run {
-            val decoded =
-                runCatching { Base64.getDecoder().decode(jwtProperties.secretKey) }
-                    .getOrElse { jwtProperties.secretKey.toByteArray() }
+    private val key = SecretKeyDecoder.decode(userTokenProperties.secretKey)
 
-            if (decoded.size < MIN_SECRET_KEY_SIZE) {
-                throw InvalidJwtConfigException()
-            }
-
-            Keys.hmacShaKeyFor(decoded)
-        }
-
-    // --- AccessToken 생성 ---
     fun generateAccessToken(
         authAccountId: Long,
         roles: List<String>,
     ): String {
         val now = Date()
-        val expiry = Date(now.time + jwtProperties.accessTokenExpiration)
+        val expiry = Date(now.time + userTokenProperties.accessTokenExpiration)
 
+        // subject: 인증 주체 (어떤 auth_account로 로그인했는지)
+        // userId: 비즈니스 사용자 ID (누구인지)
+        // 현재는 1:1이지만, 멀티 프로바이더 연동 시 다른 값이 될 수 있음
+        // 예: 구글 계정(authAccountId=2)으로 로그인해도 userId=1인 경우
         return Jwts
             .builder()
             .subject(authAccountId.toString())
+            .claim("userId", authAccountId.toString())
             .issuedAt(now)
             .expiration(expiry)
             .claim("roles", roles)
@@ -45,10 +36,9 @@ class JwtTokenProvider(
             .compact()
     }
 
-    // --- RefreshToken 생성 ---
     fun generateRefreshToken(authAccountId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + jwtProperties.refreshTokenExpiration)
+        val expiry = Date(now.time + userTokenProperties.refreshTokenExpiration)
 
         return Jwts
             .builder()
@@ -59,7 +49,6 @@ class JwtTokenProvider(
             .compact()
     }
 
-    // --- AccessToken Claims 파싱 ---
     fun parseAccessToken(token: String): TokenClaims? {
         val claims = getClaims(token) ?: return null
 
@@ -70,9 +59,8 @@ class JwtTokenProvider(
         )
     }
 
-    // --- 내부 Claims 파서 ---
     private fun getClaims(token: String): Claims? {
-        val cleanToken = token.removePrefix(jwtProperties.tokenPrefix).trim()
+        val cleanToken = token.removePrefix(BEARER_PREFIX).trim()
 
         return runCatching {
             val jws =
@@ -87,9 +75,9 @@ class JwtTokenProvider(
     }
 
     fun refreshTokenTtlSeconds(): Long =
-        jwtProperties.refreshTokenExpiration / 1000
+        userTokenProperties.refreshTokenExpiration / 1000
 
     companion object {
-        private const val MIN_SECRET_KEY_SIZE = 32
+        private const val BEARER_PREFIX = "Bearer "
     }
 }

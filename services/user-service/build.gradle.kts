@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
+    implementation(project(":common:security"))
     implementation(project(":modules:user"))
 
     implementation(libs.spring.boot.starter.webmvc)
