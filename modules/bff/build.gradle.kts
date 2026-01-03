@@ -25,11 +25,13 @@ dependencies {
 
     implementation(project(":common:exception"))
     implementation(project(":common:integration"))
+    implementation(project(":common:security"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.webmvc)
 
     testImplementation(project(":common:test-support"))
