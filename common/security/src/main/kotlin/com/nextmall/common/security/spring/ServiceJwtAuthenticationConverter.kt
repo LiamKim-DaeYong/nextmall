@@ -11,15 +11,17 @@ class ServiceJwtAuthenticationConverter : Converter<Jwt, AbstractAuthenticationT
     private val authoritiesConverter = JwtGrantedAuthoritiesConverter()
 
     override fun convert(jwt: Jwt): AbstractAuthenticationToken {
-        val serviceName = jwt.subject
-            ?: throw IllegalArgumentException("JWT subject(service name)가 존재하지 않습니다.")
+        val serviceName =
+            jwt.subject
+                ?: throw IllegalArgumentException("JWT subject(service name)가 존재하지 않습니다.")
 
         val scope = jwt.getClaimAsString("scope") ?: ""
 
-        val principal = ServicePrincipal(
-            serviceName = serviceName,
-            scope = scope,
-        )
+        val principal =
+            ServicePrincipal(
+                serviceName = serviceName,
+                scope = scope,
+            )
 
         val authorities = authoritiesConverter.convert(jwt)
 
