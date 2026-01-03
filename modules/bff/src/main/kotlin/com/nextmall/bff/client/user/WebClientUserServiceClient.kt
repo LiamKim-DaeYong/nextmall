@@ -3,16 +3,16 @@ package com.nextmall.bff.client.user
 import com.nextmall.bff.client.user.request.CreateUserClientRequest
 import com.nextmall.bff.client.user.response.CreateUserClientResponse
 import com.nextmall.bff.client.user.response.UserViewClientResponse
-import com.nextmall.bff.security.AuthenticatedWebClientFactory
+import com.nextmall.bff.security.ServiceWebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientUserServiceClient(
-    authenticatedWebClientFactory: AuthenticatedWebClientFactory,
+    serviceWebClientFactory: ServiceWebClientFactory,
     properties: UserServiceClientProperties,
 ) : UserServiceClient {
-    private val client = authenticatedWebClientFactory.create(properties.baseUrl)
+    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
 
     override suspend fun getUser(
         userId: Long,
@@ -52,6 +52,7 @@ class WebClientUserServiceClient(
     }
 
     companion object {
+        private const val TARGET_SERVICE = "user-service"
         private const val USER_GET_URI = "/users/{id}"
         private const val USER_CREATE_URI = "/users"
         private const val USER_ACTIVATE_URI = "/users/{id}/activate"

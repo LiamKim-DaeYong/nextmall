@@ -22,3 +22,6 @@ gateway:
       # Health check
       - /actuator/health
       - /actuator/info
+
+      # Spring
+      - /error

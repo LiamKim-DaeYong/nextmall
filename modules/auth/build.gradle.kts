@@ -23,6 +23,8 @@ tasks.named<Jar>("jar") {
 }
 
 dependencies {
+    api(project(":common:security"))
+
     implementation(project(":common:data"))
     implementation(project(":common:exception"))
     implementation(project(":common:identifier"))
@@ -32,13 +34,9 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.jooq)
-    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
-    implementation(libs.jjwt.api)
 
-    runtimeOnly(libs.jjwt.impl)
-    runtimeOnly(libs.jjwt.jackson)
     runtimeOnly(libs.postgresql)
 
     testImplementation(project(":common:test-support"))

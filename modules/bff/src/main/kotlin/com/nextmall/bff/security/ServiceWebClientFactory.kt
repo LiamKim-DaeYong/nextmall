@@ -5,14 +5,17 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 
 @Component
-class AuthenticatedWebClientFactory(
+class ServiceWebClientFactory(
     private val webClientFactory: WebClientFactory,
-    private val tokenProvider: AuthTokenProvider,
+    private val tokenIssuer: BffServiceTokenIssuer,
 ) {
-    fun create(baseUrl: String): WebClient =
+    fun create(
+        baseUrl: String,
+        targetService: String,
+    ): WebClient =
         webClientFactory
             .create(baseUrl)
             .mutate()
-            .filter(AuthTokenRelayFilter(tokenProvider))
+            .filter(ServiceTokenFilter(tokenIssuer, targetService))
             .build()
 }
