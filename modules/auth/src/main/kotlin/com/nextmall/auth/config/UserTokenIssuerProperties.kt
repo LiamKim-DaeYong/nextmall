@@ -8,4 +8,16 @@ class UserTokenIssuerProperties(
     override val secretKey: String,
     val accessTokenExpiration: Long,
     val refreshTokenExpiration: Long,
-) : UserTokenProperties
+) : UserTokenProperties {
+    init {
+        require(accessTokenExpiration > 0) {
+            "accessTokenExpiration must be positive"
+        }
+        require(refreshTokenExpiration > 0) {
+            "refreshTokenExpiration must be positive"
+        }
+        require(refreshTokenExpiration > accessTokenExpiration) {
+            "refreshTokenExpiration must be greater than accessTokenExpiration"
+        }
+    }
+}

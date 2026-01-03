@@ -25,7 +25,6 @@ dependencies {
 
     implementation(project(":common:exception"))
     implementation(project(":common:integration"))
-    implementation(project(":common:security"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)
