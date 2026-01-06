@@ -30,41 +30,27 @@ NextMall은 **마이크로서비스 아키텍처**를 채택하고 있습니다.
 > 학습 목적의 프로젝트로, 서비스 간 통신 / 인증 위임 / 장애 격리 등 MSA 환경에서 발생하는 문제들을 직접 경험하기 위해 의도적으로 서비스를 분리했습니다.
 
 ```mermaid
-flowchart TB
-    Client[클라이언트]
-
-    subgraph Gateway["api-gateway :8080"]
-        G1[토큰 존재여부 검증]
-        G2[라우팅 & 필터링]
-        G3[Rate Limiting]
-    end
-
-    subgraph BFF["bff-service :8082"]
-        B1[Backend for Frontend]
-        B2[서비스 오케스트레이션]
-        B3[사용자 토큰 검증]
-        B4[내부 토큰 발급]
-    end
-
-    subgraph Services[Domain Services]
-        Auth["auth-service :8081<br/>• 인증<br/>• 토큰"]
-        User["user-service :8083<br/>• 회원<br/>• 프로필"]
-    end
-
-    subgraph Infra[Infrastructure]
-        DB[(PostgreSQL)]
-        Cache[(Redis)]
-    end
-
-    Client --> Gateway
-    Gateway --> BFF
-    BFF --> Auth
-    BFF --> User
-    Auth --> DB
-    Auth --> Cache
+flowchart TD
+    Client[클라이언트] --> Gateway[api-gateway]
+    Gateway --> BFF[bff-service]
+    BFF --> Auth[auth-service]
+    BFF --> User[user-service]
+    Auth --> DB[(PostgreSQL)]
     User --> DB
-    User --> Cache
+    Auth --> Redis[(Redis)]
+    User --> Redis
 ```
+
+### 서비스 구성
+
+| 서비스 | 역할 |
+|--------|------|
+| **api-gateway** | 진입점. 토큰 존재여부 검증, 라우팅, Rate Limiting |
+| **bff-service** | Backend for Frontend. 사용자 토큰 검증, 내부 토큰 발급, 서비스 호출 조합 |
+| **auth-service** | 인증/인가. 로그인, 토큰 관리 |
+| **user-service** | 회원 관리. 가입, 프로필 |
+
+> **설계 노트**: 현재 BFF에서 서비스 호출 조합(오케스트레이션)을 담당합니다. 복잡도가 증가하면 Saga Orchestrator로 분리 가능한 구조입니다.
 
 ### 핵심 설계 원칙
 
@@ -82,21 +68,11 @@ flowchart TB
 
 ```mermaid
 sequenceDiagram
-    participant C as 클라이언트
-    participant G as Gateway
-    participant B as BFF
-    participant S as 하위 서비스
-
-    C->>G: 요청 + 사용자 토큰
-    G->>G: 토큰 존재여부 확인
-    G->>B: 요청 전달
-    B->>B: 사용자 토큰 검증
-    B->>B: 내부 토큰 발급 (userId, roles)
-    B->>S: 요청 + 내부 토큰
-    S->>S: 내부 토큰 검증
-    S-->>B: 응답
-    B-->>G: 응답
-    G-->>C: 응답
+    Client->>Gateway: 요청 + 사용자 토큰
+    Gateway->>BFF: 라우팅
+    BFF->>BFF: 사용자 토큰 검증 → 내부 토큰 발급
+    BFF->>Service: 요청 + 내부 토큰
+    Service-->>Client: 응답
 ```
 
 - **사용자 토큰**: Gateway/BFF에서만 검증
