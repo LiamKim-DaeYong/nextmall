@@ -3,6 +3,7 @@ package com.nextmall.common.testsupport.annotation
 import com.nextmall.common.testsupport.config.TestContextConfig
 import com.nextmall.common.testsupport.container.PostgresContainerInitializer
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
@@ -33,8 +34,6 @@ import org.springframework.test.context.TestPropertySource
 @ActiveProfiles("test")
 @TestPropertySource(locations = ["classpath:test-common.yml"])
 @DataJpaTest
-@ContextConfiguration(
-    classes = [TestContextConfig::class],
-    initializers = [PostgresContainerInitializer::class],
-)
+@Import(TestContextConfig::class)
+@ContextConfiguration(initializers = [PostgresContainerInitializer::class])
 annotation class RepositoryTest

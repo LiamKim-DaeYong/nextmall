@@ -4,6 +4,7 @@ import com.nextmall.common.testsupport.config.TestContextConfig
 import com.nextmall.common.testsupport.container.TestContainerInitializer
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
@@ -29,10 +30,8 @@ import org.springframework.test.context.TestPropertySource
 @Retention(AnnotationRetention.RUNTIME)
 @ActiveProfiles("test")
 @TestPropertySource(locations = ["classpath:test-common.yml"])
-@SpringBootTest(
-    classes = [TestContextConfig::class],
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@Import(TestContextConfig::class)
 @ContextConfiguration(initializers = [TestContainerInitializer::class])
 annotation class IntegrationTest
