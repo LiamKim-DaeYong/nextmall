@@ -1,10 +1,9 @@
 package com.nextmall.common.redis
 
 import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.stereotype.Component
 import java.time.Duration
 
-@Component
+@RedisStore
 class RedisOperator(
     private val template: StringRedisTemplate,
 ) {

@@ -5,7 +5,7 @@ import com.nextmall.auth.application.login.LoginStrategy
 import com.nextmall.auth.application.token.TokenResult
 import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.auth.domain.exception.InvalidRefreshTokenException
-import com.nextmall.auth.infrastructure.cache.RefreshTokenRepository
+import com.nextmall.auth.infrastructure.cache.RefreshTokenStore
 import com.nextmall.auth.infrastructure.security.JwtTokenProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class AuthTokenService(
     private val loginStrategies: List<LoginStrategy>,
     private val tokenProvider: JwtTokenProvider,
-    private val refreshTokenRepository: RefreshTokenRepository,
+    private val refreshTokenStore: RefreshTokenStore,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -55,11 +55,11 @@ class AuthTokenService(
         refreshToken: String,
     ): TokenResult {
         val authAccountId =
-            refreshTokenRepository.findAuthAccountId(refreshToken)
+            refreshTokenStore.findAuthAccountId(refreshToken)
                 ?: throw InvalidRefreshTokenException()
 
         // 토큰 재사용 방지: 기존 refreshToken은 즉시 폐기
-        refreshTokenRepository.delete(refreshToken)
+        refreshTokenStore.delete(refreshToken)
 
         return issueAndStoreTokens(authAccountId)
     }
@@ -72,7 +72,7 @@ class AuthTokenService(
         refreshToken: String,
     ) {
         try {
-            refreshTokenRepository.delete(refreshToken)
+            refreshTokenStore.delete(refreshToken)
         } catch (e: Exception) {
             // 로깅만 하고 Exception 흡수
             log.warn("Failed to revoke refresh token (ignored): {}", e.message)
@@ -93,7 +93,7 @@ class AuthTokenService(
                 authAccountId = authAccountId,
             )
 
-        refreshTokenRepository.save(
+        refreshTokenStore.save(
             refreshToken = refreshToken,
             authAccountId = authAccountId,
             ttlSeconds = tokenProvider.refreshTokenTtlSeconds(),

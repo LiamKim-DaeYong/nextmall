@@ -1,5 +1,0 @@
-jwt:
-  secret-key: "test-secret-key-for-auth-module"
-  access-token-expiration: 3600000
-  refresh-token-expiration: 7200000
-  token-prefix: "Bearer "

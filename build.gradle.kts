@@ -91,6 +91,10 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        systemProperty(
+            "kotest.framework.config.fqn",
+            "com.nextmall.common.testsupport.config.ProjectConfig",
+        )
         testLogging {
             events("passed", "skipped", "failed")
         }

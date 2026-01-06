@@ -1,0 +1,16 @@
+token:
+  user:
+    secret-key: test-user-jwt-signing-secret-key-2024
+    access-token-expiration: 36000
+    refresh-token-expiration: 604800
+  service:
+    secret-key: test-service-jwt-signing-secret-key-2024
+
+nextmall:
+  identifier:
+    node-id: 1
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG

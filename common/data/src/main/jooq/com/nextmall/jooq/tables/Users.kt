@@ -5,9 +5,7 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
-import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID
 import com.nextmall.jooq.keys.USERS_PKEY
-import com.nextmall.jooq.tables.AuthAccounts.AuthAccountsPath
 import com.nextmall.jooq.tables.records.UsersRecord
 
 import java.time.OffsetDateTime
@@ -19,7 +17,6 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.InverseForeignKey
 import org.jooq.Name
-import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -32,7 +29,6 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -122,37 +118,8 @@ open class Users(
      * Create a <code>public.users</code> table reference
      */
     constructor(): this(DSL.name("users"), null)
-
-    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, USERS, null, null)
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    open class UsersPath : Users, Path<UsersRecord> {
-        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): super(path, childPath, parentPath)
-        private constructor(alias: Name, aliased: Table<UsersRecord>): super(alias, aliased)
-        override fun `as`(alias: String): UsersPath = UsersPath(DSL.name(alias), this)
-        override fun `as`(alias: Name): UsersPath = UsersPath(alias, this)
-        override fun `as`(alias: Table<*>): UsersPath = UsersPath(alias.qualifiedName, this)
-    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
-
-    private lateinit var _authAccounts: AuthAccountsPath
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.auth_accounts</code> table
-     */
-    fun authAccounts(): AuthAccountsPath {
-        if (!this::_authAccounts.isInitialized)
-            _authAccounts = AuthAccountsPath(this, null, AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID.inverseKey)
-
-        return _authAccounts;
-    }
-
-    val authAccounts: AuthAccountsPath
-        get(): AuthAccountsPath = authAccounts()
     override fun `as`(alias: String): Users = Users(DSL.name(alias), this)
     override fun `as`(alias: Name): Users = Users(alias, this)
     override fun `as`(alias: Table<*>): Users = Users(alias.qualifiedName, this)

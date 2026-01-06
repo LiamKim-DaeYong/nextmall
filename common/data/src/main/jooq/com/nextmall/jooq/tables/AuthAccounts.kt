@@ -6,9 +6,7 @@ package com.nextmall.jooq.tables
 
 import com.nextmall.jooq.Public
 import com.nextmall.jooq.keys.AUTH_ACCOUNTS_PKEY
-import com.nextmall.jooq.keys.AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID
 import com.nextmall.jooq.keys.UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID
-import com.nextmall.jooq.tables.Users.UsersPath
 import com.nextmall.jooq.tables.records.AuthAccountsRecord
 
 import java.time.OffsetDateTime
@@ -21,7 +19,6 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.InverseForeignKey
 import org.jooq.Name
-import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -34,7 +31,6 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -134,29 +130,9 @@ open class AuthAccounts(
      * Create a <code>public.auth_accounts</code> table reference
      */
     constructor(): this(DSL.name("auth_accounts"), null)
-
-    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, AuthAccountsRecord>?, parentPath: InverseForeignKey<out Record, AuthAccountsRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, AUTH_ACCOUNTS, null, null)
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    open class AuthAccountsPath : AuthAccounts, Path<AuthAccountsRecord> {
-        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, AuthAccountsRecord>?, parentPath: InverseForeignKey<out Record, AuthAccountsRecord>?): super(path, childPath, parentPath)
-        private constructor(alias: Name, aliased: Table<AuthAccountsRecord>): super(alias, aliased)
-        override fun `as`(alias: String): AuthAccountsPath = AuthAccountsPath(DSL.name(alias), this)
-        override fun `as`(alias: Name): AuthAccountsPath = AuthAccountsPath(alias, this)
-        override fun `as`(alias: Table<*>): AuthAccountsPath = AuthAccountsPath(alias.qualifiedName, this)
-    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<AuthAccountsRecord> = AUTH_ACCOUNTS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<AuthAccountsRecord>> = listOf(UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID)
-    override fun getReferences(): List<ForeignKey<AuthAccountsRecord, *>> = listOf(AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID)
-
-    /**
-     * Get the implicit join path to the <code>public.users</code> table.
-     */
-    fun users(): UsersPath = users
-    val users: UsersPath by lazy { UsersPath(this, AUTH_ACCOUNTS__FK_AUTH_ACCOUNTS_USER_ID, null) }
     override fun `as`(alias: String): AuthAccounts = AuthAccounts(DSL.name(alias), this)
     override fun `as`(alias: Name): AuthAccounts = AuthAccounts(alias, this)
     override fun `as`(alias: Table<*>): AuthAccounts = AuthAccounts(alias.qualifiedName, this)
