@@ -6,9 +6,10 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common:exception"))
     implementation(project(":modules:auth"))
 
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
+
+    testImplementation(project(":common:test-support"))
 }
