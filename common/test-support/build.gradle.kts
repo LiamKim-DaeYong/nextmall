@@ -38,5 +38,9 @@ dependencies {
     api(libs.testcontainers.core)
     api(libs.testcontainers.junit5)
     api(libs.testcontainers.postgresql)
+    api(libs.testcontainers.kafka)
     api(libs.postgresql)
+
+    // Kafka test
+    api(libs.spring.kafka.test)
 }
