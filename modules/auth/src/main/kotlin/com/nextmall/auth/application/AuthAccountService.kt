@@ -1,11 +1,13 @@
 package com.nextmall.auth.application
 
 import com.nextmall.auth.domain.account.AuthAccount
+import com.nextmall.auth.domain.account.AuthAccountCreatedEvent
 import com.nextmall.auth.domain.account.AuthAccountStatus
 import com.nextmall.auth.domain.account.AuthProvider
 import com.nextmall.auth.domain.exception.DuplicateAuthAccountException
 import com.nextmall.auth.infrastructure.persistence.jpa.AuthAccountJpaRepository
 import com.nextmall.common.identifier.IdGenerator
+import com.nextmall.common.kafka.producer.EventPublisher
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +17,7 @@ class AuthAccountService(
     private val idGenerator: IdGenerator,
     private val authAccountJpaRepository: AuthAccountJpaRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val eventPublisher: EventPublisher,
 ) {
     /**
      * 인증 계정을 생성한다.
@@ -45,6 +48,17 @@ class AuthAccountService(
             )
 
         authAccountJpaRepository.save(account)
+
+        eventPublisher.publish(
+            topic = "auth.events",
+            key = account.userId.toString(),
+            event =
+                AuthAccountCreatedEvent(
+                    accountId = account.id,
+                    userId = account.userId,
+                    provider = account.provider.name,
+                ),
+        )
 
         return account.id
     }
