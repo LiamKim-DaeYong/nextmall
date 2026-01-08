@@ -10,6 +10,7 @@ import com.nextmall.common.policy.model.Policy
 import com.nextmall.common.policy.model.Rule
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.util.UUID
 
 class PolicyEvaluatorTest :
     FunSpec({
@@ -344,8 +345,6 @@ class PolicyEvaluatorTest :
         }
     }) {
     companion object {
-        private var ruleCounter = 0
-
         fun policy(
             id: String = "test-policy",
             enabled: Boolean = true,
@@ -360,7 +359,7 @@ class PolicyEvaluatorTest :
         )
 
         fun rule(
-            id: String = "rule-${++ruleCounter}",
+            id: String = "rule-${UUID.randomUUID()}",
             effect: Effect,
             conditions: List<Condition>,
         ) = Rule(
