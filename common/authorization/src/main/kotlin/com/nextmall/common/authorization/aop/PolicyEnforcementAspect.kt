@@ -63,13 +63,25 @@ class PolicyEnforcementAspect(
     /**
      * 현재 인증 객체를 가져온다.
      */
-    private fun getAuthentication(): Authentication =
-        SecurityContextHolder.getContext().authentication
-            ?: throw AccessDeniedException(
+    private fun getAuthentication(): Authentication {
+        val authentication =
+            SecurityContextHolder.getContext().authentication
+                ?: throw AccessDeniedException(
+                    resource = "unknown",
+                    action = "unknown",
+                    reason = "Authentication required",
+                )
+
+        if (!authentication.isAuthenticated) {
+            throw AccessDeniedException(
                 resource = "unknown",
                 action = "unknown",
-                reason = "Authentication required",
+                reason = "User is not authenticated",
             )
+        }
+
+        return authentication
+    }
 
     /**
      * 인증 객체에서 사용자 정보를 추출한다.
