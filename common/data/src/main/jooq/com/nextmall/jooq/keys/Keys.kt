@@ -7,9 +7,11 @@ package com.nextmall.jooq.keys
 
 import com.nextmall.jooq.tables.AuthAccounts
 import com.nextmall.jooq.tables.Databasechangeloglock
+import com.nextmall.jooq.tables.Products
 import com.nextmall.jooq.tables.Users
 import com.nextmall.jooq.tables.records.AuthAccountsRecord
 import com.nextmall.jooq.tables.records.DatabasechangeloglockRecord
+import com.nextmall.jooq.tables.records.ProductsRecord
 import com.nextmall.jooq.tables.records.UsersRecord
 
 import org.jooq.UniqueKey
@@ -25,4 +27,5 @@ import org.jooq.impl.Internal
 val AUTH_ACCOUNTS_PKEY: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("auth_accounts_pkey"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.ID), true)
 val UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("uk_auth_accounts_provider_account_id"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.PROVIDER, AuthAccounts.AUTH_ACCOUNTS.PROVIDER_ACCOUNT_ID), true)
 val DATABASECHANGELOGLOCK_PKEY: UniqueKey<DatabasechangeloglockRecord> = Internal.createUniqueKey(Databasechangeloglock.DATABASECHANGELOGLOCK, DSL.name("databasechangeloglock_pkey"), arrayOf(Databasechangeloglock.DATABASECHANGELOGLOCK.ID), true)
+val PRODUCTS_PKEY: UniqueKey<ProductsRecord> = Internal.createUniqueKey(Products.PRODUCTS, DSL.name("products_pkey"), arrayOf(Products.PRODUCTS.PRODUCT_ID), true)
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)

@@ -8,6 +8,7 @@ package com.nextmall.jooq.tables.references
 import com.nextmall.jooq.tables.AuthAccounts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
+import com.nextmall.jooq.tables.Products
 import com.nextmall.jooq.tables.Users
 
 
@@ -26,6 +27,11 @@ val DATABASECHANGELOG: Databasechangelog = Databasechangelog.DATABASECHANGELOG
  * The table <code>public.databasechangeloglock</code>.
  */
 val DATABASECHANGELOGLOCK: Databasechangeloglock = Databasechangeloglock.DATABASECHANGELOGLOCK
+
+/**
+ * The table <code>public.products</code>.
+ */
+val PRODUCTS: Products = Products.PRODUCTS
 
 /**
  * The table <code>public.users</code>.
