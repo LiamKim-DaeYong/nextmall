@@ -17,6 +17,4 @@ dependencies {
     implementation(libs.spring.kafka)
     implementation(libs.spring.boot.autoconfigure)
     implementation(libs.slf4j.api)
-
-    testImplementation(project(":common:test-support"))
 }

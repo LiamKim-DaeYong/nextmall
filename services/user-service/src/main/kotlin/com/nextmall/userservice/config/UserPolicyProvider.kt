@@ -23,24 +23,21 @@ class UserPolicyProvider : PolicyProvider {
                 description = "관리자는 전체 조회, 일반 사용자는 본인만 조회 가능"
 
                 allow("관리자 전체 조회") {
-                    condition("subject.roles", Operator.CONTAINS, "ADMIN")
+                    condition(SUBJECT_ROLES, Operator.CONTAINS, ROLE_ADMIN)
                 }
 
                 allow("본인 정보 조회") {
-                    conditionRef("subject.userId", Operator.EQUALS, "resource.id")
+                    conditionRef(SUBJECT_USER_ID, Operator.EQUALS, RESOURCE_ID)
                 }
             },
 
-            // 사용자 생성 정책 (회원가입은 누구나 가능)
+            // 사용자 생성 정책 (관리자만 가능)
             policy("user", "create") {
                 name = "사용자 생성 정책"
-
-                allow("회원가입 허용") {
-                    condition("subject.authenticated", Operator.EQUALS, false)
-                }
+                description = "관리자만 계정 생성 가능. 회원가입은 BFF permitAll()로 처리"
 
                 allow("관리자 계정 생성") {
-                    condition("subject.roles", Operator.CONTAINS, "ADMIN")
+                    condition(SUBJECT_ROLES, Operator.CONTAINS, ROLE_ADMIN)
                 }
             },
 
@@ -49,11 +46,11 @@ class UserPolicyProvider : PolicyProvider {
                 name = "사용자 수정 정책"
 
                 allow("관리자 수정 권한") {
-                    condition("subject.roles", Operator.CONTAINS, "ADMIN")
+                    condition(SUBJECT_ROLES, Operator.CONTAINS, ROLE_ADMIN)
                 }
 
                 allow("본인 정보 수정") {
-                    conditionRef("subject.userId", Operator.EQUALS, "resource.id")
+                    conditionRef(SUBJECT_USER_ID, Operator.EQUALS, RESOURCE_ID)
                 }
             },
 
@@ -63,12 +60,19 @@ class UserPolicyProvider : PolicyProvider {
                 description = "관리자만 삭제 가능, 본인은 탈퇴 처리"
 
                 allow("관리자 삭제 권한") {
-                    condition("subject.roles", Operator.CONTAINS, "ADMIN")
+                    condition(SUBJECT_ROLES, Operator.CONTAINS, ROLE_ADMIN)
                 }
 
                 allow("본인 탈퇴") {
-                    conditionRef("subject.userId", Operator.EQUALS, "resource.id")
+                    conditionRef(SUBJECT_USER_ID, Operator.EQUALS, RESOURCE_ID)
                 }
             },
         ).associateBy { it.id }
+
+    companion object {
+        private const val SUBJECT_USER_ID = "subject.userId"
+        private const val SUBJECT_ROLES = "subject.roles"
+        private const val RESOURCE_ID = "resource.id"
+        private const val ROLE_ADMIN = "ADMIN"
+    }
 }

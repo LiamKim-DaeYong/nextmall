@@ -49,6 +49,7 @@ class UserController(
     }
 
     @PostMapping("/{userId}/activate")
+    @RequiresPolicy(resource = "user", action = "update", resourceIdParam = "userId")
     fun activate(
         @PathVariable userId: Long,
     ): ResponseEntity<Unit> {
@@ -60,6 +61,7 @@ class UserController(
     }
 
     @PostMapping("/{userId}/signup-failed")
+    @RequiresPolicy(resource = "user", action = "update", resourceIdParam = "userId")
     fun signupFailed(
         @PathVariable userId: Long,
     ): ResponseEntity<Unit> {

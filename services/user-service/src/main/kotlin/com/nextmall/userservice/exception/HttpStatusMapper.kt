@@ -13,7 +13,9 @@ class HttpStatusMapper {
             return errorCode.httpStatus
         }
 
-        if (errorCode == AuthorizationErrorCode.ACCESS_DENIED) {
+        if (errorCode == AuthorizationErrorCode.ACCESS_DENIED ||
+            errorCode == AuthorizationErrorCode.POLICY_NOT_FOUND
+        ) {
             return HttpStatus.FORBIDDEN
         }
 

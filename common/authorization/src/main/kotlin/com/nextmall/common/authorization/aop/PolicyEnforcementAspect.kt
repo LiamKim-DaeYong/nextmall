@@ -9,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 
 /**
@@ -39,7 +40,8 @@ class PolicyEnforcementAspect(
         joinPoint: ProceedingJoinPoint,
         annotation: RequiresPolicy,
     ): AuthorizationContext {
-        val principal = getCurrentPrincipal()
+        val authentication = getAuthentication()
+        val principal = extractPrincipal(authentication)
         val resourceId = extractResourceId(joinPoint, annotation)
         val resourceAttributes =
             resolveResourceAttributes(
@@ -50,7 +52,7 @@ class PolicyEnforcementAspect(
 
         return AuthorizationContext(
             userId = principal.userId,
-            roles = extractRoles(),
+            roles = extractRoles(authentication),
             resource = annotation.resource,
             resourceId = resourceId,
             resourceAttributes = resourceAttributes,
@@ -59,40 +61,38 @@ class PolicyEnforcementAspect(
     }
 
     /**
-     * 현재 인증된 사용자 정보를 가져온다.
+     * 현재 인증 객체를 가져온다.
      */
-    private fun getCurrentPrincipal(): AuthenticatedPrincipal {
-        val authentication =
-            SecurityContextHolder.getContext().authentication
-                ?: throw AccessDeniedException(
-                    resource = "unknown",
-                    action = "unknown",
-                    reason = "Authentication required",
-                )
+    private fun getAuthentication(): Authentication =
+        SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException(
+                resource = "unknown",
+                action = "unknown",
+                reason = "Authentication required",
+            )
 
-        return authentication.details as? AuthenticatedPrincipal
+    /**
+     * 인증 객체에서 사용자 정보를 추출한다.
+     */
+    private fun extractPrincipal(authentication: Authentication): AuthenticatedPrincipal =
+        authentication.details as? AuthenticatedPrincipal
             ?: throw AccessDeniedException(
                 resource = "unknown",
                 action = "unknown",
                 reason = "Invalid authentication principal",
             )
-    }
 
     /**
-     * 현재 사용자의 역할을 추출한다.
+     * 인증 객체에서 사용자의 역할을 추출한다.
      *
      * TODO: AuthenticatedPrincipal에 roles 추가 후 수정 필요
      */
-    private fun extractRoles(): Set<String> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        return authentication
-            ?.authorities
-            ?.mapNotNull { it.authority }
-            ?.filter { it.startsWith("ROLE_") }
-            ?.map { it.removePrefix("ROLE_") }
-            ?.toSet()
-            ?: emptySet()
-    }
+    private fun extractRoles(authentication: Authentication): Set<String> =
+        authentication.authorities
+            .mapNotNull { it.authority }
+            .filter { it.startsWith("ROLE_") }
+            .map { it.removePrefix("ROLE_") }
+            .toSet()
 
     /**
      * 메서드 파라미터에서 리소스 ID를 추출한다.

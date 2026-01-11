@@ -31,7 +31,7 @@ import org.springframework.test.context.TestPropertySource
 @ActiveProfiles("test")
 @TestPropertySource(locations = ["classpath:test-common.yml"])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "30000")
+@AutoConfigureWebTestClient(timeout = "PT30S")
 @Import(TestContextConfig::class)
 @ContextConfiguration(initializers = [TestContainerInitializer::class])
 annotation class IntegrationTest

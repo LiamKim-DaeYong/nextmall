@@ -32,6 +32,7 @@
 | **왜 JPA와 jOOQ를 함께 쓰나요?** | Command(쓰기)는 JPA로 도메인 중심, Query(읽기)는 jOOQ로 성능 최적화   | [ADR-001](docs/decisions/ADR-001-JOOQ와-JPA-분리-전략.md) |
 | **왜 사가를 BFF에 두었나요?** | 초기 단계에서 사가 플로우와 BFF API는 함께 변경됨. 변경 포인트 최소화         | [ADR-003](docs/decisions/ADR-003-BFF에서-사가-오케스트레이션-통합.md) |
 | **왜 RBAC이 아닌 PBAC인가요?** | 실무에서 겪은 "정책-코드 강결합" 문제 해결. 런타임 정책 변경 가능             | [ADR-004](docs/decisions/ADR-004-pbac-선택이유.md) |
+| **모듈 간 의존성은 어떻게 관리하나요?** | 순환 의존성 제거 및 명확한 계층 구조 확립. test-support는 테스트 인프라만 제공 | [ADR-005](docs/decisions/ADR-005-모듈-의존성-원칙.md) |
 
 ---
 
@@ -96,9 +97,22 @@ nextmall/
 
 ### 모듈 의존성
 
-- **services** → **modules** → **common**
-- 각 서비스는 필요한 도메인 모듈과 공통 모듈만 의존
-- 도메인 모듈 간 직접 의존 금지 (이벤트로 통신)
+**프로덕션 코드:**
+```
+services/* → modules/* → common/*
+```
+
+**테스트 코드:**
+```
+common/* (단위 테스트)
+modules/*, services/* → test-support (통합 테스트)
+```
+
+**핵심 원칙:**
+- 의존성은 단방향으로만 흐름 (순환 의존성 원천 차단)
+- common 모듈은 순수 단위 테스트만 수행
+- 통합 테스트는 test-support를 통해 modules/services 계층에서 수행
+- 자세한 내용은 [ADR-005](docs/decisions/ADR-005-모듈-의존성-원칙.md) 참고
 
 ### 빌드 자동화
 
@@ -183,6 +197,7 @@ flowchart TD
 - [ADR-002: 모듈러 모놀리식에서 마이크로서비스로 전환](docs/decisions/ADR-002-모듈러-모놀리식에서-마이크로서비스로-전환.md)
 - [ADR-003: BFF에서 사가 오케스트레이션 통합](docs/decisions/ADR-003-BFF에서-사가-오케스트레이션-통합.md)
 - [ADR-004: PBAC 기반 인가 방식 선택](docs/decisions/ADR-004-pbac-선택이유.md)
+- [ADR-005: 모듈 간 의존성 원칙](docs/decisions/ADR-005-모듈-의존성-원칙.md)
 
 **기술 문서:**
 - [PBAC 아키텍처](docs/architecture/authorization-pbac.md)
