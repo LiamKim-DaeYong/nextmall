@@ -5,6 +5,7 @@
 package com.nextmall.jooq.indexes
 
 
+import com.nextmall.jooq.tables.Orders
 import com.nextmall.jooq.tables.Products
 
 import org.jooq.Index
@@ -17,4 +18,6 @@ import org.jooq.impl.Internal
 // INDEX definitions
 // -------------------------------------------------------------------------
 
+val IDX_ORDERS_PRODUCT_ID: Index = Internal.createIndex(DSL.name("idx_orders_product_id"), Orders.ORDERS, arrayOf(Orders.ORDERS.PRODUCT_ID), false)
+val IDX_ORDERS_USER_ID: Index = Internal.createIndex(DSL.name("idx_orders_user_id"), Orders.ORDERS, arrayOf(Orders.ORDERS.USER_ID), false)
 val IDX_PRODUCTS_SELLER_ID: Index = Internal.createIndex(DSL.name("idx_products_seller_id"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.SELLER_ID), false)
