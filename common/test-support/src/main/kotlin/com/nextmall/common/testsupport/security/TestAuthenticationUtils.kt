@@ -1,5 +1,6 @@
 package com.nextmall.common.testsupport.security
 
+import com.nextmall.common.security.principal.AuthenticatedPrincipal
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -10,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder
  * 사용법:
  * ```
  * test("인증된 사용자로 테스트") {
- *     withAuthenticatedUser(userId = 1L, roles = listOf("USER")) {
+ *     withAuthenticatedUser(userId = "user-123", roles = listOf("USER")) {
  *         // 인증된 상태에서 테스트 코드 실행
  *     }
  * }
@@ -22,19 +23,11 @@ object TestAuthenticationUtils {
      * 블록 실행 후 SecurityContext가 자동으로 정리됩니다.
      */
     inline fun <T> withAuthenticatedUser(
-        userId: Long = 1L,
+        userId: String = "1",
         roles: List<String> = listOf("USER"),
         block: () -> T,
     ): T {
-        val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
-        val authentication =
-            UsernamePasswordAuthenticationToken(
-                userId.toString(),
-                null,
-                authorities,
-            )
-
-        SecurityContextHolder.getContext().authentication = authentication
+        setAuthenticatedUser(userId, roles)
         return try {
             block()
         } finally {
@@ -47,16 +40,23 @@ object TestAuthenticationUtils {
      * 수동으로 clearContext()를 호출해야 합니다.
      */
     fun setAuthenticatedUser(
-        userId: Long = 1L,
+        userId: String = "1",
         roles: List<String> = listOf("USER"),
     ) {
         val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
+        val principal =
+            AuthenticatedPrincipal(
+                subject = userId,
+                userId = userId,
+            )
         val authentication =
             UsernamePasswordAuthenticationToken(
-                userId.toString(),
+                principal,
                 null,
                 authorities,
-            )
+            ).apply {
+                details = principal
+            }
         SecurityContextHolder.getContext().authentication = authentication
     }
 
@@ -72,7 +72,7 @@ object TestAuthenticationUtils {
  * 편의를 위한 최상위 함수.
  */
 inline fun <T> withAuthenticatedUser(
-    userId: Long = 1L,
+    userId: String = "1",
     roles: List<String> = listOf("USER"),
     block: () -> T,
 ): T = TestAuthenticationUtils.withAuthenticatedUser(userId, roles, block)

@@ -1,5 +1,6 @@
 package com.nextmall.userservice.presentation.controller
 
+import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.user.application.UserService
 import com.nextmall.userservice.presentation.request.CreateUserRequest
 import com.nextmall.userservice.presentation.response.CreateUserResponse
@@ -20,17 +21,19 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService,
 ) {
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
+    @RequiresPolicy(resource = "user", action = "read", resourceIdParam = "userId")
     fun getUser(
-        @PathVariable id: Long,
+        @PathVariable userId: Long,
     ): ResponseEntity<UserViewResponse> {
-        val result = userService.getUser(id)
+        val result = userService.getUser(userId)
 
         return ResponseEntity
             .ok(result.toResponse())
     }
 
     @PostMapping
+    @RequiresPolicy(resource = "user", action = "create")
     fun create(
         @Valid @RequestBody request: CreateUserRequest,
     ): ResponseEntity<CreateUserResponse> {

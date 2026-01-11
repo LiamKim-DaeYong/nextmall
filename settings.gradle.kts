@@ -17,12 +17,13 @@ include("modules:user") // 회원 도메인 (회원 가입, 조회, 프로필, �
 include("common:integration") // 외부 서비스 통신 공통 레이어 (HTTP, Event, Messaging)
 
 // ──────────────── Common Infrastructure ────────────────
+include("common:authorization") // 인가 인프라 통합 (AOP, 캐시, 이벤트)
 include("common:data") // 데이터 접근 공통 인프라 (JPA, jOOQ)
 include("common:exception") // 공통 예외 정의 및 에러 계약
 include("common:identifier") // 식별자 생성 및 관리
 include("common:kafka") // Kafka 메시징 공통 인프라
 include("common:policy") // 정책 기반 인가 (Policy-Based Authorization)
 include("common:redis") // Redis 공통 인프라
-include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 include("common:security") // 공통 인증 인프라 (AuthN only)
+include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 include("common:test-support") // 테스트 공통 환경 및 테스트 유틸

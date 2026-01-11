@@ -1,8 +1,13 @@
 package com.nextmall.common.testsupport.security
 
+import com.nextmall.common.security.internal.ServiceTokenIssuer
 import com.nextmall.common.security.jwt.SecretKeyDecoder
 import com.nextmall.common.security.token.ServiceTokenProperties
-import io.jsonwebtoken.Jwts
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.crypto.MACSigner
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
@@ -19,10 +24,20 @@ import java.util.Date
  *     private val testServiceTokenIssuer: TestServiceTokenIssuer
  * ) : FunSpec({
  *
- *     test("테스트") {
+ *     test("서비스 간 통신 테스트") {
  *         val token = testServiceTokenIssuer.issueBearerToken()
  *         webTestClient.post()
- *             .header("Authorization", token)
+ *             .header(ServiceTokenConstants.TOKEN_HEADER, token)
+ *             ...
+ *     }
+ *
+ *     test("사용자 대리 요청 테스트") {
+ *         val token = testServiceTokenIssuer.issueBearerToken(
+ *             userId = "user-123",
+ *             roles = setOf("USER"),
+ *         )
+ *         webTestClient.get()
+ *             .header(ServiceTokenConstants.TOKEN_HEADER, token)
  *             ...
  *     }
  * })
@@ -35,40 +50,82 @@ class TestServiceTokenIssuer(
         get() = serviceTokenProperties.secretKey
 
     /**
-     * 테스트용 서비스 토큰을 발행합니다.
-     *
-     * @param sourceService 토큰을 발행하는 서비스 이름 (subject)
-     * @param targetService 토큰을 사용할 대상 서비스 이름 (audience)
-     * @param expirationMinutes 토큰 만료 시간 (분)
-     * @return JWT 토큰 문자열
+     * 테스트용 서비스 토큰을 발행합니다 (사용자 정보 없음).
      */
     fun issueToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
-    ): String {
-        val now = Instant.now()
-        return Jwts
-            .builder()
-            .subject(sourceService)
-            .audience()
-            .add(targetService)
-            .and()
-            .claim(SCOPE_CLAIM, SERVICE_ADMIN_SCOPE)
-            .issuedAt(Date.from(now))
-            .expiration(Date.from(now.plus(Duration.ofMinutes(expirationMinutes))))
-            .signWith(SecretKeyDecoder.decode(secretKey))
-            .compact()
-    }
+    ): String = buildToken(sourceService, targetService, expirationMinutes, null, null)
 
     /**
-     * Bearer 접두사가 포함된 토큰을 반환합니다.
+     * 사용자 컨텍스트를 포함한 테스트용 서비스 토큰을 발행합니다.
+     */
+    fun issueToken(
+        sourceService: String = DEFAULT_SOURCE_SERVICE,
+        targetService: String = DEFAULT_TARGET_SERVICE,
+        expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
+        userId: String,
+        roles: Set<String>,
+    ): String = buildToken(sourceService, targetService, expirationMinutes, userId, roles)
+
+    /**
+     * Bearer 접두사가 포함된 토큰을 반환합니다 (사용자 정보 없음).
      */
     fun issueBearerToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
     ): String = "Bearer ${issueToken(sourceService, targetService, expirationMinutes)}"
+
+    /**
+     * 사용자 컨텍스트를 포함한 Bearer 토큰을 반환합니다.
+     */
+    fun issueBearerToken(
+        sourceService: String = DEFAULT_SOURCE_SERVICE,
+        targetService: String = DEFAULT_TARGET_SERVICE,
+        expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
+        userId: String,
+        roles: Set<String>,
+    ): String = "Bearer ${issueToken(sourceService, targetService, expirationMinutes, userId, roles)}"
+
+    private fun buildToken(
+        sourceService: String,
+        targetService: String,
+        expirationMinutes: Long,
+        userId: String?,
+        roles: Set<String>?,
+    ): String {
+        val now = Instant.now()
+        val expiration = now.plus(Duration.ofMinutes(expirationMinutes))
+
+        val claimsBuilder =
+            JWTClaimsSet
+                .Builder()
+                .subject(sourceService)
+                .audience(targetService)
+                .claim(SCOPE_CLAIM, SERVICE_ADMIN_SCOPE)
+                .issueTime(Date.from(now))
+                .expirationTime(Date.from(expiration))
+
+        if (userId != null) {
+            claimsBuilder.claim(ServiceTokenIssuer.USER_ID_CLAIM, userId)
+        }
+        if (!roles.isNullOrEmpty()) {
+            claimsBuilder.claim(ServiceTokenIssuer.ROLES_CLAIM, roles.toList())
+        }
+
+        val signedJwt =
+            SignedJWT(
+                JWSHeader(JWSAlgorithm.HS256),
+                claimsBuilder.build(),
+            )
+
+        val signer = MACSigner(SecretKeyDecoder.decode(secretKey))
+        signedJwt.sign(signer)
+
+        return signedJwt.serialize()
+    }
 
     companion object {
         private const val SCOPE_CLAIM = "scope"

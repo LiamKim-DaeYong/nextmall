@@ -59,6 +59,24 @@ class PolicyEvaluator {
     }
 
     /**
+     * 모든 매칭되는 규칙을 수집한다. (비즈니스 로직용)
+     *
+     * @param policy 정책
+     * @param context 평가 컨텍스트
+     * @return 매칭된 규칙 목록
+     */
+    fun evaluateAll(
+        policy: Policy,
+        context: PolicyContext,
+    ): List<RuleMatch> {
+        if (!policy.enabled) return emptyList()
+
+        return policy.rules
+            .filter { evaluateRule(it, context) }
+            .map { RuleMatch(it.id, it.name, it.effect) }
+    }
+
+    /**
      * 규칙의 모든 조건을 평가한다 (AND 조합).
      */
     private fun evaluateRule(

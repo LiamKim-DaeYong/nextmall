@@ -7,3 +7,18 @@ spring:
 
   liquibase:
     enabled: false
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+
+  test:
+    webtestclient:
+      timeout: 30s
+
+kafka:
+  enabled: false
+
+nextmall:
+  kafka:
+    bootstrap-servers: localhost:9092

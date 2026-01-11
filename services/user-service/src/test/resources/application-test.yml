@@ -1,0 +1,12 @@
+token:
+  service:
+    secret-key: test-service-jwt-signing-secret-key-2024
+
+nextmall:
+  identifier:
+    node-id: 1
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.nextmall.common.authorization: DEBUG

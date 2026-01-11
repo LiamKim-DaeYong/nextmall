@@ -1,12 +1,13 @@
 package com.nextmall.common.security.jwt
 
-import io.jsonwebtoken.security.Keys
 import org.slf4j.LoggerFactory
 import java.util.Base64
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 object SecretKeyDecoder {
     private val log = LoggerFactory.getLogger(SecretKeyDecoder::class.java)
+    private const val HMAC_SHA256 = "HmacSHA256"
 
     fun decode(secretKey: String): SecretKey {
         val decoded =
@@ -16,6 +17,6 @@ object SecretKeyDecoder {
                 log.debug("Base64 decoding failed, using raw bytes: {}", e.message)
                 secretKey.toByteArray()
             }
-        return Keys.hmacShaKeyFor(decoded)
+        return SecretKeySpec(decoded, HMAC_SHA256)
     }
 }
