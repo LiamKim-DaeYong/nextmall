@@ -9,5 +9,5 @@ data class OrderView(
     val productId: Long,
     val quantity: Int,
     val totalPrice: Money,
-    val status: OrderStatus
+    val status: OrderStatus,
 )

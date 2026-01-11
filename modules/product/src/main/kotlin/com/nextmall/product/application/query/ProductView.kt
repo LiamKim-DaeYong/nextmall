@@ -8,5 +8,5 @@ data class ProductView(
     val price: Money,
     val stock: Int,
     val sellerId: Long,
-    val category: String?
+    val category: String?,
 )

@@ -15,18 +15,15 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val idGenerator: IdGenerator,
     private val productJpaRepository: ProductJpaRepository,
-    private val productJooqRepository: ProductJooqRepository
+    private val productJooqRepository: ProductJooqRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getProduct(productId: Long): ProductView {
-        return productJooqRepository.findById(productId)
+    fun getProduct(productId: Long): ProductView =
+        productJooqRepository.findById(productId)
             ?: throw ProductNotFoundException()
-    }
 
     @Transactional(readOnly = true)
-    fun getAllProducts(): List<ProductView> {
-        return productJooqRepository.findAll()
-    }
+    fun getAllProducts(): List<ProductView> = productJooqRepository.findAll()
 
     @Transactional
     fun createProduct(
@@ -34,16 +31,17 @@ class ProductService(
         price: Money,
         stock: Int,
         sellerId: Long,
-        category: String?
+        category: String?,
     ): CreateProductResult {
-        val product = Product(
-            id = idGenerator.generate(),
-            name = name,
-            priceAmount = price.amount,
-            stock = stock,
-            sellerId = sellerId,
-            category = category
-        )
+        val product =
+            Product(
+                id = idGenerator.generate(),
+                name = name,
+                priceAmount = price.amount,
+                stock = stock,
+                sellerId = sellerId,
+                category = category,
+            )
 
         val saved = productJpaRepository.save(product)
         return CreateProductResult(saved)
@@ -55,10 +53,12 @@ class ProductService(
         name: String,
         price: Money,
         stock: Int,
-        category: String?
+        category: String?,
     ) {
-        val product = productJpaRepository.findById(productId)
-            .orElseThrow { ProductNotFoundException() }
+        val product =
+            productJpaRepository
+                .findById(productId)
+                .orElseThrow { ProductNotFoundException() }
 
         product.update(name, price, stock, category)
     }

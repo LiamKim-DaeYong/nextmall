@@ -30,7 +30,7 @@ class OrderController(
 
     @GetMapping
     fun getMyOrders(
-        @CurrentUser principal: AuthenticatedPrincipal
+        @CurrentUser principal: AuthenticatedPrincipal,
     ): ResponseEntity<List<OrderViewResponse>> {
         val results = orderService.getOrdersByUserId(principal.userIdAsLong())
 
@@ -42,14 +42,15 @@ class OrderController(
     @RequiresPolicy(resource = "order", action = "create")
     fun createOrder(
         @CurrentUser principal: AuthenticatedPrincipal,
-        @Valid @RequestBody request: CreateOrderRequest
+        @Valid @RequestBody request: CreateOrderRequest,
     ): ResponseEntity<CreateOrderResponse> {
-        val result = orderService.createOrder(
-            userId = principal.userIdAsLong(),
-            productId = request.productId,
-            quantity = request.quantity,
-            totalPrice = Money.of(request.totalPrice)
-        )
+        val result =
+            orderService.createOrder(
+                userId = principal.userIdAsLong(),
+                productId = request.productId,
+                quantity = request.quantity,
+                totalPrice = Money.of(request.totalPrice),
+            )
 
         return ResponseEntity
             .status(HttpStatus.CREATED)

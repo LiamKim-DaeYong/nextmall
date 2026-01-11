@@ -40,7 +40,7 @@ class Product(
         name: String,
         price: Money,
         stock: Int,
-        category: String?
+        category: String?,
     ) {
         this.name = name
         this.price = price

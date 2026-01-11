@@ -9,7 +9,7 @@ data class ProductViewResponse(
     val price: Money,
     val stock: Int,
     val sellerId: Long,
-    val category: String?
+    val category: String?,
 )
 
 fun ProductView.toResponse() =
@@ -19,5 +19,5 @@ fun ProductView.toResponse() =
         price = price,
         stock = stock,
         sellerId = sellerId,
-        category = category
+        category = category,
     )

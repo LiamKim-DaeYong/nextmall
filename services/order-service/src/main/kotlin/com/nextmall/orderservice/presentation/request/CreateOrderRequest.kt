@@ -13,5 +13,5 @@ data class CreateOrderRequest(
     val quantity: Int,
 
     @field:NotNull
-    val totalPrice: BigDecimal
+    val totalPrice: BigDecimal,
 )

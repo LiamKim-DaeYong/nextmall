@@ -27,7 +27,7 @@ class Order(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    var status: OrderStatus
+    var status: OrderStatus,
 ) : BaseEntity() {
     var totalPrice: Money
         get() = Money.of(totalPriceAmount)

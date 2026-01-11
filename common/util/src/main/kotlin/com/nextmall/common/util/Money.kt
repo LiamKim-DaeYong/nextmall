@@ -4,7 +4,9 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 @JvmInline
-value class Money(val amount: BigDecimal) {
+value class Money(
+    val amount: BigDecimal,
+) {
     init {
         require(amount.scale() <= 2) { "Money scale must be at most 2" }
     }
@@ -13,7 +15,10 @@ value class Money(val amount: BigDecimal) {
 
     operator fun minus(other: Money): Money = Money(amount.subtract(other.amount).setScale(2, RoundingMode.HALF_UP))
 
-    operator fun times(multiplier: Int): Money = Money(amount.multiply(BigDecimal(multiplier)).setScale(2, RoundingMode.HALF_UP))
+    operator fun times(multiplier: Int): Money =
+        Money(
+            amount.multiply(BigDecimal(multiplier)).setScale(2, RoundingMode.HALF_UP),
+        )
 
     operator fun compareTo(other: Money): Int = amount.compareTo(other.amount)
 

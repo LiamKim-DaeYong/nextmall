@@ -47,15 +47,16 @@ class ProductController(
     @RequiresPolicy(resource = "product", action = "create")
     fun createProduct(
         @CurrentUser principal: AuthenticatedPrincipal,
-        @Valid @RequestBody request: CreateProductRequest
+        @Valid @RequestBody request: CreateProductRequest,
     ): ResponseEntity<CreateProductResponse> {
-        val result = productService.createProduct(
-            name = request.name,
-            price = Money.of(request.price),
-            stock = request.stock,
-            sellerId = principal.userIdAsLong(),
-            category = request.category
-        )
+        val result =
+            productService.createProduct(
+                name = request.name,
+                price = Money.of(request.price),
+                stock = request.stock,
+                sellerId = principal.userIdAsLong(),
+                category = request.category,
+            )
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -66,14 +67,14 @@ class ProductController(
     @RequiresPolicy(resource = "product", action = "update", resourceIdParam = "productId")
     fun updateProduct(
         @PathVariable productId: Long,
-        @Valid @RequestBody request: UpdateProductRequest
+        @Valid @RequestBody request: UpdateProductRequest,
     ): ResponseEntity<Unit> {
         productService.updateProduct(
             productId = productId,
             name = request.name,
             price = Money.of(request.price),
             stock = request.stock,
-            category = request.category
+            category = request.category,
         )
 
         return ResponseEntity

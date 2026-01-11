@@ -16,34 +16,32 @@ import org.springframework.transaction.annotation.Transactional
 class OrderService(
     private val idGenerator: IdGenerator,
     private val orderJpaRepository: OrderJpaRepository,
-    private val orderJooqRepository: OrderJooqRepository
+    private val orderJooqRepository: OrderJooqRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getOrder(orderId: Long): OrderView {
-        return orderJooqRepository.findById(orderId)
+    fun getOrder(orderId: Long): OrderView =
+        orderJooqRepository.findById(orderId)
             ?: throw OrderNotFoundException()
-    }
 
     @Transactional(readOnly = true)
-    fun getOrdersByUserId(userId: Long): List<OrderView> {
-        return orderJooqRepository.findAllByUserId(userId)
-    }
+    fun getOrdersByUserId(userId: Long): List<OrderView> = orderJooqRepository.findAllByUserId(userId)
 
     @Transactional
     fun createOrder(
         userId: Long,
         productId: Long,
         quantity: Int,
-        totalPrice: Money
+        totalPrice: Money,
     ): CreateOrderResult {
-        val order = Order(
-            id = idGenerator.generate(),
-            userId = userId,
-            productId = productId,
-            quantity = quantity,
-            totalPriceAmount = totalPrice.amount,
-            status = OrderStatus.PENDING
-        )
+        val order =
+            Order(
+                id = idGenerator.generate(),
+                userId = userId,
+                productId = productId,
+                quantity = quantity,
+                totalPriceAmount = totalPrice.amount,
+                status = OrderStatus.PENDING,
+            )
 
         val saved = orderJpaRepository.save(order)
         return CreateOrderResult(saved)
@@ -51,8 +49,10 @@ class OrderService(
 
     @Transactional
     fun cancelOrder(orderId: Long) {
-        val order = orderJpaRepository.findById(orderId)
-            .orElseThrow { OrderNotFoundException() }
+        val order =
+            orderJpaRepository
+                .findById(orderId)
+                .orElseThrow { OrderNotFoundException() }
 
         order.cancel()
     }

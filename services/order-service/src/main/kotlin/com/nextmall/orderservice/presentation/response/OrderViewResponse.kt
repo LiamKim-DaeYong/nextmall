@@ -10,7 +10,7 @@ data class OrderViewResponse(
     val productId: Long,
     val quantity: Int,
     val totalPrice: Money,
-    val status: OrderStatus
+    val status: OrderStatus,
 )
 
 fun OrderView.toResponse() =
@@ -20,5 +20,5 @@ fun OrderView.toResponse() =
         productId = productId,
         quantity = quantity,
         totalPrice = totalPrice,
-        status = status
+        status = status,
     )

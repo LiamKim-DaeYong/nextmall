@@ -75,3 +75,6 @@ Thumbs.db
 ### Task files ###
 # tasks.json
 # tasks/
+
+### Personal notes and roadmaps ###
+docs/roadmap.md

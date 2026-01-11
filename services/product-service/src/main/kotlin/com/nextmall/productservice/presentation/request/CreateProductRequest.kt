@@ -18,5 +18,5 @@ data class CreateProductRequest(
     @field:Min(0)
     val stock: Int,
 
-    val category: String? = null
+    val category: String? = null,
 )
