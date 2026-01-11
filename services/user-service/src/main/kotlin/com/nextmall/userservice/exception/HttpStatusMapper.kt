@@ -1,5 +1,6 @@
 package com.nextmall.userservice.exception
 
+import com.nextmall.common.authorization.exception.AuthorizationErrorCode
 import com.nextmall.common.exception.code.ErrorCategory
 import com.nextmall.common.exception.code.ErrorCode
 import org.springframework.http.HttpStatus
@@ -10,6 +11,12 @@ class HttpStatusMapper {
     fun map(errorCode: ErrorCode): HttpStatus {
         if (errorCode is HttpStatusAware) {
             return errorCode.httpStatus
+        }
+
+        if (errorCode == AuthorizationErrorCode.ACCESS_DENIED ||
+            errorCode == AuthorizationErrorCode.POLICY_NOT_FOUND
+        ) {
+            return HttpStatus.FORBIDDEN
         }
 
         return when (errorCode.category) {

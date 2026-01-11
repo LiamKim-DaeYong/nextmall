@@ -10,12 +10,11 @@ java {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    api(platform(libs.spring.boot.dependencies))
+
+    implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.kafka)
     implementation(libs.spring.boot.autoconfigure)
-    implementation(libs.jackson.module.kotlin)
     implementation(libs.slf4j.api)
-
-    testImplementation(project(":common:test-support"))
 }

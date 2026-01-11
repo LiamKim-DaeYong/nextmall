@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "nextmall.kafka")
 data class KafkaProperties(
-    val bootstrapServers: String,
+    val bootstrapServers: String = "localhost:9092",
     val producer: ProducerProperties = ProducerProperties(),
     val consumer: ConsumerProperties? = null,
 ) {

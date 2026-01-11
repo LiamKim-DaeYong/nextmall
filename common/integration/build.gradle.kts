@@ -27,5 +27,7 @@ dependencies {
     implementation(project(":common:util"))
     implementation(libs.kotlin.reflect)
 
-    testImplementation(project(":common:test-support"))
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.mockk)
 }

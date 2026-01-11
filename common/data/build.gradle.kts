@@ -26,7 +26,8 @@ dependencies {
     jooqGenerator(libs.postgresql)
 
     testImplementation("com.h2database:h2")
-    testImplementation(project(":common:test-support"))
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
 }
 
 jooq {
