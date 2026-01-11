@@ -11,7 +11,7 @@ data class UpdateProductRequest(
     val name: String,
 
     @field:NotNull
-    @field:DecimalMin("0.0")
+    @field:DecimalMin("0.01")
     val price: BigDecimal,
 
     @field:NotNull

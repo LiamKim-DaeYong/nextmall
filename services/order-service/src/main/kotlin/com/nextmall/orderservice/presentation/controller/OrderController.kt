@@ -3,7 +3,6 @@ package com.nextmall.orderservice.presentation.controller
 import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.common.security.principal.AuthenticatedPrincipal
 import com.nextmall.common.security.spring.CurrentUser
-import com.nextmall.common.util.Money
 import com.nextmall.order.application.OrderService
 import com.nextmall.orderservice.presentation.request.CreateOrderRequest
 import com.nextmall.orderservice.presentation.response.CreateOrderResponse
@@ -49,7 +48,6 @@ class OrderController(
                 userId = principal.userIdAsLong(),
                 productId = request.productId,
                 quantity = request.quantity,
-                totalPrice = Money.of(request.totalPrice),
             )
 
         return ResponseEntity

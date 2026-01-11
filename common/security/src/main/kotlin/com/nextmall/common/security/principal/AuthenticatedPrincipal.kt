@@ -10,6 +10,7 @@ data class AuthenticatedPrincipal(
     val subject: String,
     val userId: String,
 ) {
-    fun userIdAsLong(): Long = userId.toLongOrNull()
-        ?: throw IllegalStateException("Invalid userId format: $userId")
+    fun userIdAsLong(): Long =
+        userId.toLongOrNull()
+            ?: throw IllegalStateException("Invalid userId format: $userId")
 }

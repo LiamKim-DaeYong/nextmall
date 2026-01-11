@@ -1,4 +1,4 @@
-package com.nextmall.product.application.exception
+package com.nextmall.product.domain.exception
 
 import com.nextmall.common.exception.code.ErrorCategory
 import com.nextmall.common.exception.code.ErrorCode

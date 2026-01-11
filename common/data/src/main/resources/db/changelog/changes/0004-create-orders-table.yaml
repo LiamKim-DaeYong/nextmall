@@ -70,3 +70,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: product_id
+
+  - changeSet:
+      id: 0004-add-orders-check-constraints
+      author: LiamKim
+      changes:
+        - sql:
+            sql: |
+              ALTER TABLE orders ADD CONSTRAINT chk_orders_quantity_positive CHECK (quantity > 0);
+              ALTER TABLE orders ADD CONSTRAINT chk_orders_total_price_positive CHECK (total_price > 0);

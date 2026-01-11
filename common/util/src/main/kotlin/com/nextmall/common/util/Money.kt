@@ -8,7 +8,7 @@ value class Money(
     val amount: BigDecimal,
 ) {
     init {
-        require(amount.scale() <= 2) { "Money scale must be at most 2" }
+        require(amount.scale() == 2) { "Money scale must be exactly 2" }
     }
 
     operator fun plus(other: Money): Money = Money(amount.add(other.amount).setScale(2, RoundingMode.HALF_UP))

@@ -63,3 +63,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: seller_id
+
+  - changeSet:
+      id: 0003-add-products-check-constraints
+      author: LiamKim
+      changes:
+        - sql:
+            sql: |
+              ALTER TABLE products ADD CONSTRAINT chk_products_price_positive CHECK (price > 0);
+              ALTER TABLE products ADD CONSTRAINT chk_products_stock_non_negative CHECK (stock >= 0);

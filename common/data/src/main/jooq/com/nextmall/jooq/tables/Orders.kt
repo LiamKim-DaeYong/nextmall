@@ -16,6 +16,7 @@ import java.time.OffsetDateTime
 import kotlin.collections.Collection
 import kotlin.collections.List
 
+import org.jooq.Check
 import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -34,6 +35,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -136,6 +138,10 @@ open class Orders(
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIndexes(): List<Index> = listOf(IDX_ORDERS_PRODUCT_ID, IDX_ORDERS_USER_ID)
     override fun getPrimaryKey(): UniqueKey<OrdersRecord> = ORDERS_PKEY
+    override fun getChecks(): List<Check<OrdersRecord>> = listOf(
+        Internal.createCheck(this, DSL.name("chk_orders_quantity_positive"), "((quantity > 0))", true),
+        Internal.createCheck(this, DSL.name("chk_orders_total_price_positive"), "((total_price > (0)::numeric))", true)
+    )
     override fun `as`(alias: String): Orders = Orders(DSL.name(alias), this)
     override fun `as`(alias: Name): Orders = Orders(alias, this)
     override fun `as`(alias: Table<*>): Orders = Orders(alias.qualifiedName, this)

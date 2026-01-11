@@ -18,11 +18,11 @@ class Product(
     @Column(nullable = false, length = 200)
     var name: String,
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private var priceAmount: BigDecimal,
 
-    @Column(nullable = false)
-    var stock: Int,
+    @Column(name = "stock", nullable = false)
+    private var stockAmount: Int,
 
     @Column(name = "seller_id", nullable = false)
     val sellerId: Long,
@@ -36,6 +36,20 @@ class Product(
             priceAmount = value.amount
         }
 
+    val stock: Int
+        get() = stockAmount
+
+    fun decreaseStock(amount: Int) {
+        require(amount > 0) { "Amount must be positive" }
+        require(stockAmount >= amount) { "Insufficient stock" }
+        stockAmount -= amount
+    }
+
+    fun increaseStock(amount: Int) {
+        require(amount > 0) { "Amount must be positive" }
+        stockAmount += amount
+    }
+
     fun update(
         name: String,
         price: Money,
@@ -44,7 +58,7 @@ class Product(
     ) {
         this.name = name
         this.price = price
-        this.stock = stock
+        this.stockAmount = stock
         this.category = category
     }
 }

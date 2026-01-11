@@ -19,8 +19,8 @@ class Order(
     @Column(name = "product_id", nullable = false)
     val productId: Long,
 
-    @Column(nullable = false)
-    var quantity: Int,
+    @Column(name = "quantity", nullable = false)
+    val quantity: Int,
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private var totalPriceAmount: BigDecimal,

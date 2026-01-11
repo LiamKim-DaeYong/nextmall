@@ -14,7 +14,7 @@ import org.springframework.kafka.core.ProducerFactory
 import tools.jackson.databind.ObjectMapper
 
 @Configuration
-@ConditionalOnProperty(name = ["kafka.enabled"], havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = ["nextmall.kafka.enabled"], havingValue = "true", matchIfMissing = false)
 @EnableConfigurationProperties(KafkaProperties::class)
 class KafkaProducerConfig(
     private val kafkaProperties: KafkaProperties,

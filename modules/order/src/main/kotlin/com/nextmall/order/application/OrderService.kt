@@ -31,8 +31,12 @@ class OrderService(
         userId: Long,
         productId: Long,
         quantity: Int,
-        totalPrice: Money,
     ): CreateOrderResult {
+        // TODO: Phase 2에서 Product 서비스 호출로 실제 가격 조회
+        // val product = productClient.getProduct(productId)
+        // val totalPrice = product.price * quantity
+        val totalPrice = Money.of("10000.00") // 임시 하드코딩
+
         val order =
             Order(
                 id = idGenerator.generate(),

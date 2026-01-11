@@ -38,7 +38,7 @@ class ProductService(
                 id = idGenerator.generate(),
                 name = name,
                 priceAmount = price.amount,
-                stock = stock,
+                stockAmount = stock,
                 sellerId = sellerId,
                 category = category,
             )
