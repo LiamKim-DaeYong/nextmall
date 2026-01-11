@@ -104,7 +104,7 @@ class PolicyEnforcementAspect(
         if (annotation.resourceIdParam.isBlank()) return null
 
         val signature = joinPoint.signature as MethodSignature
-        val paramNames = signature.parameterNames
+        val paramNames = signature.parameterNames ?: return null
         val paramIndex = paramNames.indexOf(annotation.resourceIdParam)
 
         if (paramIndex < 0) return null
