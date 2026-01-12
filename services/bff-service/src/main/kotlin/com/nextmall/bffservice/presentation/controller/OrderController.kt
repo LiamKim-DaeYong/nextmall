@@ -7,6 +7,7 @@ import com.nextmall.bffservice.presentation.request.order.CreateOrderRequest
 import com.nextmall.bffservice.presentation.response.order.CreateOrderResponse
 import com.nextmall.bffservice.presentation.response.order.OrderViewResponse
 import com.nextmall.bffservice.presentation.response.order.toResponse
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,7 +24,7 @@ class OrderController(
 ) {
     @PostMapping
     suspend fun createOrder(
-        @RequestBody request: CreateOrderRequest,
+        @Valid @RequestBody request: CreateOrderRequest,
     ): ResponseEntity<CreateOrderResponse> {
         val command =
             CreateOrderCommand(
