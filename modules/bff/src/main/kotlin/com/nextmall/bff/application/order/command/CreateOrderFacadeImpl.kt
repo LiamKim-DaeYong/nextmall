@@ -10,6 +10,9 @@ class CreateOrderFacadeImpl(
     private val orderServiceClient: OrderServiceClient,
 ) : CreateOrderFacade {
     override suspend fun createOrder(command: CreateOrderCommand): CreateOrderResult {
+        // 0. 수량 유효성 검증
+        require(command.quantity > 0) { "Quantity must be positive" }
+
         // 1. Product 가격 조회
         val product = productServiceClient.getProduct(command.productId)
 

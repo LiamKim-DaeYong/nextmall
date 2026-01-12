@@ -5,6 +5,7 @@ import com.nextmall.bff.client.order.response.CreateOrderClientResponse
 import com.nextmall.bff.client.order.response.OrderViewClientResponse
 import com.nextmall.bff.security.ServiceWebClientFactory
 import com.nextmall.common.util.Money
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
@@ -47,7 +48,8 @@ class WebClientOrderServiceClient(
             .post()
             .uri(ORDER_CANCEL_URI, orderId)
             .retrieve()
-            .awaitBody<Unit>()
+            .toBodilessEntity()
+            .awaitSingle()
     }
 
     companion object {

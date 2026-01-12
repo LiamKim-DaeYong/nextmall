@@ -4,6 +4,7 @@ import com.nextmall.bff.client.user.request.CreateUserClientRequest
 import com.nextmall.bff.client.user.response.CreateUserClientResponse
 import com.nextmall.bff.client.user.response.UserViewClientResponse
 import com.nextmall.bff.security.ServiceWebClientFactory
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
@@ -40,7 +41,8 @@ class WebClientUserServiceClient(
             .post()
             .uri(USER_ACTIVATE_URI, userId)
             .retrieve()
-            .awaitBody<Unit>()
+            .toBodilessEntity()
+            .awaitSingle()
     }
 
     override suspend fun markSignupFailed(userId: Long) {
@@ -48,7 +50,8 @@ class WebClientUserServiceClient(
             .post()
             .uri(USER_SIGNUP_FAIL_URI, userId)
             .retrieve()
-            .awaitBody<Unit>()
+            .toBodilessEntity()
+            .awaitSingle()
     }
 
     companion object {
