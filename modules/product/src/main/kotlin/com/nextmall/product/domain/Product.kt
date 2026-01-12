@@ -56,6 +56,7 @@ class Product(
         stock: Int,
         category: String?,
     ) {
+        require(stock >= 0) { "Stock cannot be negative" }
         this.name = name
         this.price = price
         this.stockAmount = stock

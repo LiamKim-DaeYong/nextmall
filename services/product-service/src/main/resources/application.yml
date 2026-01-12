@@ -21,6 +21,9 @@ spring:
 nextmall:
   identifier:
     node-id: ${NODE_ID}
+  kafka:
+    enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
 token:
   service:

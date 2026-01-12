@@ -32,6 +32,10 @@ class OrderService(
         productId: Long,
         quantity: Int,
     ): CreateOrderResult {
+        require(userId > 0) { "Invalid userId" }
+        require(productId > 0) { "Invalid productId" }
+        require(quantity > 0) { "Quantity must be positive" }
+
         // TODO: Phase 2에서 Product 서비스 호출로 실제 가격 조회
         // val product = productClient.getProduct(productId)
         // val totalPrice = product.price * quantity

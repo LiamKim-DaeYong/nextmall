@@ -71,6 +71,7 @@ nextmall-codegen.properties
 ### OS specific ###
 .DS_Store
 Thumbs.db
+nul
 
 ### Task files ###
 # tasks.json
