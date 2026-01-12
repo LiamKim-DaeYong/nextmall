@@ -7,6 +7,8 @@ package com.nextmall.jooq
 import com.nextmall.jooq.tables.AuthAccounts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
+import com.nextmall.jooq.tables.Orders
+import com.nextmall.jooq.tables.Products
 import com.nextmall.jooq.tables.Users
 
 import kotlin.collections.List
@@ -46,6 +48,16 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
     val DATABASECHANGELOGLOCK: Databasechangeloglock get() = Databasechangeloglock.DATABASECHANGELOGLOCK
 
     /**
+     * The table <code>public.orders</code>.
+     */
+    val ORDERS: Orders get() = Orders.ORDERS
+
+    /**
+     * The table <code>public.products</code>.
+     */
+    val PRODUCTS: Products get() = Products.PRODUCTS
+
+    /**
      * The table <code>public.users</code>.
      */
     val USERS: Users get() = Users.USERS
@@ -56,6 +68,8 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
         AuthAccounts.AUTH_ACCOUNTS,
         Databasechangelog.DATABASECHANGELOG,
         Databasechangeloglock.DATABASECHANGELOGLOCK,
+        Orders.ORDERS,
+        Products.PRODUCTS,
         Users.USERS
     )
 }

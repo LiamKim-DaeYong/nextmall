@@ -4,6 +4,8 @@ rootProject.name = "nextmall"
 include("services:api-gateway") // 외부 요청의 단일 진입점 (인증 위임, 라우팅, 공통 필터)
 include("services:auth-service") // 인증 서비스 실행 단위 (Auth Domain 실행 책임)
 include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)
+include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
+include("services:order-service") // 주문 서비스 실행 단위 (Order Domain 실행 책임)
 include("services:bff-service") // BFF 실행 단위 (API Entry Point / Runtime Only)
 
 // ──────────────── Application-Level Modules ────────────────
@@ -12,6 +14,8 @@ include("modules:bff") // 여러 도메인을 조합하는 애플리케이션 �
 // ──────────────── Domain Modules ────────────────
 include("modules:auth") // 인증/인가 도메인 (Authentication & Authorization)
 include("modules:user") // 회원 도메인 (회원 가입, 조회, 프로필, 권한 등)
+include("modules:product") // 상품 도메인 (상품 등록, 조회, 재고 관리)
+include("modules:order") // 주문 도메인 (주문 생성, 조회, 취소)
 
 // ──────────────── Integration Layer ────────────────
 include("common:integration") // 외부 서비스 통신 공통 레이어 (HTTP, Event, Messaging)

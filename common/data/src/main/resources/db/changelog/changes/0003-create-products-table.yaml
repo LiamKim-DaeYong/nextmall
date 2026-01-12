@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0003-create-products-table
+      author: LiamKim
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: stock
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: seller_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: category
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: products
+            indexName: idx_products_seller_id
+            columns:
+              - column:
+                  name: seller_id
+
+  - changeSet:
+      id: 0003-add-products-check-constraints
+      author: LiamKim
+      changes:
+        - sql:
+            sql: |
+              ALTER TABLE products ADD CONSTRAINT chk_products_price_positive CHECK (price > 0);
+              ALTER TABLE products ADD CONSTRAINT chk_products_stock_non_negative CHECK (stock >= 0);

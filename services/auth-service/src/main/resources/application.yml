@@ -34,7 +34,8 @@ nextmall:
   identifier:
     node-id: ${NODE_ID}
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     producer:
       acks: all
       retries: 3
