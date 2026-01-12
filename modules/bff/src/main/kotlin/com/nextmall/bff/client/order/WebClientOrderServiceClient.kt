@@ -4,6 +4,7 @@ import com.nextmall.bff.client.order.request.CreateOrderClientRequest
 import com.nextmall.bff.client.order.response.CreateOrderClientResponse
 import com.nextmall.bff.client.order.response.OrderViewClientResponse
 import com.nextmall.bff.security.ServiceWebClientFactory
+import com.nextmall.common.util.Money
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
@@ -32,11 +33,12 @@ class WebClientOrderServiceClient(
         userId: Long,
         productId: Long,
         quantity: Int,
+        totalPrice: Money,
     ): CreateOrderClientResponse =
         client
             .post()
             .uri(ORDER_CREATE_URI)
-            .bodyValue(CreateOrderClientRequest(userId, productId, quantity))
+            .bodyValue(CreateOrderClientRequest(userId, productId, quantity, totalPrice))
             .retrieve()
             .awaitBody<CreateOrderClientResponse>()
 

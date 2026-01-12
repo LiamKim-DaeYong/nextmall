@@ -13,12 +13,17 @@ class CreateOrderFacadeImpl(
         // 1. Product 가격 조회
         val product = productServiceClient.getProduct(command.productId)
 
-        // 2. Order 생성 (실제 가격 전달)
-        val response = orderServiceClient.createOrder(
-            userId = command.userId,
-            productId = command.productId,
-            quantity = command.quantity,
-        )
+        // 2. 총 가격 계산
+        val totalPrice = product.price * command.quantity
+
+        // 3. Order 생성 (실제 가격 전달)
+        val response =
+            orderServiceClient.createOrder(
+                userId = command.userId,
+                productId = command.productId,
+                quantity = command.quantity,
+                totalPrice = totalPrice,
+            )
 
         return CreateOrderResult(orderId = response.orderId)
     }
