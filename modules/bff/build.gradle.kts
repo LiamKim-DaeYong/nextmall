@@ -22,10 +22,10 @@ tasks.named<Jar>("jar") {
 
 dependencies {
     api(project(":common:security"))
+    api(project(":common:util"))
 
     implementation(project(":common:exception"))
     implementation(project(":common:integration"))
-    implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
