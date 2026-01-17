@@ -11,6 +11,7 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 
 @IntegrationTest
 class AuthAccountControllerTest(
@@ -43,7 +44,7 @@ class AuthAccountControllerTest(
                 .exchange()
                 .expectStatus()
                 .isCreated
-                .expectBody(CreateAuthAccountResponse::class.java)
+                .expectBody<CreateAuthAccountResponse>()
                 .value { response ->
                     response.shouldNotBeNull()
                     response.authAccountId.shouldBeGreaterThan(0L)

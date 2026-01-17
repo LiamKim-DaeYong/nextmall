@@ -1,0 +1,252 @@
+# E2E 테스트용 Docker Compose
+# 사용법:
+#   1. 이미지 빌드: ./gradlew jibDockerBuild -x test --parallel
+#   2. 환경 실행: docker-compose -f docker/docker-compose.e2e.yml up -d --wait
+#   3. 테스트 실행: ./gradlew :e2e-test:test
+#   4. 정리: docker-compose -f docker/docker-compose.e2e.yml down
+
+services:
+  # ==================== Infrastructure ====================
+  postgres:
+    image: postgres:17
+    container_name: e2e-postgres
+    environment:
+      POSTGRES_USER: nextmall
+      POSTGRES_PASSWORD: nextmall
+      POSTGRES_DB: nextmall
+    ports:
+      - "15432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nextmall -d nextmall"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - e2e-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: e2e-redis
+    ports:
+      - "16379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - e2e-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: e2e-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qg
+    ports:
+      - "19092:9092"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - e2e-net
+
+  # ==================== Services ====================
+  auth-service:
+    image: nextmall/auth-service:latest
+    container_name: e2e-auth-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      # Database
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/nextmall
+      AUTH_DB_USERNAME: nextmall
+      AUTH_DB_PASSWORD: nextmall
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # Token
+      TOKEN_USER_SECRET: e2e-test-user-secret-key-must-be-at-least-32-characters
+      TOKEN_USER_ACCESS_EXPIRATION: 3600000
+      TOKEN_USER_REFRESH_EXPIRATION: 86400000
+      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
+      # Kafka
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Node
+      NODE_ID: 1
+    ports:
+      - "18081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+  user-service:
+    image: nextmall/user-service:latest
+    container_name: e2e-user-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8083
+      # Database
+      USER_DB_URL: jdbc:postgresql://postgres:5432/nextmall
+      USER_DB_USERNAME: nextmall
+      USER_DB_PASSWORD: nextmall
+      # Token
+      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
+      # Node
+      NODE_ID: 2
+    ports:
+      - "18083:8083"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+  product-service:
+    image: nextmall/product-service:latest
+    container_name: e2e-product-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8084
+      # Database
+      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/nextmall
+      PRODUCT_DB_USERNAME: nextmall
+      PRODUCT_DB_PASSWORD: nextmall
+      # Token
+      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
+      # Kafka
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Node
+      NODE_ID: 3
+    ports:
+      - "18084:8084"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8084/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+  order-service:
+    image: nextmall/order-service:latest
+    container_name: e2e-order-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8085
+      # Database
+      ORDER_DB_URL: jdbc:postgresql://postgres:5432/nextmall
+      ORDER_DB_USERNAME: nextmall
+      ORDER_DB_PASSWORD: nextmall
+      # Token
+      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
+      # Kafka
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Node
+      NODE_ID: 4
+    ports:
+      - "18085:8085"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8085/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+  bff-service:
+    image: nextmall/bff-service:latest
+    container_name: e2e-bff-service
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      product-service:
+        condition: service_healthy
+      order-service:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8082
+      # Token
+      TOKEN_USER_SECRET: e2e-test-user-secret-key-must-be-at-least-32-characters
+      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
+      # Service URLs
+      CLIENT_USER_BASE_URL: http://user-service:8083
+      CLIENT_AUTH_BASE_URL: http://auth-service:8081
+      CLIENT_PRODUCT_BASE_URL: http://product-service:8084
+      CLIENT_ORDER_BASE_URL: http://order-service:8085
+    ports:
+      - "18082:8082"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+  api-gateway:
+    image: nextmall/api-gateway:latest
+    container_name: e2e-api-gateway
+    depends_on:
+      bff-service:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8080
+      # BFF URL
+      GATEWAY_BFF_BASE_URL: http://bff-service:8082
+    ports:
+      - "18080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - e2e-net
+
+networks:
+  e2e-net:
+    name: e2e-net

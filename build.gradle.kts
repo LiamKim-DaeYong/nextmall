@@ -174,3 +174,107 @@ tasks.named("clean") {
         delete("${rootProject.projectDir}/buildSrc/build")
     }
 }
+
+// ==================== Docker Image Build Tasks ====================
+
+val allServices =
+    listOf("api-gateway", "auth-service", "bff-service", "user-service", "order-service", "product-service")
+
+tasks.register("buildAllImages") {
+    group = "docker"
+    description = "Build tar files for all services and load them into Docker"
+
+    dependsOn(allServices.map { ":services:$it:jibBuildTar" })
+
+    doLast {
+        allServices.forEach { service ->
+            val tarFile = file("services/$service/build/jib-image.tar")
+            if (tarFile.exists()) {
+                val process =
+                    ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
+                        .inheritIO()
+                        .start()
+                val exitCode = process.waitFor()
+                if (exitCode == 0) {
+                    println("Loaded image for $service")
+                } else {
+                    throw GradleException("Failed to load image for $service (exit code: $exitCode)")
+                }
+            }
+        }
+    }
+}
+
+// ==================== E2E Test Tasks ====================
+
+val e2eServices =
+    listOf("auth-service", "bff-service", "user-service", "product-service", "order-service", "api-gateway")
+
+tasks.register("e2eBuildImages") {
+    group = "e2e"
+    description = "Build Docker images for E2E services using tar method"
+
+    dependsOn(e2eServices.map { ":services:$it:jibBuildTar" })
+
+    doLast {
+        e2eServices.forEach { service ->
+            val tarFile = file("services/$service/build/jib-image.tar")
+            if (tarFile.exists()) {
+                val process =
+                    ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
+                        .inheritIO()
+                        .start()
+                val exitCode = process.waitFor()
+                if (exitCode == 0) {
+                    println("Loaded image for $service")
+                } else {
+                    throw GradleException("Failed to load image for $service (exit code: $exitCode)")
+                }
+            }
+        }
+    }
+}
+
+tasks.register<Exec>("e2eUp") {
+    group = "e2e"
+    description = "Start E2E test environment using Docker Compose"
+
+    workingDir = rootDir
+    commandLine("docker-compose", "-f", "docker/docker-compose.e2e.yml", "up", "-d", "--wait")
+
+    dependsOn("e2eBuildImages")
+}
+
+tasks.register<Exec>("e2eDown") {
+    group = "e2e"
+    description = "Stop E2E test environment"
+
+    workingDir = rootDir
+    commandLine("docker-compose", "-f", "docker/docker-compose.e2e.yml", "down")
+}
+
+tasks.register("e2eTest") {
+    group = "e2e"
+    description = "Run E2E tests (assumes environment is already running)"
+
+    dependsOn(":e2e-test:e2eTest")
+}
+
+tasks.register("e2e") {
+    group = "e2e"
+    description = "Full E2E test cycle: build images → start environment → run tests → stop environment"
+
+    dependsOn("e2eUp", "e2eTest")
+    finalizedBy("e2eDown")
+}
+
+tasks.named("e2eTest") {
+    mustRunAfter("e2eUp")
+}
+
+// e2e-test 모듈의 실제 테스트 task도 e2eUp 이후에 실행되도록 설정
+gradle.projectsEvaluated {
+    project(":e2e-test").tasks.named("e2eTest") {
+        mustRunAfter(rootProject.tasks.named("e2eUp"))
+    }
+}
