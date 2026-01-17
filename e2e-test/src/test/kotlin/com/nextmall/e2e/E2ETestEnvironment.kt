@@ -8,7 +8,7 @@ import java.net.URI
  * Docker Compose 환경이 실행 중이라고 가정합니다.
  * 테스트 실행 전에 다음 명령으로 환경을 준비하세요:
  *
- *   docker-compose -f docker/docker-compose.e2e.yml up -d --wait
+ *   docker compose -f docker/docker-compose.e2e.yml up -d --wait
  *
  * 환경 변수:
  *   - E2E_GATEWAY_URL: Gateway URL (기본값: http://localhost:18080)
@@ -31,8 +31,9 @@ object E2ETestEnvironment {
         println("Gateway URL: $gatewayUrl")
 
         while (System.currentTimeMillis() - startTime < timeoutMillis) {
+            var connection: java.net.HttpURLConnection? = null
             try {
-                val connection = URI(healthUrl).toURL().openConnection() as java.net.HttpURLConnection
+                connection = URI(healthUrl).toURL().openConnection() as java.net.HttpURLConnection
                 connection.connectTimeout = 5000
                 connection.readTimeout = 5000
                 connection.requestMethod = "GET"
@@ -43,6 +44,8 @@ object E2ETestEnvironment {
                 }
             } catch (e: Exception) {
                 // 아직 준비 안됨, 재시도
+            } finally {
+                connection?.disconnect()
             }
             Thread.sleep(2000)
         }
@@ -52,7 +55,7 @@ object E2ETestEnvironment {
             E2E environment is not ready after ${timeoutSeconds}s.
 
             Please ensure Docker Compose is running:
-              docker-compose -f docker/docker-compose.e2e.yml up -d --wait
+              docker compose -f docker/docker-compose.e2e.yml up -d --wait
 
             Gateway health check failed: $healthUrl
             """.trimIndent(),

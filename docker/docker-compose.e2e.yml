@@ -1,9 +1,10 @@
 # E2E 테스트용 Docker Compose
 # 사용법:
-#   1. 이미지 빌드: ./gradlew jibDockerBuild -x test --parallel
-#   2. 환경 실행: docker-compose -f docker/docker-compose.e2e.yml up -d --wait
-#   3. 테스트 실행: ./gradlew :e2e-test:test
-#   4. 정리: docker-compose -f docker/docker-compose.e2e.yml down
+#   1. 이미지 빌드: ./gradlew e2eBuildImages
+#   2. 환경 실행: docker compose -f docker/docker-compose.e2e.yml up -d --wait
+#   3. 테스트 실행: ./gradlew :e2e-test:e2eTest
+#   4. 정리: docker compose -f docker/docker-compose.e2e.yml down
+#   또는 전체 실행: ./gradlew e2e
 
 services:
   # ==================== Infrastructure ====================

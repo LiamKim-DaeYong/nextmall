@@ -1,7 +1,7 @@
 [versions]
-jib = "3.4.4"
+jib = "3.5.2"
 jooq-plugin = "10.2"
-karate = "1.4.1"
+karate = "1.5.2"
 kotest = "6.0.7"
 kotest-spring = "6.0.7"
 ktlint = "14.0.1"

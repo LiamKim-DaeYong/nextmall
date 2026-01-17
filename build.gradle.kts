@@ -180,6 +180,29 @@ tasks.named("clean") {
 val allServices =
     listOf("api-gateway", "auth-service", "bff-service", "user-service", "order-service", "product-service")
 
+fun loadDockerImages(services: List<String>) {
+    services.forEach { service ->
+        val tarFile = file("services/$service/build/jib-image.tar")
+        if (tarFile.exists()) {
+            val process =
+                ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
+                    .inheritIO()
+                    .start()
+            val completed = process.waitFor(5, java.util.concurrent.TimeUnit.MINUTES)
+            if (!completed) {
+                process.destroyForcibly()
+                throw GradleException("Timeout loading image for $service")
+            }
+            val exitCode = process.exitValue()
+            if (exitCode == 0) {
+                println("Loaded image for $service")
+            } else {
+                throw GradleException("Failed to load image for $service (exit code: $exitCode)")
+            }
+        }
+    }
+}
+
 tasks.register("buildAllImages") {
     group = "docker"
     description = "Build tar files for all services and load them into Docker"
@@ -187,21 +210,7 @@ tasks.register("buildAllImages") {
     dependsOn(allServices.map { ":services:$it:jibBuildTar" })
 
     doLast {
-        allServices.forEach { service ->
-            val tarFile = file("services/$service/build/jib-image.tar")
-            if (tarFile.exists()) {
-                val process =
-                    ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
-                        .inheritIO()
-                        .start()
-                val exitCode = process.waitFor()
-                if (exitCode == 0) {
-                    println("Loaded image for $service")
-                } else {
-                    throw GradleException("Failed to load image for $service (exit code: $exitCode)")
-                }
-            }
-        }
+        loadDockerImages(allServices)
     }
 }
 
@@ -217,21 +226,7 @@ tasks.register("e2eBuildImages") {
     dependsOn(e2eServices.map { ":services:$it:jibBuildTar" })
 
     doLast {
-        e2eServices.forEach { service ->
-            val tarFile = file("services/$service/build/jib-image.tar")
-            if (tarFile.exists()) {
-                val process =
-                    ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
-                        .inheritIO()
-                        .start()
-                val exitCode = process.waitFor()
-                if (exitCode == 0) {
-                    println("Loaded image for $service")
-                } else {
-                    throw GradleException("Failed to load image for $service (exit code: $exitCode)")
-                }
-            }
-        }
+        loadDockerImages(e2eServices)
     }
 }
 
@@ -240,7 +235,7 @@ tasks.register<Exec>("e2eUp") {
     description = "Start E2E test environment using Docker Compose"
 
     workingDir = rootDir
-    commandLine("docker-compose", "-f", "docker/docker-compose.e2e.yml", "up", "-d", "--wait")
+    commandLine("docker", "compose", "-f", "docker/docker-compose.e2e.yml", "up", "-d", "--wait")
 
     dependsOn("e2eBuildImages")
 }
@@ -250,7 +245,7 @@ tasks.register<Exec>("e2eDown") {
     description = "Stop E2E test environment"
 
     workingDir = rootDir
-    commandLine("docker-compose", "-f", "docker/docker-compose.e2e.yml", "down")
+    commandLine("docker", "compose", "-f", "docker/docker-compose.e2e.yml", "down")
 }
 
 tasks.register("e2eTest") {
