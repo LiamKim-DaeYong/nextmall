@@ -9,6 +9,8 @@ token:
 nextmall:
   identifier:
     node-id: 1
+  kafka:
+    enabled: false
 
 logging:
   level:

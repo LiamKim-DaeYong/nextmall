@@ -10,13 +10,13 @@
 
 ## 한눈에 보기
 
-**What**: 실무에서 겪은 문제(정책-코드 강결합, 분산 트랜잭션)를 PBAC, 사가 패턴, CQRS로 해결하는 MSA 프로젝트
+**What**: MSA 학습 프로젝트. Policy 엔진, 사가 패턴, CQRS 적용
 
-**Why**: 설계 대안을 직접 구현하고 검증하기 위해. 단순 학습이 아닌 "실무 적용 가능성" 검증
+**Why**: 경험하지 못한 기술(MSA, Kafka, CQRS)을 학습하고, 실무 문제(정책-코드 강결합)의 대안 탐색
 
-**How**: ADR로 설계 근거 기록 + Testcontainers로 통합 테스트 환경 구축 + AI 리뷰(CodeRabbit)로 품질 관리
+**How**: ADR로 설계 근거 기록 + Testcontainers 통합 테스트 + AI 리뷰(CodeRabbit)
 
-**현재 상태**: 인증(Auth) + 회원(User) + Gateway/BFF 기반 흐름 구현 완료, Kafka 기반 이벤트 드리븐 통신은 설계 및 단계적 도입 중
+**현재 상태**: Auth/User/Gateway/BFF 구현 완료, Kafka 이벤트 드리븐 설계 중
 
 **핵심 문서**: [ADR 목록](docs/decisions/) | [PBAC 아키텍처](docs/architecture/authorization-pbac.md) | [아키텍처 다이어그램](#아키텍처)
 
@@ -30,26 +30,46 @@
 |----------|-----------------------------------------------------|------|
 | **왜 서비스별로 배포 단위를 분리했나요?** | Gateway는 WebFlux(비동기), 나머지는 MVC 기반 서비스를 동시에 사용하기 위해 | [ADR-002](docs/decisions/ADR-002-모듈러-모놀리식에서-마이크로서비스로-전환.md) |
 | **왜 JPA와 jOOQ를 함께 쓰나요?** | Command(쓰기)는 JPA로 도메인 중심, Query(읽기)는 jOOQ로 성능 최적화   | [ADR-001](docs/decisions/ADR-001-JOOQ와-JPA-분리-전략.md) |
-| **왜 사가를 BFF에 두었나요?** | 초기 단계에서 사가 플로우와 BFF API는 함께 변경됨. 변경 포인트 최소화         | [ADR-003](docs/decisions/ADR-003-BFF에서-사가-오케스트레이션-통합.md) |
-| **왜 RBAC이 아닌 PBAC인가요?** | 실무에서 겪은 "정책-코드 강결합" 문제 해결. 런타임 정책 변경 가능             | [ADR-004](docs/decisions/ADR-004-pbac-선택이유.md) |
-| **모듈 간 의존성은 어떻게 관리하나요?** | 순환 의존성 제거 및 명확한 계층 구조 확립. test-support는 테스트 인프라만 제공 | [ADR-005](docs/decisions/ADR-005-모듈-의존성-원칙.md) |
+| **왜 Policy 모듈을 만들었나요?** | 실무에서 겪은 정책-코드 강결합 문제 해결. 정책을 데이터로 관리해 런타임 변경 가능 | [ADR-003](docs/decisions/ADR-003-Policy-모듈-도입.md) |
+| **왜 RBAC이 아닌 PBAC인가요?** | 리소스 속성 기반 동적 인가 필요. Policy 모듈 기반으로 일관된 설계 | [ADR-004](docs/decisions/ADR-004-PBAC-선택이유.md) |
+| **왜 사가를 BFF에 두었나요?** | 초기 단계에서 사가 플로우와 BFF API는 함께 변경됨. 변경 포인트 최소화         | [ADR-005](docs/decisions/ADR-005-BFF에서-사가-오케스트레이션-통합.md) |
+| **모듈 간 의존성은 어떻게 관리하나요?** | 순환 의존성 제거 및 명확한 계층 구조 확립. test-support는 테스트 인프라만 제공 | [ADR-006](docs/decisions/ADR-006-모듈-의존성-원칙.md) |
 
 ---
 
-## 프로젝트 배경
+## 프로젝트 목적
 
-실무에서 MSA를 운영하며 겪은 문제를 다른 방식으로 해결해보고 싶었습니다.  
-동시에 실무에서 경험하지 못한 기술 스택(Redis, Kafka, CQRS)도 함께 학습하고 싶었습니다.
-
-```kotlin
-// 예시: 정책이 코드에 강결합되어 변경 시마다 배포 필요
-if (warehouse.type == "TECHNICIAN" && outboundDelivery.type == "INSTALLED") {
-    outboundDelivery.status = "COMPLETED"
-}
-```
+실무에서 겪은 문제(정책-코드 강결합)의 대안을 탐색하고,  
+경험하지 못한 기술(MSA, Kafka, CQRS, Policy 엔진)을 학습하기 위한 프로젝트입니다.
 
 > **왜 이커머스 도메인인가?**  
 > 실무 경험(WMS)과 연결되면서도, 주문/결제 등 미경험 영역을 학습할 수 있고, MSA/CQRS/사가 패턴을 모두 적용하기 적합한 도메인
+
+### 학습 목표
+
+**기술 스택 학습**
+- MSA 아키텍처 (Gateway, BFF, 서비스 분리)
+- 이벤트 드리븐 (Kafka)
+- CQRS (JPA + jOOQ)
+- 사가 패턴
+- Policy 엔진
+
+**실무 문제 해결 방안 탐색**
+- 정책-코드 강결합 → Policy as Data
+- 분산 트랜잭션 → 사가 패턴
+- 서비스 간 강결합 → 이벤트 드리븐
+
+**설계 결정 문서화**
+- ADR로 기술 선택 근거 기록
+- 대안 비교 및 트레이드오프 분석
+
+### 개발 방식
+
+1인 개발이지만 실무 프로세스를 적용했습니다:
+
+- **Issue 기반 작업 관리**: 주요 작업은 Issue로 관리하고 결정 과정을 문서화
+- **PR 기반 병합**: main 브랜치 직접 커밋 금지, CodeRabbit AI 리뷰 활용
+- **코드 품질 관리**: SonarQube로 정적 분석 및 품질 지표 모니터링
 
 ---
 
@@ -57,7 +77,7 @@ if (warehouse.type == "TECHNICIAN" && outboundDelivery.type == "INSTALLED") {
 
 | 겪었던 문제 | 학습할 패턴 | 시도할 방법 |
 |----------|----------|----------|
-| 정책-코드 강결합 | PBAC | 정책을 데이터로 관리, 런타임 변경 |
+| 정책-코드 강결합 | Policy as Data | 정책을 데이터로 관리 (1단계: 인가 정책, 2단계: 비즈니스 로직) |
 | 복잡한 트랜잭션 처리 | 사가 패턴 | 분산 트랜잭션 + 보상 처리 |
 | 서비스 간 강결합 | 이벤트 드리븐 | Kafka 기반 비동기 통신 |
 | 조회 성능 이슈 | CQRS (JPA + jOOQ) | Command는 JPA, Query는 jOOQ로 분리 |
@@ -73,25 +93,33 @@ nextmall/
 ├── services/              # 배포 가능한 독립 서비스
 │   ├── api-gateway/      # Spring Cloud Gateway (WebFlux)
 │   ├── bff-service/      # Backend for Frontend + 사가 오케스트레이션
-│   ├── auth-service/     # 인증/인가 서비스
-│   └── user-service/     # 회원 관리 서비스
+│   ├── auth-service/     # 인증/인가 (PBAC)
+│   ├── user-service/     # 회원 관리
+│   ├── order-service/    # 주문 관리 (설계 중)
+│   └── product-service/  # 상품 관리 (설계 중)
 │
-├── modules/              # 도메인 로직 모듈 (서비스에서 참조)
-│   ├── auth/             # 인증 도메인
-│   ├── bff/              # BFF 도메인
-│   └── user/             # 사용자 도메인
+├── modules/              # 도메인 로직 모듈
+│   ├── auth/
+│   ├── bff/
+│   ├── user/
+│   ├── order/            # 설계 중
+│   └── product/          # 설계 중
 │
 ├── common/               # 공통 모듈
-│   ├── authorization/    # PBAC 인가 처리
-│   ├── data/             # JPA + jOOQ 구성 + Liquibase DB 마이그레이션
+│   ├── authorization/    # PBAC 인가
+│   ├── data/             # JPA + jOOQ + Liquibase
 │   ├── security/         # JWT, 내부 토큰
-│   ├── kafka/            # Kafka 이벤트 처리
+│   ├── kafka/            # Kafka 이벤트
 │   ├── redis/            # Redis 캐시/세션
 │   ├── policy/           # 정책 엔진
-│   └── test-support/     # 테스트 유틸리티
+│   ├── exception/        # 공통 예외
+│   ├── util/             # 유틸리티
+│   ├── identifier/       # ID 생성
+│   ├── integration/      # 외부 연동
+│   └── test-support/     # 테스트 인프라
 │
-├── buildSrc/             # Gradle 빌드 로직 공통화
-├── docker/               # 로컬 개발 환경 (PostgreSQL, Redis, Kafka)
+├── buildSrc/             # Gradle 빌드 로직
+├── docker/               # 로컬 개발 환경
 └── docs/                 # ADR 및 아키텍처 문서
 ```
 
@@ -112,7 +140,7 @@ modules/*, services/* → test-support (통합 테스트)
 - 의존성은 단방향으로만 흐름 (순환 의존성 원천 차단)
 - common 모듈은 순수 단위 테스트만 수행
 - 통합 테스트는 test-support를 통해 modules/services 계층에서 수행
-- 자세한 내용은 [ADR-005](docs/decisions/ADR-005-모듈-의존성-원칙.md) 참고
+- 자세한 내용은 [ADR-006](docs/decisions/ADR-006-모듈-의존성-원칙.md) 참고
 
 ### 빌드 자동화
 
@@ -146,12 +174,14 @@ flowchart TD
 
 ### 서비스 구성
 
-| 서비스 | 역할 |
-|--------|------|
-| **api-gateway** | 진입점. 토큰 검증, 라우팅, Rate Limiting |
-| **bff-service** | 사용자 토큰 검증, 내부 토큰 발급, 서비스 호출 조합 |
-| **auth-service** | 인증/인가. 로그인, 토큰 관리 |
-| **user-service** | 회원 관리. 가입, 프로필 |
+| 서비스 | 역할 | 상태 |
+|--------|------|------|
+| **api-gateway** | 진입점. 토큰 검증, 라우팅, Rate Limiting | ✅ 구현 완료 |
+| **bff-service** | 사용자 토큰 검증, 내부 토큰 발급, 서비스 호출 조합, 사가 오케스트레이션 | ✅ 구현 완료 |
+| **auth-service** | 인증/인가 (PBAC). 로그인, 토큰 관리 | ✅ 구현 완료 |
+| **user-service** | 회원 관리. 가입, 프로필 | ✅ 구현 완료 |
+| **order-service** | 주문 관리 | 🚧 설계 중 |
+| **product-service** | 상품 관리 | 🚧 설계 중 |
 
 ### 핵심 설계 원칙
 
@@ -195,9 +225,10 @@ flowchart TD
 
 - [ADR-001: JOOQ와 JPA 분리 전략](docs/decisions/ADR-001-JOOQ와-JPA-분리-전략.md)
 - [ADR-002: 모듈러 모놀리식에서 마이크로서비스로 전환](docs/decisions/ADR-002-모듈러-모놀리식에서-마이크로서비스로-전환.md)
-- [ADR-003: BFF에서 사가 오케스트레이션 통합](docs/decisions/ADR-003-BFF에서-사가-오케스트레이션-통합.md)
-- [ADR-004: PBAC 기반 인가 방식 선택](docs/decisions/ADR-004-pbac-선택이유.md)
-- [ADR-005: 모듈 간 의존성 원칙](docs/decisions/ADR-005-모듈-의존성-원칙.md)
+- [ADR-003: Policy 모듈 도입](docs/decisions/ADR-003-Policy-모듈-도입.md)
+- [ADR-004: PBAC 기반 인가 방식 선택](docs/decisions/ADR-004-PBAC-선택이유.md)
+- [ADR-005: BFF에서 사가 오케스트레이션 통합](docs/decisions/ADR-005-BFF에서-사가-오케스트레이션-통합.md)
+- [ADR-006: 모듈 간 의존성 원칙](docs/decisions/ADR-006-모듈-의존성-원칙.md)
 
 **기술 문서:**
 - [PBAC 아키텍처](docs/architecture/authorization-pbac.md)
@@ -205,10 +236,8 @@ flowchart TD
 
 **각 ADR에는 다음이 포함됩니다:**
 - 실무에서 겪은 문제
-- 대안 비교
-- 선택 이유
+- 대안 비교 및 선택 이유
 - 트레이드오프
-- 향후 고려사항
 
 ---
 
@@ -232,21 +261,4 @@ docker-compose up -d
 
 ---
 
-## 프로젝트 목적
 
-완성된 서비스가 아니라, **설계 선택의 이유를 고민하고 기록하는 연습**입니다.
-
-- 실무에서 경험하지 못한 기술과 아키텍처를 직접 적용해보기
-- 단순 CRUD가 아닌, 경계 / 통신 / 실패 / 보안을 고려한 구조 연습
-- GitHub Issue + PR + 리뷰 기반의 실무형 개발 프로세스 시뮬레이션
-- AI(CodeRabbit)와 협업: PR 리뷰 자동화, 설계 대안 비교는 LLM과 ADR로 정리
-
-### 일하는 방식도 함께 고민
-
-1인 개발이지만 실무 프로세스를 최대한 재현했습니다:
-
-- **Issue & 문서화**: 주요 작업은 Issue로 관리하고 결정 과정을 문서화
-- **PR 필수 정책**: main 브랜치 직접 커밋 금지, 모든 변경은 PR을 통해서만 병합
-- **AI 코드 리뷰**: CodeRabbit이 모든 PR을 리뷰하고 approve
-- **코드 품질 관리**: SonarQube로 정적 분석 및 코드 품질 지표 모니터링
-- **멀티 LLM 활용**: Claude, GPT, Gemini, Amazon Q를 활용해 설계 결정 검증 및 ADR 작성

@@ -39,6 +39,7 @@ dependencies {
     api(libs.testcontainers.core)
     api(libs.testcontainers.junit5)
     api(libs.testcontainers.postgresql)
+    api(libs.testcontainers.redis)
     api(libs.testcontainers.kafka)
     api(libs.postgresql)
 

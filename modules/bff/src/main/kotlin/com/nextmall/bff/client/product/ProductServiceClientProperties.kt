@@ -2,7 +2,7 @@ package com.nextmall.bff.client.product
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConfigurationProperties(prefix = "service.product")
+@ConfigurationProperties(prefix = "client.product")
 data class ProductServiceClientProperties(
     val baseUrl: String,
 )

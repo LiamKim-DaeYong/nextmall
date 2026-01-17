@@ -31,3 +31,6 @@ include("common:redis") // Redis 공통 인프라
 include("common:security") // 공통 인증 인프라 (AuthN only)
 include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 include("common:test-support") // 테스트 공통 환경 및 테스트 유틸
+
+// ──────────────── E2E Test ────────────────
+include("e2e-test") // E2E 테스트 (Karate + Testcontainers)
