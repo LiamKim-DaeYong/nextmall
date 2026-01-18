@@ -1,14 +1,15 @@
 package com.nextmall.auth.config
 
-import com.nextmall.common.security.token.UserTokenProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConfigurationProperties(prefix = "token.user")
-class UserTokenIssuerProperties(
-    override val secretKey: String,
+@ConfigurationProperties(prefix = "token.external")
+class ExternalTokenProperties(
     val accessTokenExpiration: Long,
     val refreshTokenExpiration: Long,
-) : UserTokenProperties {
+    val privateKey: String,
+    val publicKey: String,
+    val keyId: String,
+) {
     init {
         require(accessTokenExpiration > 0) {
             "accessTokenExpiration must be positive"
