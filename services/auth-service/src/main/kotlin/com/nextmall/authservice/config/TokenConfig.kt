@@ -9,7 +9,14 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties(prefix = "token.passport")
 class PassportTokenProperties(
     override val secretKey: String,
-) : ServiceTokenProperties
+) : ServiceTokenProperties {
+    init {
+        val decodedKey = java.util.Base64.getDecoder().decode(secretKey)
+        require(decodedKey.size >= 32) {
+            "Passport token secret key must be at least 256 bits (32 bytes), but was ${decodedKey.size} bytes"
+        }
+    }
+}
 
 @Configuration
 @EnableConfigurationProperties(ExternalTokenProperties::class, PassportTokenProperties::class)

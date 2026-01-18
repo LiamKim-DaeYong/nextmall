@@ -28,7 +28,7 @@ token:
     refresh-token-expiration: ${TOKEN_EXTERNAL_REFRESH_EXPIRATION}
     private-key: ${TOKEN_EXTERNAL_PRIVATE_KEY}
     public-key: ${TOKEN_EXTERNAL_PUBLIC_KEY}
-    key-id: nextmall-key-1
+    key-id: ${TOKEN_EXTERNAL_KEY_ID}
   passport:
     secret-key: ${TOKEN_PASSPORT_SECRET}
 
