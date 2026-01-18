@@ -1,8 +1,8 @@
 package com.nextmall.common.testsupport.security
 
-import com.nextmall.common.security.internal.ServiceTokenIssuer
+import com.nextmall.common.security.internal.PassportTokenIssuer
 import com.nextmall.common.security.jwt.SecretKeyDecoder
-import com.nextmall.common.security.token.ServiceTokenProperties
+import com.nextmall.common.security.token.PassportTokenProperties
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.crypto.MACSigner
@@ -12,55 +12,18 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Date
 
-/**
- * 테스트에서 내부 서비스 토큰을 생성하기 위한 유틸리티.
- *
- * ServiceTokenProperties를 통해 application-test.yml의 설정을 자동으로 사용합니다.
- *
- * 사용법:
- * ```
- * @IntegrationTest
- * class MyTest(
- *     private val testServiceTokenIssuer: TestServiceTokenIssuer
- * ) : FunSpec({
- *
- *     test("서비스 간 통신 테스트") {
- *         val token = testServiceTokenIssuer.issueBearerToken()
- *         webTestClient.post()
- *             .header(ServiceTokenConstants.TOKEN_HEADER, token)
- *             ...
- *     }
- *
- *     test("사용자 대리 요청 테스트") {
- *         val token = testServiceTokenIssuer.issueBearerToken(
- *             userId = "user-123",
- *             roles = setOf("USER"),
- *         )
- *         webTestClient.get()
- *             .header(ServiceTokenConstants.TOKEN_HEADER, token)
- *             ...
- *     }
- * })
- * ```
- */
-class TestServiceTokenIssuer(
-    private val serviceTokenProperties: ServiceTokenProperties,
+class TestPassportTokenIssuer(
+    private val passportTokenProperties: PassportTokenProperties,
 ) {
     private val secretKey: String
-        get() = serviceTokenProperties.secretKey
+        get() = passportTokenProperties.secretKey
 
-    /**
-     * 테스트용 서비스 토큰을 발행합니다 (사용자 정보 없음).
-     */
     fun issueToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
     ): String = buildToken(sourceService, targetService, expirationMinutes, null, null)
 
-    /**
-     * 사용자 컨텍스트를 포함한 테스트용 서비스 토큰을 발행합니다.
-     */
     fun issueToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
@@ -69,18 +32,12 @@ class TestServiceTokenIssuer(
         roles: Set<String>,
     ): String = buildToken(sourceService, targetService, expirationMinutes, userId, roles)
 
-    /**
-     * Bearer 접두사가 포함된 토큰을 반환합니다 (사용자 정보 없음).
-     */
     fun issueBearerToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
     ): String = "Bearer ${issueToken(sourceService, targetService, expirationMinutes)}"
 
-    /**
-     * 사용자 컨텍스트를 포함한 Bearer 토큰을 반환합니다.
-     */
     fun issueBearerToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
@@ -109,10 +66,10 @@ class TestServiceTokenIssuer(
                 .expirationTime(Date.from(expiration))
 
         if (userId != null) {
-            claimsBuilder.claim(ServiceTokenIssuer.USER_ID_CLAIM, userId)
+            claimsBuilder.claim(PassportTokenIssuer.USER_ID_CLAIM, userId)
         }
         if (!roles.isNullOrEmpty()) {
-            claimsBuilder.claim(ServiceTokenIssuer.ROLES_CLAIM, roles.toList())
+            claimsBuilder.claim(PassportTokenIssuer.ROLES_CLAIM, roles.toList())
         }
 
         val signedJwt =

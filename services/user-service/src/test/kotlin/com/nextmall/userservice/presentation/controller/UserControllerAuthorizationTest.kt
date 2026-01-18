@@ -1,8 +1,8 @@
 package com.nextmall.userservice.presentation.controller
 
-import com.nextmall.common.security.internal.ServiceTokenConstants
+import com.nextmall.common.security.internal.PassportTokenConstants
 import com.nextmall.common.testsupport.annotation.IntegrationTest
-import com.nextmall.common.testsupport.security.TestServiceTokenIssuer
+import com.nextmall.common.testsupport.security.TestPassportTokenIssuer
 import com.nextmall.user.application.UserService
 import com.nextmall.user.application.query.UserView
 import com.ninjasquad.springmockk.MockkBean
@@ -13,7 +13,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @IntegrationTest
 class UserControllerAuthorizationTest(
     private val webTestClient: WebTestClient,
-    private val testServiceTokenIssuer: TestServiceTokenIssuer,
+    private val testPassportTokenIssuer: TestPassportTokenIssuer,
     @MockkBean
     private val userService: UserService,
 ) : FunSpec() {
@@ -31,7 +31,7 @@ class UserControllerAuthorizationTest(
                     )
 
                 val adminToken =
-                    testServiceTokenIssuer.issueBearerToken(
+                    testPassportTokenIssuer.issueBearerToken(
                         userId = "1",
                         roles = setOf("ADMIN"),
                     )
@@ -40,7 +40,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$targetUserId")
-                    .header(ServiceTokenConstants.TOKEN_HEADER, adminToken)
+                    .header(PassportTokenConstants.HEADER_NAME, adminToken)
                     .exchange()
                     .expectStatus()
                     .isOk
@@ -57,7 +57,7 @@ class UserControllerAuthorizationTest(
                     )
 
                 val userToken =
-                    testServiceTokenIssuer.issueBearerToken(
+                    testPassportTokenIssuer.issueBearerToken(
                         userId = myUserId.toString(),
                         roles = setOf("USER"),
                     )
@@ -66,7 +66,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$myUserId")
-                    .header(ServiceTokenConstants.TOKEN_HEADER, userToken)
+                    .header(PassportTokenConstants.HEADER_NAME, userToken)
                     .exchange()
                     .expectStatus()
                     .isOk
@@ -77,7 +77,7 @@ class UserControllerAuthorizationTest(
                 val otherUserId = 999L
 
                 val userToken =
-                    testServiceTokenIssuer.issueBearerToken(
+                    testPassportTokenIssuer.issueBearerToken(
                         userId = "123",
                         roles = setOf("USER"),
                     )
@@ -86,7 +86,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$otherUserId")
-                    .header(ServiceTokenConstants.TOKEN_HEADER, userToken)
+                    .header(PassportTokenConstants.HEADER_NAME, userToken)
                     .exchange()
                     .expectStatus()
                     .isForbidden

@@ -3,7 +3,8 @@ package com.nextmall.bff.client.order
 import com.nextmall.bff.client.order.request.CreateOrderClientRequest
 import com.nextmall.bff.client.order.response.CreateOrderClientResponse
 import com.nextmall.bff.client.order.response.OrderViewClientResponse
-import com.nextmall.bff.security.ServiceWebClientFactory
+import com.nextmall.bff.security.PassportTokenPropagationFilter
+import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.common.util.Money
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
@@ -11,10 +12,14 @@ import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientOrderServiceClient(
-    serviceWebClientFactory: ServiceWebClientFactory,
+    webClientFactory: WebClientFactory,
     properties: OrderServiceClientProperties,
 ) : OrderServiceClient {
-    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
+    private val client =
+        webClientFactory.create(
+            baseUrl = properties.baseUrl,
+            filters = arrayOf(PassportTokenPropagationFilter()),
+        )
 
     override suspend fun getOrder(orderId: Long): OrderViewClientResponse =
         client

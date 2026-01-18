@@ -10,6 +10,10 @@ spring:
         jwt:
           jwk-set-uri: http://localhost:8081/.well-known/jwks.json
 
+token:
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}
+
 management:
   endpoints:
     web:

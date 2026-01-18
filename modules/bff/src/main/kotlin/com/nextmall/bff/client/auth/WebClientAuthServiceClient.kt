@@ -7,16 +7,21 @@ import com.nextmall.bff.client.auth.request.RefreshTokenClientRequest
 import com.nextmall.bff.client.auth.request.RevokeTokenClientRequest
 import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResponse
 import com.nextmall.bff.client.auth.response.TokenClientResponse
-import com.nextmall.bff.security.ServiceWebClientFactory
+import com.nextmall.bff.security.PassportTokenPropagationFilter
+import com.nextmall.common.integration.support.WebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientAuthServiceClient(
-    serviceWebClientFactory: ServiceWebClientFactory,
+    webClientFactory: WebClientFactory,
     properties: AuthServiceClientProperties,
 ) : AuthServiceClient {
-    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
+    private val client =
+        webClientFactory.create(
+            baseUrl = properties.baseUrl,
+            filters = arrayOf(PassportTokenPropagationFilter()),
+        )
 
     override suspend fun createAccount(
         userId: Long,

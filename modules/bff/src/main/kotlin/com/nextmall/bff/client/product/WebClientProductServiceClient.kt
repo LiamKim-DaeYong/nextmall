@@ -1,16 +1,21 @@
 package com.nextmall.bff.client.product
 
 import com.nextmall.bff.client.product.response.ProductViewClientResponse
-import com.nextmall.bff.security.ServiceWebClientFactory
+import com.nextmall.bff.security.PassportTokenPropagationFilter
+import com.nextmall.common.integration.support.WebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientProductServiceClient(
-    serviceWebClientFactory: ServiceWebClientFactory,
+    webClientFactory: WebClientFactory,
     properties: ProductServiceClientProperties,
 ) : ProductServiceClient {
-    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
+    private val client =
+        webClientFactory.create(
+            baseUrl = properties.baseUrl,
+            filters = arrayOf(PassportTokenPropagationFilter()),
+        )
 
     override suspend fun getProduct(productId: Long): ProductViewClientResponse =
         client

@@ -1,6 +1,6 @@
 token:
-  service:
-    secret-key: test-service-jwt-signing-secret-key-2024
+  passport:
+    secret-key: dGVzdC1zZXJ2aWNlLWp3dC1zaWduaW5nLXNlY3JldC1rZXktMjAyNA==
 
 nextmall:
   identifier:
