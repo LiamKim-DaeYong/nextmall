@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import java.util.concurrent.TimeUnit
 
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
