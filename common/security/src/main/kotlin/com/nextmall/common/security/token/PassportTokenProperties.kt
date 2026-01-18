@@ -1,5 +1,5 @@
 package com.nextmall.common.security.token
 
-interface ServiceTokenProperties {
+interface PassportTokenProperties {
     val secretKey: String
 }

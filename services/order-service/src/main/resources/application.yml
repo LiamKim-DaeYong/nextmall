@@ -26,5 +26,5 @@ nextmall:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
 token:
-  service:
-    secret-key: ${TOKEN_SERVICE_SECRET}
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}

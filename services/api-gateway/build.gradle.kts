@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
+    implementation(project(":common:security"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.cloud.gateway)

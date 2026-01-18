@@ -1,6 +1,6 @@
 token:
-  service:
-    secret-key: test-service-jwt-signing-secret-key-2024
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}
 
 nextmall:
   identifier:

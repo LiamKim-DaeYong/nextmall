@@ -39,6 +39,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Claude AI ###
+.claude/
+
 ### Kotlin ###
 .kotlin/
 

@@ -24,6 +24,7 @@ dependencies {
     api(libs.spring.boot.starter.oauth2.resource.server)
     api(libs.spring.boot.starter.security)
     api(libs.spring.boot.starter.webmvc)
+    api(libs.spring.boot.starter.validation)
     api(libs.nimbus.jose.jwt)
 
     implementation(project(":common:exception"))

@@ -6,7 +6,7 @@ token:
     public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5rwV5pp5mvgNZoJvY9Sn6sWUlKtrzjXN2io+twKv8HVkvYa9QaoOrzY61MALr4wIgBIHSBBBEqUpAoTn1fyii3xdpvraw5iQoQZ1MPoa/7Z5294mSBCDZvEQ+AZ+3v+vGtzZqWfrUT1j7tbqv1paG9Yu8CxpDbbCTX0dmFsierdAjmRP8dSijrNYrjlsKZsbMD2BCytjnfluvC6Vt8UslrlOAPjz7Y/qCOUxpMmeVv4zNRtE99rBuMfsCrlB2RiOrNU+tWa60xWl2YxtZE1ZZezKY3CY44GGb5gDjUmxhY7sqJVscyhgC2kbpIdfpNlj+aP677iBuubJNNddKcNWEQIDAQAB
     key-id: test-key-1
   passport:
-    secret-key: dGVzdC1zZXJ2aWNlLWp3dC1zaWduaW5nLXNlY3JldC1rZXktMjAyNA==
+    secret-key: ${TOKEN_PASSPORT_SECRET}
 
 nextmall:
   identifier:

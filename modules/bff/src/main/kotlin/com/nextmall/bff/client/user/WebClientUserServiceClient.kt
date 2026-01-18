@@ -3,17 +3,22 @@ package com.nextmall.bff.client.user
 import com.nextmall.bff.client.user.request.CreateUserClientRequest
 import com.nextmall.bff.client.user.response.CreateUserClientResponse
 import com.nextmall.bff.client.user.response.UserViewClientResponse
-import com.nextmall.bff.security.ServiceWebClientFactory
+import com.nextmall.bff.security.PassportTokenPropagationFilter
+import com.nextmall.common.integration.support.WebClientFactory
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class WebClientUserServiceClient(
-    serviceWebClientFactory: ServiceWebClientFactory,
+    webClientFactory: WebClientFactory,
     properties: UserServiceClientProperties,
 ) : UserServiceClient {
-    private val client = serviceWebClientFactory.create(properties.baseUrl, TARGET_SERVICE)
+    private val client =
+        webClientFactory.create(
+            baseUrl = properties.baseUrl,
+            filters = arrayOf(PassportTokenPropagationFilter()),
+        )
 
     override suspend fun getUser(
         userId: Long,

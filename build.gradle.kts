@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import java.util.concurrent.TimeUnit
 
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
@@ -98,6 +99,14 @@ subprojects {
         testLogging {
             events("passed", "skipped", "failed")
         }
+
+        // 테스트용 환경변수 자동 설정
+        environment(
+            "TOKEN_PASSPORT_SECRET",
+            System.getenv("TOKEN_PASSPORT_SECRET")
+                ?: "dGVzdC1wYXNzcG9ydC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLW11c3QtYmUtYXQtbGVhc3QtMjU2LWJpdHMtbG9uZw==",
+        )
+
         finalizedBy("jacocoTestReport")
     }
 
@@ -188,7 +197,7 @@ fun loadDockerImages(services: List<String>) {
                 ProcessBuilder("docker", "load", "-i", tarFile.absolutePath)
                     .inheritIO()
                     .start()
-            val completed = process.waitFor(5, java.util.concurrent.TimeUnit.MINUTES)
+            val completed = process.waitFor(5, TimeUnit.MINUTES)
             if (!completed) {
                 process.destroyForcibly()
                 throw GradleException("Timeout loading image for $service")

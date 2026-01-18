@@ -6,7 +6,5 @@ spring:
     name: bff-service
 
 token:
-  user:
-    secret-key: ${TOKEN_USER_SECRET}
-  service:
-    secret-key: ${TOKEN_SERVICE_SECRET}
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}
