@@ -23,12 +23,14 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 token:
-  user:
-    secret-key: ${TOKEN_USER_SECRET}
-    access-token-expiration: ${TOKEN_USER_ACCESS_EXPIRATION}
-    refresh-token-expiration: ${TOKEN_USER_REFRESH_EXPIRATION}
-  service:
-    secret-key: ${TOKEN_SERVICE_SECRET}
+  external:
+    access-token-expiration: ${TOKEN_EXTERNAL_ACCESS_EXPIRATION}
+    refresh-token-expiration: ${TOKEN_EXTERNAL_REFRESH_EXPIRATION}
+    private-key: ${TOKEN_EXTERNAL_PRIVATE_KEY}
+    public-key: ${TOKEN_EXTERNAL_PUBLIC_KEY}
+    key-id: nextmall-key-1
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}
 
 nextmall:
   identifier:

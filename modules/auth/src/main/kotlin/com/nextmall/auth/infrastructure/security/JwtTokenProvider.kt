@@ -1,34 +1,37 @@
 package com.nextmall.auth.infrastructure.security
 
-import com.nextmall.auth.config.UserTokenIssuerProperties
+import com.nextmall.auth.config.ExternalTokenProperties
 import com.nextmall.auth.domain.token.TokenClaims
-import com.nextmall.common.security.jwt.SecretKeyDecoder
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.crypto.MACSigner
-import com.nimbusds.jose.crypto.MACVerifier
+import com.nimbusds.jose.crypto.RSASSASigner
+import com.nimbusds.jose.crypto.RSASSAVerifier
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import org.springframework.stereotype.Component
+import java.security.KeyFactory
+import java.security.interfaces.RSAPrivateKey
+import java.security.interfaces.RSAPublicKey
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
+import java.util.Base64
 import java.util.Date
 
 @Component
 class JwtTokenProvider(
-    private val userTokenProperties: UserTokenIssuerProperties,
+    private val externalTokenProperties: ExternalTokenProperties,
 ) {
-    private val key = SecretKeyDecoder.decode(userTokenProperties.secretKey)
+    private val privateKey: RSAPrivateKey = loadPrivateKey(externalTokenProperties.privateKey)
+    private val publicKey: RSAPublicKey = loadPublicKey(externalTokenProperties.publicKey)
+    private val keyId: String = externalTokenProperties.keyId
 
     fun generateAccessToken(
         authAccountId: Long,
         roles: List<String>,
     ): String {
         val now = Date()
-        val expiry = Date(now.time + userTokenProperties.accessTokenExpiration)
+        val expiry = Date(now.time + externalTokenProperties.accessTokenExpiration)
 
-        // subject: 인증 주체 (어떤 auth_account로 로그인했는지)
-        // userId: 비즈니스 사용자 ID (누구인지)
-        // 현재는 1:1이지만, 멀티 프로바이더 연동 시 다른 값이 될 수 있음
-        // 예: 구글 계정(authAccountId=2)으로 로그인해도 userId=1인 경우
         val claims =
             JWTClaimsSet
                 .Builder()
@@ -39,15 +42,22 @@ class JwtTokenProvider(
                 .claim("roles", roles)
                 .build()
 
-        val signedJwt = SignedJWT(JWSHeader(JWSAlgorithm.HS256), claims)
-        signedJwt.sign(MACSigner(key))
+        val signedJwt =
+            SignedJWT(
+                JWSHeader
+                    .Builder(JWSAlgorithm.RS256)
+                    .keyID(keyId)
+                    .build(),
+                claims,
+            )
+        signedJwt.sign(RSASSASigner(privateKey))
 
         return signedJwt.serialize()
     }
 
     fun generateRefreshToken(authAccountId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + userTokenProperties.refreshTokenExpiration)
+        val expiry = Date(now.time + externalTokenProperties.refreshTokenExpiration)
 
         val claims =
             JWTClaimsSet
@@ -57,8 +67,15 @@ class JwtTokenProvider(
                 .expirationTime(expiry)
                 .build()
 
-        val signedJwt = SignedJWT(JWSHeader(JWSAlgorithm.HS256), claims)
-        signedJwt.sign(MACSigner(key))
+        val signedJwt =
+            SignedJWT(
+                JWSHeader
+                    .Builder(JWSAlgorithm.RS256)
+                    .keyID(keyId)
+                    .build(),
+                claims,
+            )
+        signedJwt.sign(RSASSASigner(privateKey))
 
         return signedJwt.serialize()
     }
@@ -81,7 +98,7 @@ class JwtTokenProvider(
 
         return runCatching {
             val signedJwt = SignedJWT.parse(cleanToken)
-            val verifier = MACVerifier(key)
+            val verifier = RSASSAVerifier(publicKey)
 
             if (!signedJwt.verify(verifier)) {
                 return null
@@ -99,9 +116,25 @@ class JwtTokenProvider(
     }
 
     fun refreshTokenTtlSeconds(): Long =
-        userTokenProperties.refreshTokenExpiration / 1000
+        externalTokenProperties.refreshTokenExpiration / 1000
+
+    fun getPublicKey(): RSAPublicKey = publicKey
 
     companion object {
         private const val BEARER_PREFIX = "Bearer "
+
+        private fun loadPrivateKey(base64Key: String): RSAPrivateKey {
+            val keyBytes = Base64.getDecoder().decode(base64Key)
+            val keySpec = PKCS8EncodedKeySpec(keyBytes)
+            val keyFactory = KeyFactory.getInstance("RSA")
+            return keyFactory.generatePrivate(keySpec) as RSAPrivateKey
+        }
+
+        private fun loadPublicKey(base64Key: String): RSAPublicKey {
+            val keyBytes = Base64.getDecoder().decode(base64Key)
+            val keySpec = X509EncodedKeySpec(keyBytes)
+            val keyFactory = KeyFactory.getInstance("RSA")
+            return keyFactory.generatePublic(keySpec) as RSAPublicKey
+        }
     }
 }

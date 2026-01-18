@@ -1,10 +1,8 @@
 package com.nextmall.apigateway.security.config
 
-import com.nextmall.apigateway.security.filter.JwtPresenceAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
@@ -12,14 +10,13 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 /**
  * Gateway 인증 정책:
  *
- * - Gateway는 인증의 "입구" 역할만 수행한다.
- * - JWT의 존재 여부와 기본 형식(Bearer 토큰)만 확인한다.
- * - 토큰의 검증, 디코딩, 사용자 식별은 하위 서비스의 책임이다.
+ * - Gateway는 Access Token을 검증한다 (JWKS 기반)
+ * - 만료, 서명 검증을 수행한다
+ * - 검증된 토큰은 하위 서비스로 전달한다
  */
 @Configuration
 @EnableWebFluxSecurity
 class SecurityConfig(
-    private val jwtPresenceAuthenticationFilter: JwtPresenceAuthenticationFilter,
     private val properties: GatewaySecurityProperties,
 ) {
     @Bean
@@ -27,11 +24,7 @@ class SecurityConfig(
         http: ServerHttpSecurity,
     ): SecurityWebFilterChain =
         http
-            // Gateway is stateless
-            .securityContextRepository(
-                NoOpServerSecurityContextRepository.getInstance(),
-            )
-            // Disable unused defaults
+            .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
             .anonymous { it.disable() }
             .csrf { it.disable() }
             .httpBasic { it.disable() }
@@ -41,10 +34,8 @@ class SecurityConfig(
                 properties.permitAllPaths.forEach { path ->
                     it.pathMatchers(path).permitAll()
                 }
-
                 it.anyExchange().authenticated()
-            }.addFilterAt(
-                jwtPresenceAuthenticationFilter,
-                SecurityWebFiltersOrder.AUTHENTICATION,
-            ).build()
+            }.oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { }
+            }.build()
 }

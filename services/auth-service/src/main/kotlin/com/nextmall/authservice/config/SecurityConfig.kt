@@ -32,7 +32,7 @@ class SecurityConfig(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }.authorizeHttpRequests {
                 it
-                    .requestMatchers("/actuator/**")
+                    .requestMatchers("/actuator/**", "/.well-known/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
