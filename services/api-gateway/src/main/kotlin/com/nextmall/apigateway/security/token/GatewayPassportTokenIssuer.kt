@@ -12,7 +12,12 @@ class GatewayPassportTokenIssuer(
     override val serviceName: String = "gateway"
 
     fun issueFromExternalToken(externalToken: Jwt): String {
-        val userId = externalToken.subject
+        val userId =
+            externalToken.subject
+                ?: throw IllegalArgumentException("External token must contain 'subject' claim")
+
+        require(userId.isNotBlank()) { "External token 'subject' claim must not be blank" }
+
         val roles = externalToken.getClaimAsStringList("roles")?.toSet() ?: emptySet()
 
         return issuePassportToken(

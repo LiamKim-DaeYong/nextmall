@@ -1,6 +1,8 @@
 package com.nextmall.authservice.config
 
 import com.nextmall.common.security.config.PassportTokenSecurityConfig
+import com.nextmall.common.security.internal.PassportBearerTokenResolver
+import com.nextmall.common.security.spring.PassportJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -33,7 +35,10 @@ class SecurityConfig {
                     .anyRequest()
                     .authenticated()
             }.oauth2ResourceServer { oauth2 ->
-                oauth2.jwt { }
+                oauth2.bearerTokenResolver(PassportBearerTokenResolver())
+                oauth2.jwt { jwt ->
+                    jwt.jwtAuthenticationConverter(PassportJwtAuthenticationConverter())
+                }
             }.build()
 
     companion object {

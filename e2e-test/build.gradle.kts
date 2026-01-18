@@ -9,7 +9,7 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-// 기본 test task 비활성화 - E2E는 ./gradlew e2e 또는 ./gradlew :e2e-test:e2eTest로만 실행
+// 기본 test task 비활성화 - E2E 테스트는 e2eTest task로만 실행
 tasks.test {
     enabled = false
 }

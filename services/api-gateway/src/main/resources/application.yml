@@ -10,6 +10,9 @@ spring:
         jwt:
           jwk-set-uri: http://localhost:8081/.well-known/jwks.json
 
+# Passport Token: 내부 서비스 간 통신용 HMAC 토큰
+# - 최소 256비트(32바이트) 이상의 Base64 인코딩된 시크릿 키 필요
+# - 모든 서비스가 동일한 시크릿 키를 공유해야 함
 token:
   passport:
     secret-key: ${TOKEN_PASSPORT_SECRET}

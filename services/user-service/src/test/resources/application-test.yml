@@ -1,6 +1,6 @@
 token:
   passport:
-    secret-key: dGVzdC1zZXJ2aWNlLWp3dC1zaWduaW5nLXNlY3JldC1rZXktMjAyNA==
+    secret-key: ${TOKEN_PASSPORT_SECRET}
 
 nextmall:
   identifier:

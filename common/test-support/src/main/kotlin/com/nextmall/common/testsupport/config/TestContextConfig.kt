@@ -20,6 +20,7 @@ class TestContextConfig {
     @ConditionalOnMissingBean(EventPublisher::class)
     fun noOpEventPublisher(): EventPublisher = NoOpEventPublisher()
 }
+
 class NoOpEventPublisher : EventPublisher {
     private val log = LoggerFactory.getLogger(javaClass)
 
