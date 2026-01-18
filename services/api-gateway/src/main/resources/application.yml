@@ -25,7 +25,7 @@ gateway:
       - /api/v1/token/refresh
 
       # JWKS endpoint
-      - /.well-known/**
+      - /.well-known/jwks.json
 
       # Health check
       - /actuator/health

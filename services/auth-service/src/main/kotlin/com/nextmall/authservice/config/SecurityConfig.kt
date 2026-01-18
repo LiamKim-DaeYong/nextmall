@@ -32,7 +32,7 @@ class SecurityConfig(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }.authorizeHttpRequests {
                 it
-                    .requestMatchers("/actuator/**", "/.well-known/**")
+                    .requestMatchers("/actuator/**", "/.well-known/jwks.json")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
