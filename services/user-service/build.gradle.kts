@@ -1,12 +1,12 @@
 import com.nextmall.build.ServiceConfig
 
 plugins {
+    alias(libs.plugins.jib)
     alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.jib)
 }
 
 dependencies {
@@ -17,13 +17,13 @@ dependencies {
     implementation(project(":common:security"))
     implementation(project(":common:util"))
 
+    implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
+    implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.jooq)
-    implementation(libs.spring.boot.starter.webmvc)
-    implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.validation)
-    implementation(libs.jackson.module.kotlin)
+    implementation(libs.spring.boot.starter.webmvc)
 
     runtimeOnly(libs.postgresql)
 
