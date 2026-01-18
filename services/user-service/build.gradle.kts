@@ -1,6 +1,7 @@
 import com.nextmall.build.ServiceConfig
 
 plugins {
+    alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
@@ -10,14 +11,21 @@ plugins {
 
 dependencies {
     implementation(project(":common:authorization"))
+    implementation(project(":common:data"))
     implementation(project(":common:exception"))
+    implementation(project(":common:identifier"))
     implementation(project(":common:security"))
-    implementation(project(":modules:user"))
+    implementation(project(":common:util"))
 
+    implementation(libs.kotlin.reflect)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.jooq)
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.jackson.module.kotlin)
+
+    runtimeOnly(libs.postgresql)
 
     testImplementation(project(":common:test-support"))
 }

@@ -1,4 +1,4 @@
-package com.nextmall.userservice.presentation.controller
+package com.nextmall.user.presentation.controller
 
 import com.nextmall.common.security.internal.PassportTokenConstants
 import com.nextmall.common.testsupport.annotation.IntegrationTest

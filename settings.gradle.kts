@@ -12,8 +12,6 @@ include("services:bff-service") // BFF 실행 단위 (API Entry Point / Runtime 
 include("modules:bff") // 여러 도메인을 조합하는 애플리케이션 오케스트레이션 레이어
 
 // ──────────────── Domain Modules ────────────────
-include("modules:auth") // 인증/인가 도메인 (Authentication & Authorization)
-include("modules:user") // 회원 도메인 (회원 가입, 조회, 프로필, 권한 등)
 include("modules:product") // 상품 도메인 (상품 등록, 조회, 재고 관리)
 include("modules:order") // 주문 도메인 (주문 생성, 조회, 취소)
 
