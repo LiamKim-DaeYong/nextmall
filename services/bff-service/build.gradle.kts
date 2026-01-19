@@ -1,19 +1,28 @@
 import com.nextmall.build.ServiceConfig
 
 plugins {
+    alias(libs.plugins.jib)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.jib)
 }
 
 dependencies {
-    implementation(project(":modules:bff"))
+    implementation(project(":common:exception"))
+    implementation(project(":common:integration"))
+    implementation(project(":common:security"))
+    implementation(project(":common:util"))
 
-    implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.webmvc)
+
+    testImplementation(project(":common:test-support"))
 }
 
 jib {

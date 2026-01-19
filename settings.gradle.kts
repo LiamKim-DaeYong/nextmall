@@ -3,16 +3,12 @@ rootProject.name = "nextmall"
 // ──────────────── Service (Execution / Deployment Unit) ────────────────
 include("services:api-gateway") // 외부 요청의 단일 진입점 (인증 위임, 라우팅, 공통 필터)
 include("services:auth-service") // 인증 서비스 실행 단위 (Auth Domain 실행 책임)
-include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)
-include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
-include("services:order-service") // 주문 서비스 실행 단위 (Order Domain 실행 책임)
 include("services:bff-service") // BFF 실행 단위 (API Entry Point / Runtime Only)
-
-// ──────────────── Application-Level Modules ────────────────
-include("modules:bff") // 여러 도메인을 조합하는 애플리케이션 오케스트레이션 레이어
+include("services:order-service") // 주문 서비스 실행 단위 (Order Domain 실행 책임)
+include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
+include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)
 
 // ──────────────── Domain Modules ────────────────
-include("modules:product") // 상품 도메인 (상품 등록, 조회, 재고 관리)
 include("modules:order") // 주문 도메인 (주문 생성, 조회, 취소)
 
 // ──────────────── Integration Layer ────────────────
@@ -27,8 +23,8 @@ include("common:kafka") // Kafka 메시징 공통 인프라
 include("common:policy") // 정책 기반 인가 (Policy-Based Authorization)
 include("common:redis") // Redis 공통 인프라
 include("common:security") // 공통 인증 인프라 (AuthN only)
-include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 include("common:test-support") // 테스트 공통 환경 및 테스트 유틸
+include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 
 // ──────────────── E2E Test ────────────────
 include("e2e-test") // E2E 테스트 (Karate + Testcontainers)
