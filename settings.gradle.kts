@@ -8,9 +8,6 @@ include("services:order-service") // 주문 서비스 실행 단위 (Order Domai
 include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
 include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)
 
-// ──────────────── Domain Modules ────────────────
-include("modules:order") // 주문 도메인 (주문 생성, 조회, 취소)
-
 // ──────────────── Integration Layer ────────────────
 include("common:integration") // 외부 서비스 통신 공통 레이어 (HTTP, Event, Messaging)
 
