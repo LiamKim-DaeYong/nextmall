@@ -20,7 +20,7 @@
 
 도메인 특성상 **비즈니스 로직이 순환 구조**였습니다:
 
-```
+```text
 A 처리 → B 이벤트 발생 → B 처리 → 다시 A 이벤트 발생
 ```
 
@@ -46,35 +46,35 @@ A 처리 → B 이벤트 발생 → B 처리 → 다시 A 이벤트 발생
 
 ### 전체 흐름
 
-```
+```text
 Controller
-    │
-    ▼
+    |
+    v
 EventCoordinator.dispatch(event)
-    │
-    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  EventLoopProcessor                                             │
-│  @Transactional (단일 트랜잭션으로 정합성 보장)                    │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │  1. context.initialize(event)                              │ │
-│  │  2. hooks.onStart(event, context)                          │ │
-│  │                                                             │ │
-│  │  3. while (queue.hasNext()) {          ← BFS 방식          │ │
-│  │       event = queue.poll()                                  │ │
-│  │                                                             │ │
-│  │       hooks.beforeProcess(event, context)                   │ │
-│  │       validator.validate(event)                             │ │
-│  │       handler.handle(event, context)   ← 이벤트 핸들러 실행 │ │
-│  │       hooks.afterProcess(event, context)                    │ │
-│  │                                                             │ │
-│  │       queue.addAll(context.popPendingEvents())              │ │
-│  │     }                                                       │ │
-│  │                                                             │ │
-│  │  4. hooks.onComplete(event, context)                        │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
+    |
+    v
++---------------------------------------------------------------+
+| EventLoopProcessor                                            |
+| @Transactional (single transaction for consistency)           |
+|                                                               |
+|  +---------------------------------------------------------+  |
+|  | 1. context.initialize(event)                            |  |
+|  | 2. hooks.onStart(event, context)                        |  |
+|  |                                                         |  |
+|  | 3. while (queue.hasNext()) {  <- BFS traversal          |  |
+|  |     event = queue.poll()                                |  |
+|  |                                                         |  |
+|  |     hooks.beforeProcess(event, context)                 |  |
+|  |     validator.validate(event)                           |  |
+|  |     handler.handle(event, context) <- handler executes  |  |
+|  |     hooks.afterProcess(event, context)                  |  |
+|  |                                                         |  |
+|  |     queue.addAll(context.popPendingEvents())            |  |
+|  |   }                                                     |  |
+|  |                                                         |  |
+|  | 4. hooks.onComplete(event, context)                     |  |
+|  +---------------------------------------------------------+  |
++---------------------------------------------------------------+
 ```
 
 ### 핵심 컴포넌트
@@ -83,7 +83,7 @@ EventCoordinator.dispatch(event)
 
 모든 비즈니스 로직의 **단일 진입점**입니다.
 
-```
+```text
 interface EventCoordinator {
     dispatch(event: DomainEvent)
     dispatch(event: DomainEvent): Result<T>  // 결과가 필요한 경우
@@ -97,12 +97,15 @@ interface EventCoordinator {
 
 이벤트 루프를 실행하는 핵심 컴포넌트입니다.
 
-**특징:**
+#### 특징
 - `@Transactional`: 전체 세션이 단일 트랜잭션
 - **BFS 방식**: Queue에서 이벤트를 꺼내서 순차 처리
-- **순환 감지**: 이벤트가 일정 개수 초과 시 무한 루프로 판단
 
-```
+##### 순환 감지
+
+이벤트가 일정 개수 초과 시 무한 루프로 판단
+
+```text
 @Transactional
 function process(initialEvent, context) {
     context.initialize(initialEvent)
@@ -146,7 +149,7 @@ function process(initialEvent, context) {
 - `onEventError`: 이벤트 에러 시
 
 **실행 순서:**
-```
+```text
 onStart
   └→ [beforeProcess → validate → handle → afterProcess] × N
 onComplete
@@ -156,7 +159,7 @@ onComplete
 
 Hook 간 실행 순서가 중요할 때 우선순위로 선언합니다.
 
-```
+```text
 class ValidationHook implements EventHook {
     priority = 10  // 숫자가 낮을수록 먼저 실행
     runsBefore = [InventoryHook]  // 명시적 순서 지정
@@ -167,7 +170,7 @@ class ValidationHook implements EventHook {
 
 이벤트별 검증 로직을 Pipeline으로 실행합니다.
 
-```
+```text
 function validate(event) {
     validators = registry.getValidatorsFor(event)
                         .sortByPriority()
@@ -185,7 +188,7 @@ function validate(event) {
 
 여러 이벤트에서 공통으로 필요한 검증은 마커 인터페이스로 처리합니다.
 
-```
+```text
 interface RequiresItemValidation {
     getValidationConditions(): List<Condition>
 }
@@ -209,7 +212,7 @@ onStart Hook에서 마커를 감지하여 자동으로 검증 실행.
 
 ThreadLocal을 활용한 요청 추적 시스템입니다.
 
-```
+```text
 class SessionLogger {
     // ThreadLocal로 요청별 격리
     timeline = ThreadLocal<List<EventTrace>>()
@@ -252,7 +255,7 @@ class SessionLogger {
 
 시나리오 테스트의 의도를 명확하게 전달하기 위해 DSL을 설계했습니다.
 
-```
+```text
 scenario {
     setup {
         warehouse("A") {
