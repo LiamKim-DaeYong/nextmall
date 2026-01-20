@@ -1,4 +1,4 @@
-package com.nextmall.orderservice.presentation.response
+package com.nextmall.order.presentation.response
 
 import com.nextmall.common.util.Money
 import com.nextmall.order.application.query.OrderView

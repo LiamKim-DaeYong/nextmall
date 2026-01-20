@@ -1,4 +1,4 @@
-package com.nextmall.orderservice.config
+package com.nextmall.order.config
 
 import com.nextmall.common.security.config.PassportTokenSecurityConfig
 import org.springframework.context.annotation.Configuration

@@ -1,13 +1,13 @@
-package com.nextmall.orderservice.presentation.controller
+package com.nextmall.order.presentation.controller
 
 import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.common.security.principal.AuthenticatedPrincipal
 import com.nextmall.common.security.spring.CurrentUser
 import com.nextmall.order.application.OrderService
-import com.nextmall.orderservice.presentation.request.CreateOrderRequest
-import com.nextmall.orderservice.presentation.response.CreateOrderResponse
-import com.nextmall.orderservice.presentation.response.OrderViewResponse
-import com.nextmall.orderservice.presentation.response.toResponse
+import com.nextmall.order.presentation.request.CreateOrderRequest
+import com.nextmall.order.presentation.response.CreateOrderResponse
+import com.nextmall.order.presentation.response.OrderViewResponse
+import com.nextmall.order.presentation.response.toResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

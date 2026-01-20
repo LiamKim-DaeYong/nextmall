@@ -1,4 +1,4 @@
-package com.nextmall.orderservice.presentation.response
+package com.nextmall.order.presentation.response
 
 data class CreateOrderResponse(
     val orderId: Long,

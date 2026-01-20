@@ -1,4 +1,4 @@
-package com.nextmall.orderservice.presentation.request
+package com.nextmall.order.presentation.request
 
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
