@@ -1,6 +1,5 @@
 package com.nextmall.user.presentation.controller
 
-import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.user.application.UserService
 import com.nextmall.user.presentation.request.CreateUserRequest
 import com.nextmall.user.presentation.response.CreateUserResponse
@@ -22,18 +21,15 @@ class UserController(
     private val userService: UserService,
 ) {
     @GetMapping("/{userId}")
-    @RequiresPolicy(resource = "user", action = "read", resourceIdParam = "userId")
     fun getUser(
         @PathVariable userId: Long,
     ): ResponseEntity<UserViewResponse> {
         val result = userService.getUser(userId)
-
         return ResponseEntity
             .ok(result.toResponse())
     }
 
     @PostMapping
-    @RequiresPolicy(resource = "user", action = "create")
     fun create(
         @Valid @RequestBody request: CreateUserRequest,
     ): ResponseEntity<CreateUserResponse> {
@@ -42,31 +38,26 @@ class UserController(
                 nickname = request.nickname,
                 email = request.email,
             )
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CreateUserResponse(result.id))
     }
 
     @PostMapping("/{userId}/activate")
-    @RequiresPolicy(resource = "user", action = "update", resourceIdParam = "userId")
     fun activate(
         @PathVariable userId: Long,
     ): ResponseEntity<Unit> {
         userService.activate(userId)
-
         return ResponseEntity
             .noContent()
             .build()
     }
 
     @PostMapping("/{userId}/signup-failed")
-    @RequiresPolicy(resource = "user", action = "update", resourceIdParam = "userId")
     fun signupFailed(
         @PathVariable userId: Long,
     ): ResponseEntity<Unit> {
         userService.markFailed(userId)
-
         return ResponseEntity
             .noContent()
             .build()

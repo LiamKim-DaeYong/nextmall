@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/users")
@@ -15,12 +16,10 @@ class UserController(
     private val getUserFacade: GetUserFacade,
 ) {
     @GetMapping("/{userId}")
-    suspend fun getUser(
+    fun getUser(
         @PathVariable userId: Long,
-    ): ResponseEntity<UserViewResponse> {
-        val result = getUserFacade.getUser(userId)
-
-        return ResponseEntity
-            .ok(result.toResponse())
-    }
+    ): Mono<ResponseEntity<UserViewResponse>> =
+        getUserFacade
+            .getUser(userId)
+            .map { result -> ResponseEntity.ok(result.toResponse()) }
 }

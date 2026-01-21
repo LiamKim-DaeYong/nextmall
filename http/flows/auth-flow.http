@@ -1,0 +1,78 @@
+# Auth flow (signup -> login -> token refresh -> logout)
+# Run All to execute sequentially.
+
+@flowEmail = test+{{$uuid}}@example.com
+@flowPassword = Test1234!
+
+### signup
+POST {{baseUrl}}/sign-up/local
+Content-Type: application/json
+
+{
+  "email":"{{flowEmail}}",
+  "password":"{{flowPassword}}",
+  "nickname":"Flow User"
+}
+
+> {%
+  client.test("signup success", function() {
+    client.assert(response.status === 201);
+    client.assert(response.body.userId != null);
+    client.assert(response.body.accessToken != null);
+    client.assert(response.body.refreshToken != null);
+  });
+%}
+
+### login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "provider": "LOCAL",
+  "principal":"{{flowEmail}}",
+  "credential":"{{flowPassword}}"
+}
+
+> {%
+  client.test("login success", function() {
+    client.assert(response.status === 200);
+    client.assert(response.body.accessToken != null);
+    client.assert(response.body.refreshToken != null);
+  });
+  client.global.set("accessToken", response.body.accessToken);
+  client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### refresh
+POST {{baseUrl}}/auth/tokens/refresh
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken":"{{refreshToken}}"
+}
+
+> {%
+  client.test("refresh success", function() {
+    client.assert(response.status === 200);
+    client.assert(response.body.accessToken != null);
+    client.assert(response.body.refreshToken != null);
+  });
+  client.global.set("accessToken", response.body.accessToken);
+  client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken":"{{refreshToken}}"
+}
+
+> {%
+  client.test("logout success", function() {
+    client.assert(response.status === 204);
+  });
+%}

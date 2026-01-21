@@ -10,7 +10,8 @@ import com.nextmall.bff.client.auth.response.TokenClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
 import com.nextmall.common.integration.support.WebClientFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Component
 class WebClientAuthServiceClient(
@@ -23,12 +24,12 @@ class WebClientAuthServiceClient(
             filters = arrayOf(PassportTokenPropagationFilter()),
         )
 
-    override suspend fun createAccount(
+    override fun createAccount(
         userId: Long,
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    ): Long =
+    ): Mono<Long> =
         client
             .post()
             .uri(AUTH_INTERNAL_CREATE_ACCOUNT_URI)
@@ -40,14 +41,14 @@ class WebClientAuthServiceClient(
                     password = password,
                 ),
             ).retrieve()
-            .awaitBody<CreateAuthAccountClientResponse>()
-            .authAccountId
+            .bodyToMono<CreateAuthAccountClientResponse>()
+            .map { it.authAccountId }
 
-    override suspend fun login(
+    override fun login(
         provider: AuthProvider,
         principal: String,
         credential: String?,
-    ): TokenClientResponse =
+    ): Mono<TokenClientResponse> =
         client
             .post()
             .uri(AUTH_INTERNAL_LOGIN_URI)
@@ -58,38 +59,37 @@ class WebClientAuthServiceClient(
                     credential = credential,
                 ),
             ).retrieve()
-            .awaitBody()
+            .bodyToMono<TokenClientResponse>()
 
-    override suspend fun logout(
+    override fun logout(
         refreshToken: String,
-    ) {
+    ): Mono<Void> =
         client
             .post()
             .uri(AUTH_INTERNAL_LOGOUT_URI)
             .bodyValue(RevokeTokenClientRequest(refreshToken))
             .retrieve()
-            .awaitBody<Unit>()
-    }
+            .bodyToMono<Void>()
 
-    override suspend fun issueToken(
+    override fun issueToken(
         authAccountId: Long,
-    ): TokenClientResponse =
+    ): Mono<TokenClientResponse> =
         client
             .post()
             .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
             .bodyValue(IssueTokenClientRequest(authAccountId))
             .retrieve()
-            .awaitBody()
+            .bodyToMono<TokenClientResponse>()
 
-    override suspend fun refresh(
+    override fun refresh(
         refreshToken: String,
-    ): TokenClientResponse =
+    ): Mono<TokenClientResponse> =
         client
             .post()
             .uri(AUTH_INTERNAL_REFRESH_URI)
             .bodyValue(RefreshTokenClientRequest(refreshToken))
             .retrieve()
-            .awaitBody()
+            .bodyToMono<TokenClientResponse>()
 
     companion object {
         private const val TARGET_SERVICE = "auth-service"

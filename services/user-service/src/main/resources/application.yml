@@ -23,5 +23,5 @@ nextmall:
     node-id: ${NODE_ID}
 
 token:
-  service:
-    secret-key: ${TOKEN_SERVICE_SECRET}
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}

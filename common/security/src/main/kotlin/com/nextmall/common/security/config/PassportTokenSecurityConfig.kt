@@ -15,21 +15,18 @@ import org.springframework.security.web.SecurityFilterChain
 /**
  * Passport Token 기반 내부 서비스 인증을 위한 공통 Security 설정
  *
- * 기본 설정:
- * - CSRF, FormLogin, HttpBasic 비활성화
- * - Stateless 세션 관리
- * - actuator 경로 허용
+ * Gateway 뒤의 모든 내부 서비스가 동일하게 사용하는 설정:
+ * - 모든 요청에 Passport Token 필수 (Gateway가 발급)
+ * - permitAll: /actuator, /.well-known/jwks.json
  * - Passport Token 기반 JWT 인증
- *
- * 커스터마이징:
- * - securityFilterChain Bean을 재정의하여 permitAll 경로 추가 가능
- * - 예: auth-service는 jwks.json 경로 추가
  */
 @Configuration
-class PassportTokenSecurityConfig {
+class PassportTokenSecurityConfig(
+    private val passportTokenProperties: PassportTokenProperties,
+) {
     @Bean
     @ConditionalOnMissingBean(name = ["passportTokenJwtDecoder"])
-    fun passportTokenJwtDecoder(passportTokenProperties: PassportTokenProperties): JwtDecoder =
+    fun passportTokenJwtDecoder(): JwtDecoder =
         JwtDecoderFactory.create(passportTokenProperties.secretKey)
 
     @Bean
@@ -50,11 +47,16 @@ class PassportTokenSecurityConfig {
             }.oauth2ResourceServer { oauth2 ->
                 oauth2.bearerTokenResolver(PassportBearerTokenResolver())
                 oauth2.jwt { jwt ->
+                    jwt.decoder(passportTokenJwtDecoder())
                     jwt.jwtAuthenticationConverter(PassportJwtAuthenticationConverter())
                 }
             }.build()
 
     companion object {
-        private val DEFAULT_PERMIT_ALL_PATHS = arrayOf("/actuator/**")
+        private val DEFAULT_PERMIT_ALL_PATHS =
+            arrayOf(
+                "/actuator/**",
+                "/.well-known/jwks.json",
+            )
     }
 }

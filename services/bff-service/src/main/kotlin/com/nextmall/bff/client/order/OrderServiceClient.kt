@@ -3,18 +3,19 @@ package com.nextmall.bff.client.order
 import com.nextmall.bff.client.order.response.CreateOrderClientResponse
 import com.nextmall.bff.client.order.response.OrderViewClientResponse
 import com.nextmall.common.util.Money
+import reactor.core.publisher.Mono
 
 interface OrderServiceClient {
-    suspend fun getOrder(orderId: Long): OrderViewClientResponse
+    fun getOrder(orderId: Long): Mono<OrderViewClientResponse>
 
-    suspend fun getOrdersByUserId(userId: Long): List<OrderViewClientResponse>
+    fun getOrdersByUserId(userId: Long): Mono<List<OrderViewClientResponse>>
 
-    suspend fun createOrder(
+    fun createOrder(
         userId: Long,
         productId: Long,
         quantity: Int,
         totalPrice: Money,
-    ): CreateOrderClientResponse
+    ): Mono<CreateOrderClientResponse>
 
-    suspend fun cancelOrder(orderId: Long)
+    fun cancelOrder(orderId: Long): Mono<Void>
 }

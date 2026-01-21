@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/sign-up")
@@ -20,21 +21,24 @@ class SignUpController(
     private val signUpFacade: SignUpFacade,
 ) {
     @PostMapping("/local")
-    suspend fun local(
+    fun local(
         @Valid @RequestBody request: LocalSignUpRequest,
-    ): ResponseEntity<SignUpResponse> {
-        val result = signUpFacade.signUp(request.toCommand())
-
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(result.toResponse())
-    }
+    ): Mono<ResponseEntity<SignUpResponse>> =
+        signUpFacade
+            .signUp(request.toCommand())
+            .map { result ->
+                ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(result.toResponse())
+            }
 
     @PostMapping("/social")
     fun social(
         @RequestBody request: SocialSignUpRequest,
-    ): ResponseEntity<SignUpResponse> =
-        ResponseEntity
-            .status(HttpStatus.NOT_IMPLEMENTED)
-            .build()
+    ): Mono<ResponseEntity<SignUpResponse>> =
+        Mono.just(
+            ResponseEntity
+                .status(HttpStatus.NOT_IMPLEMENTED)
+                .build(),
+        )
 }

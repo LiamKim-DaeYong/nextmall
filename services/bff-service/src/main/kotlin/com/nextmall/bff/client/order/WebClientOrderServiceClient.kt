@@ -6,9 +6,9 @@ import com.nextmall.bff.client.order.response.OrderViewClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
 import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.common.util.Money
-import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Component
 class WebClientOrderServiceClient(
@@ -21,44 +21,43 @@ class WebClientOrderServiceClient(
             filters = arrayOf(PassportTokenPropagationFilter()),
         )
 
-    override suspend fun getOrder(orderId: Long): OrderViewClientResponse =
+    override fun getOrder(orderId: Long): Mono<OrderViewClientResponse> =
         client
             .get()
             .uri(ORDER_GET_URI, orderId)
             .retrieve()
-            .awaitBody<OrderViewClientResponse>()
+            .bodyToMono<OrderViewClientResponse>()
 
-    override suspend fun getOrdersByUserId(userId: Long): List<OrderViewClientResponse> =
+    override fun getOrdersByUserId(userId: Long): Mono<List<OrderViewClientResponse>> =
         client
             .get()
             .uri(ORDER_LIST_BY_USER_URI, userId)
             .retrieve()
-            .awaitBody<List<OrderViewClientResponse>>()
+            .bodyToMono(
+                object : org.springframework.core.ParameterizedTypeReference<List<OrderViewClientResponse>>() {},
+            )
 
-    override suspend fun createOrder(
+    override fun createOrder(
         userId: Long,
         productId: Long,
         quantity: Int,
         totalPrice: Money,
-    ): CreateOrderClientResponse =
+    ): Mono<CreateOrderClientResponse> =
         client
             .post()
             .uri(ORDER_CREATE_URI)
             .bodyValue(CreateOrderClientRequest(userId, productId, quantity, totalPrice))
             .retrieve()
-            .awaitBody<CreateOrderClientResponse>()
+            .bodyToMono<CreateOrderClientResponse>()
 
-    override suspend fun cancelOrder(orderId: Long) {
+    override fun cancelOrder(orderId: Long): Mono<Void> =
         client
             .post()
             .uri(ORDER_CANCEL_URI, orderId)
             .retrieve()
-            .toBodilessEntity()
-            .awaitSingle()
-    }
+            .bodyToMono<Void>()
 
     companion object {
-        private const val TARGET_SERVICE = "order-service"
         private const val ORDER_GET_URI = "/orders/{id}"
         private const val ORDER_LIST_BY_USER_URI = "/orders/users/{userId}"
         private const val ORDER_CREATE_URI = "/orders"

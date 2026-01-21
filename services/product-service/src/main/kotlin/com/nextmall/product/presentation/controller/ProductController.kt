@@ -1,6 +1,5 @@
 package com.nextmall.product.presentation.controller
 
-import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.common.security.principal.AuthenticatedPrincipal
 import com.nextmall.common.security.spring.CurrentUser
 import com.nextmall.common.util.Money
@@ -30,7 +29,6 @@ class ProductController(
     @GetMapping("/{productId}")
     fun getProduct(@PathVariable productId: Long): ResponseEntity<ProductViewResponse> {
         val result = productService.getProduct(productId)
-
         return ResponseEntity
             .ok(result.toResponse())
     }
@@ -38,13 +36,11 @@ class ProductController(
     @GetMapping
     fun getAllProducts(): ResponseEntity<List<ProductViewResponse>> {
         val results = productService.getAllProducts()
-
         return ResponseEntity
             .ok(results.map { it.toResponse() })
     }
 
     @PostMapping
-    @RequiresPolicy(resource = "product", action = "create")
     fun createProduct(
         @CurrentUser principal: AuthenticatedPrincipal,
         @Valid @RequestBody request: CreateProductRequest,
@@ -57,14 +53,12 @@ class ProductController(
                 sellerId = principal.userIdAsLong(),
                 category = request.category,
             )
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CreateProductResponse(result.productId))
     }
 
     @PutMapping("/{productId}")
-    @RequiresPolicy(resource = "product", action = "update", resourceIdParam = "productId")
     fun updateProduct(
         @PathVariable productId: Long,
         @Valid @RequestBody request: UpdateProductRequest,
@@ -76,17 +70,14 @@ class ProductController(
             stock = request.stock,
             category = request.category,
         )
-
         return ResponseEntity
             .noContent()
             .build()
     }
 
     @DeleteMapping("/{productId}")
-    @RequiresPolicy(resource = "product", action = "delete", resourceIdParam = "productId")
     fun deleteProduct(@PathVariable productId: Long): ResponseEntity<Unit> {
         productService.deleteProduct(productId)
-
         return ResponseEntity
             .noContent()
             .build()

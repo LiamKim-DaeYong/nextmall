@@ -1,9 +1,10 @@
 package com.nextmall.bff.client.product
 
 import com.nextmall.bff.client.product.response.ProductViewClientResponse
+import reactor.core.publisher.Mono
 
 interface ProductServiceClient {
-    suspend fun getProduct(productId: Long): ProductViewClientResponse
+    fun getProduct(productId: Long): Mono<ProductViewClientResponse>
 
-    suspend fun getAllProducts(): List<ProductViewClientResponse>
+    fun getAllProducts(): Mono<List<ProductViewClientResponse>>
 }

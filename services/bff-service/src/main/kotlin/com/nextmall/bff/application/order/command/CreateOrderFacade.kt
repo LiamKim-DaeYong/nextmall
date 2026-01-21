@@ -1,5 +1,7 @@
 package com.nextmall.bff.application.order.command
 
+import reactor.core.publisher.Mono
+
 interface CreateOrderFacade {
-    suspend fun createOrder(command: CreateOrderCommand): CreateOrderResult
+    fun createOrder(command: CreateOrderCommand): Mono<CreateOrderResult>
 }

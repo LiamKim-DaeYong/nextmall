@@ -3,8 +3,10 @@ package com.nextmall.bff.client.product
 import com.nextmall.bff.client.product.response.ProductViewClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
 import com.nextmall.common.integration.support.WebClientFactory
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Component
 class WebClientProductServiceClient(
@@ -17,22 +19,21 @@ class WebClientProductServiceClient(
             filters = arrayOf(PassportTokenPropagationFilter()),
         )
 
-    override suspend fun getProduct(productId: Long): ProductViewClientResponse =
+    override fun getProduct(productId: Long): Mono<ProductViewClientResponse> =
         client
             .get()
             .uri(PRODUCT_GET_URI, productId)
             .retrieve()
-            .awaitBody<ProductViewClientResponse>()
+            .bodyToMono<ProductViewClientResponse>()
 
-    override suspend fun getAllProducts(): List<ProductViewClientResponse> =
+    override fun getAllProducts(): Mono<List<ProductViewClientResponse>> =
         client
             .get()
             .uri(PRODUCT_LIST_URI)
             .retrieve()
-            .awaitBody<List<ProductViewClientResponse>>()
+            .bodyToMono(object : ParameterizedTypeReference<List<ProductViewClientResponse>>() {})
 
     companion object {
-        private const val TARGET_SERVICE = "product-service"
         private const val PRODUCT_GET_URI = "/products/{id}"
         private const val PRODUCT_LIST_URI = "/products"
     }

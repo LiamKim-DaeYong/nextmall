@@ -1,5 +1,7 @@
 package com.nextmall.bff.application.signup
 
+import reactor.core.publisher.Mono
+
 interface SignUpFacade {
     /**
      * 회원가입을 처리한다.
@@ -10,5 +12,5 @@ interface SignUpFacade {
      * 본 Facade는 회원가입 전체 흐름을 조율하는 역할만 수행하며,
      * 각 도메인(User, Auth)의 비즈니스 규칙이나 정책에는 관여하지 않는다.
      */
-    suspend fun signUp(command: SignUpCommand): SignUpResult
+    fun signUp(command: SignUpCommand): Mono<SignUpResult>
 }

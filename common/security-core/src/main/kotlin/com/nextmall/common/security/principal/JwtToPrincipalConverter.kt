@@ -17,8 +17,8 @@ class JwtToPrincipalConverter : AuthenticationTokenToPrincipalConverter<Jwt> {
                 ?: throw IllegalArgumentException("JWT subject(claim 'sub')가 존재하지 않습니다.")
 
         val userId =
-            token.getClaimAsString("userId")
-                ?: throw IllegalArgumentException("JWT claim 'userId'가 존재하지 않습니다.")
+            token.getClaimAsString("user_id")
+                ?: throw IllegalArgumentException("JWT claim 'user_id'가 존재하지 않습니다.")
 
         return AuthenticatedPrincipal(
             subject = subject,

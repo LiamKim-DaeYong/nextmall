@@ -92,7 +92,7 @@ flowchart TD
 
 **Edge Authentication (Gateway 토큰 검증)**
 
-Netflix에서 검증된 패턴입니다. Gateway에서 모든 외부 토큰을 처리하고, 내부에는 신뢰된 토큰(Passport)만 전파합니다.
+Netflix에서 사용하는 패턴입니다. Gateway에서 모든 외부 토큰을 처리하고, 내부에는 신뢰된 토큰(Passport)만 전파합니다.
 
 > "우리는 복잡한 사용자/기기 인증 처리를 네트워크 Edge로 이동시켰다. **95%의 요청은 원격 호출 없이 처리된다.**"
 > — [Netflix Tech Blog](https://netflixtechblog.com/edge-authentication-and-token-agnostic-identity-propagation-514e47e0b602)
@@ -120,7 +120,7 @@ Netflix에서 검증된 패턴입니다. Gateway에서 모든 외부 토큰을 �
 | **Policy as Data** | 정책 변경 시 코드 수정 없이 런타임 변경 가능 | [ADR-003](docs/decisions/ADR-003-Policy-모듈-도입.md) |
 | **PBAC 인가** | RBAC의 한계 극복, 리소스 속성 기반 동적 인가 | [ADR-004](docs/decisions/ADR-004-PBAC-선택이유.md) |
 | **BFF + Saga** | 초기 단계에서 변경 포인트 최소화, 안정화 후 분리 검토 | [ADR-005](docs/decisions/ADR-005-BFF에서-사가-오케스트레이션-통합.md) |
-| **Edge Authentication** | Netflix 검증된 패턴, Gateway에서 토큰 처리 | [ADR-007](docs/decisions/ADR-007-Edge-Authentication.md) |
+| **Edge Authentication** | Netflix에서 사용하는 패턴, Gateway에서 토큰 처리 | [ADR-007](docs/decisions/ADR-007-Edge-Authentication.md) |
 
 ### 추가 예정 ADR
 
@@ -129,10 +129,6 @@ Netflix에서 검증된 패턴입니다. Gateway에서 모든 외부 토큰을 �
 | 동시성 제어 전략 | 비관적 락 vs 낙관적 락 vs 분산 락, 언제 뭘 쓰는가 |
 | 캐시 전략 | Cache Aside, Write Through, 캐시 무효화 |
 | 이벤트 드리븐 | Kafka 기반 비동기 통신, 최종 일관성 |
-
-### 학습 기록
-
-프로젝트를 진행하며 배운 내용을 [학습 노트](docs/til/)에 정리하고 있습니다.
 
 ---
 
@@ -202,12 +198,13 @@ nextmall/
 - **ADR 기반 의사결정**: 기술 선택의 이유와 트레이드오프를 문서로 기록
 - **PR 기반 병합**: main 브랜치 직접 커밋 금지
 - **AI 코드 리뷰**: [CodeRabbit](https://coderabbit.ai/)으로 PR 자동 리뷰
-- **빅테크 사례 조사**: Netflix, Uber 등 검증된 패턴 참고 후 적용
+- **빅테크 사례 조사**: Netflix, Uber 등 사례 참고 후 적용
 
 **문서화:**
+- [전체 문서 목록](docs/README.md) - 문서 인덱스 및 읽는 순서
 - [아키텍처 결정 기록 (ADR)](docs/decisions/) - 주요 기술 결정과 근거
 - [아키텍처 발전 과정](docs/architecture/evolution.md) - 구조 변화 히스토리
-- [학습 노트 (TIL)](docs/til/) - 프로젝트 진행하며 배운 내용
+- [실무 경험 - 물류 오케스트레이션](docs/experience/logistics-orchestration.md) - 프로젝트 배경
 
 ---
 

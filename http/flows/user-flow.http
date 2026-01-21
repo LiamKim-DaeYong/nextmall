@@ -1,0 +1,40 @@
+﻿# User flow (signup -> login -> get user)
+# Run All to execute sequentially.
+
+@flowEmail = test+{{$uuid}}@example.com
+@flowPassword = Test1234!
+@flowNickName = Flow User
+
+### signup
+POST {{baseUrl}}/sign-up/local
+Content-Type: application/json
+
+{
+  "email":"{{flowEmail}}",
+  "password":"{{flowPassword}}",
+  "nickname":"{{flowNickName}}"
+}
+
+> {%
+  client.test("signup success", function() {
+    client.assert(response.status === 201);
+    client.assert(response.body.userId != null);
+    client.assert(response.body.accessToken != null);
+    client.assert(response.body.refreshToken != null);
+  });
+  client.global.set("userId", response.body.userId.toString());
+  client.global.set("accessToken", response.body.accessToken);
+  client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### get user
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+  client.test("get user success", function() {
+    client.assert(response.status === 200);
+    client.assert(response.body.id.toString() === client.global.get("userId"));
+    client.assert(response.body.nickname === "Flow User");
+  });
+%}

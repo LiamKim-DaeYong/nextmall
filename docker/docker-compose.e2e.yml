@@ -67,6 +67,8 @@ services:
   auth-service:
     image: nextmall/auth-service:latest
     container_name: e2e-auth-service
+    env_file:
+      - ./.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,11 +86,6 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       # Token
-      TOKEN_USER_SECRET: e2e-test-user-secret-key-must-be-at-least-32-characters
-      TOKEN_USER_ACCESS_EXPIRATION: 3600000
-      TOKEN_USER_REFRESH_EXPIRATION: 86400000
-      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
       # Kafka
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Node
@@ -107,6 +104,8 @@ services:
   user-service:
     image: nextmall/user-service:latest
     container_name: e2e-user-service
+    env_file:
+      - ./.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -119,8 +118,6 @@ services:
       USER_DB_USERNAME: nextmall
       USER_DB_PASSWORD: nextmall
       # Token
-      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
       # Node
       NODE_ID: 2
     ports:
@@ -137,6 +134,8 @@ services:
   product-service:
     image: nextmall/product-service:latest
     container_name: e2e-product-service
+    env_file:
+      - ./.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -149,8 +148,6 @@ services:
       PRODUCT_DB_USERNAME: nextmall
       PRODUCT_DB_PASSWORD: nextmall
       # Token
-      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
       # Kafka
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Node
@@ -169,6 +166,8 @@ services:
   order-service:
     image: nextmall/order-service:latest
     container_name: e2e-order-service
+    env_file:
+      - ./.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -181,8 +180,6 @@ services:
       ORDER_DB_USERNAME: nextmall
       ORDER_DB_PASSWORD: nextmall
       # Token
-      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
       # Kafka
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Node
@@ -201,6 +198,8 @@ services:
   bff-service:
     image: nextmall/bff-service:latest
     container_name: e2e-bff-service
+    env_file:
+      - ./.env
     depends_on:
       auth-service:
         condition: service_healthy
@@ -213,9 +212,6 @@ services:
     environment:
       SERVER_PORT: 8082
       # Token
-      TOKEN_USER_SECRET: e2e-test-user-secret-key-must-be-at-least-32-characters
-      TOKEN_SERVICE_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
       # Service URLs
       CLIENT_USER_BASE_URL: http://user-service:8083
       CLIENT_AUTH_BASE_URL: http://auth-service:8081
@@ -235,6 +231,8 @@ services:
   api-gateway:
     image: nextmall/api-gateway:latest
     container_name: e2e-api-gateway
+    env_file:
+      - ./.env
     depends_on:
       bff-service:
         condition: service_healthy
@@ -243,7 +241,6 @@ services:
       # BFF URL
       GATEWAY_BFF_BASE_URL: http://bff-service:8082
       # Token
-      TOKEN_PASSPORT_SECRET: e2e-test-service-secret-key-must-be-at-least-32-chars
     ports:
       - "18080:8080"
     healthcheck:

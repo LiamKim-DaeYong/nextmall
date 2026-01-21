@@ -1,7 +1,9 @@
 package com.nextmall.bff.application.product.query
 
-interface GetProductFacade {
-    suspend fun getProduct(productId: Long): ProductViewResult
+import reactor.core.publisher.Mono
 
-    suspend fun getAllProducts(): List<ProductViewResult>
+interface GetProductFacade {
+    fun getProduct(productId: Long): Mono<ProductViewResult>
+
+    fun getAllProducts(): Mono<List<ProductViewResult>>
 }

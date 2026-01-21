@@ -22,7 +22,7 @@ abstract class PassportTokenIssuer(
         roles: Set<String>,
     ): String {
         val now = Instant.now()
-        val expiration = now.plus(Duration.ofMinutes(EXPIRATION_MINUTES))
+        val expiration = now.plus(Duration.ofSeconds(EXPIRATION_SECONDS))
 
         val claimsBuilder =
             JWTClaimsSet
@@ -50,7 +50,16 @@ abstract class PassportTokenIssuer(
     companion object {
         private const val SCOPE_CLAIM = "scope"
         private const val SERVICE_ADMIN_SCOPE = "service:admin"
-        private const val EXPIRATION_MINUTES = 5L
+
+        /**
+         * Passport Token 만료 시간 (30초)
+         *
+         * Netflix Passport 패턴에서 Passport는 단일 요청 처리 중에만 유효하면 된다.
+         * - 네트워크 지연 + 서비스 처리 시간만 커버 (보통 수 초)
+         * - 탈취되어도 30초 후 무효화
+         * - 내부 서비스 간 통신용이므로 refresh 불필요
+         */
+        private const val EXPIRATION_SECONDS = 30L
 
         const val USER_ID_CLAIM = "user_id"
         const val ROLES_CLAIM = "roles"
