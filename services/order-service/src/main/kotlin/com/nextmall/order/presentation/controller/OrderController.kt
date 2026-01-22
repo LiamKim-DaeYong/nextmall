@@ -1,6 +1,5 @@
 package com.nextmall.order.presentation.controller
 
-import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.common.security.principal.AuthenticatedPrincipal
 import com.nextmall.common.security.spring.CurrentUser
 import com.nextmall.order.application.OrderService
@@ -11,7 +10,12 @@ import com.nextmall.order.presentation.response.toResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/orders")
@@ -19,10 +23,9 @@ class OrderController(
     private val orderService: OrderService,
 ) {
     @GetMapping("/{orderId}")
-    @RequiresPolicy(resource = "order", action = "read", resourceIdParam = "orderId")
     fun getOrder(@PathVariable orderId: Long): ResponseEntity<OrderViewResponse> {
+        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
         val result = orderService.getOrder(orderId)
-
         return ResponseEntity
             .ok(result.toResponse())
     }
@@ -32,13 +35,11 @@ class OrderController(
         @CurrentUser principal: AuthenticatedPrincipal,
     ): ResponseEntity<List<OrderViewResponse>> {
         val results = orderService.getOrdersByUserId(principal.userIdAsLong())
-
         return ResponseEntity
             .ok(results.map { it.toResponse() })
     }
 
     @PostMapping
-    @RequiresPolicy(resource = "order", action = "create")
     fun createOrder(
         @CurrentUser principal: AuthenticatedPrincipal,
         @Valid @RequestBody request: CreateOrderRequest,
@@ -49,17 +50,15 @@ class OrderController(
                 productId = request.productId,
                 quantity = request.quantity,
             )
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CreateOrderResponse(result.orderId))
     }
 
     @PostMapping("/{orderId}/cancel")
-    @RequiresPolicy(resource = "order", action = "cancel", resourceIdParam = "orderId")
     fun cancelOrder(@PathVariable orderId: Long): ResponseEntity<Unit> {
+        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
         orderService.cancelOrder(orderId)
-
         return ResponseEntity
             .noContent()
             .build()

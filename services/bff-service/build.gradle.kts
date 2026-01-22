@@ -11,16 +11,14 @@ plugins {
 dependencies {
     implementation(project(":common:exception"))
     implementation(project(":common:integration"))
-    implementation(project(":common:security"))
+    implementation(project(":common:security-core"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
-    implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.spring.boot.starter.webflux)
 
     testImplementation(project(":common:test-support"))
 }

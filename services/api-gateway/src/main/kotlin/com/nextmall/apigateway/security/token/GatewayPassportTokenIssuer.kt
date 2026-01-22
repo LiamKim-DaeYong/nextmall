@@ -26,4 +26,15 @@ class GatewayPassportTokenIssuer(
             roles = roles,
         )
     }
+
+    fun issueForGuest(): String =
+        issuePassportToken(
+            targetService = "internal-services",
+            userId = GUEST_USER_ID,
+            roles = emptySet(),
+        )
+
+    private companion object {
+        private const val GUEST_USER_ID = "guest"
+    }
 }

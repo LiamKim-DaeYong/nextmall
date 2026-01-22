@@ -10,12 +10,11 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
-    implementation(project(":common:security"))
+    implementation(project(":common:security-core"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.cloud.gateway)
     implementation(libs.spring.boot.starter.actuator)
-    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
 }
 

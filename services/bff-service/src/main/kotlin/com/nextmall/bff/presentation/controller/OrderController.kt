@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/orders")
@@ -23,32 +24,33 @@ class OrderController(
     private val getOrderFacade: GetOrderFacade,
 ) {
     @PostMapping
-    suspend fun createOrder(
+    fun createOrder(
         @Valid @RequestBody request: CreateOrderRequest,
-    ): ResponseEntity<CreateOrderResponse> {
+    ): Mono<ResponseEntity<CreateOrderResponse>> {
         val command =
             CreateOrderCommand(
                 userId = request.userId,
                 productId = request.productId,
                 quantity = request.quantity,
             )
-        val result = createOrderFacade.createOrder(command)
-        return ResponseEntity.ok(CreateOrderResponse(result.orderId))
+        return createOrderFacade
+            .createOrder(command)
+            .map { result -> ResponseEntity.ok(CreateOrderResponse(result.orderId)) }
     }
 
     @GetMapping("/{orderId}")
-    suspend fun getOrder(
+    fun getOrder(
         @PathVariable orderId: Long,
-    ): ResponseEntity<OrderViewResponse> {
-        val result = getOrderFacade.getOrder(orderId)
-        return ResponseEntity.ok(result.toResponse())
-    }
+    ): Mono<ResponseEntity<OrderViewResponse>> =
+        getOrderFacade
+            .getOrder(orderId)
+            .map { result -> ResponseEntity.ok(result.toResponse()) }
 
     @GetMapping("/users/{userId}")
-    suspend fun getOrdersByUserId(
+    fun getOrdersByUserId(
         @PathVariable userId: Long,
-    ): ResponseEntity<List<OrderViewResponse>> {
-        val results = getOrderFacade.getOrdersByUserId(userId)
-        return ResponseEntity.ok(results.map { it.toResponse() })
-    }
+    ): Mono<ResponseEntity<List<OrderViewResponse>>> =
+        getOrderFacade
+            .getOrdersByUserId(userId)
+            .map { results -> ResponseEntity.ok(results.map { it.toResponse() }) }
 }

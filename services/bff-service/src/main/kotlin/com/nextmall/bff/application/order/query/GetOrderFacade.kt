@@ -1,7 +1,9 @@
 package com.nextmall.bff.application.order.query
 
-interface GetOrderFacade {
-    suspend fun getOrder(orderId: Long): OrderViewResult
+import reactor.core.publisher.Mono
 
-    suspend fun getOrdersByUserId(userId: Long): List<OrderViewResult>
+interface GetOrderFacade {
+    fun getOrder(orderId: Long): Mono<OrderViewResult>
+
+    fun getOrdersByUserId(userId: Long): Mono<List<OrderViewResult>>
 }

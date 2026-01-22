@@ -1,6 +1,7 @@
 package com.nextmall.common.testsupport.security
 
 import com.nextmall.common.security.internal.PassportTokenIssuer
+import com.nextmall.common.security.internal.SecurityTokenConstants
 import com.nextmall.common.security.jwt.SecretKeyDecoder
 import com.nextmall.common.security.token.PassportTokenProperties
 import com.nimbusds.jose.JWSAlgorithm
@@ -36,7 +37,9 @@ class TestPassportTokenIssuer(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
         targetService: String = DEFAULT_TARGET_SERVICE,
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
-    ): String = "Bearer ${issueToken(sourceService, targetService, expirationMinutes)}"
+    ): String =
+        SecurityTokenConstants.BEARER_PREFIX +
+            issueToken(sourceService, targetService, expirationMinutes)
 
     fun issueBearerToken(
         sourceService: String = DEFAULT_SOURCE_SERVICE,
@@ -44,7 +47,9 @@ class TestPassportTokenIssuer(
         expirationMinutes: Long = DEFAULT_EXPIRATION_MINUTES,
         userId: String,
         roles: Set<String>,
-    ): String = "Bearer ${issueToken(sourceService, targetService, expirationMinutes, userId, roles)}"
+    ): String =
+        SecurityTokenConstants.BEARER_PREFIX +
+            issueToken(sourceService, targetService, expirationMinutes, userId, roles)
 
     private fun buildToken(
         sourceService: String,

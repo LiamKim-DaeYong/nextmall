@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/auth")
@@ -22,30 +23,26 @@ class AuthController(
     private val tokenFacade: TokenFacade,
 ) {
     @PostMapping("/login")
-    suspend fun login(
+    fun login(
         @Valid @RequestBody request: LoginRequest,
-    ): ResponseEntity<TokenResponse> {
-        val result = loginFacade.login(request.toCommand())
-
-        return ResponseEntity
-            .ok(result.toResponse())
-    }
+    ): Mono<ResponseEntity<TokenResponse>> =
+        loginFacade
+            .login(request.toCommand())
+            .map { result -> ResponseEntity.ok(result.toResponse()) }
 
     @PostMapping("/logout")
-    suspend fun logout(
+    fun logout(
         @Valid @RequestBody request: LogoutRequest,
-    ): ResponseEntity<Unit> {
-        tokenFacade.logout(request.refreshToken)
-        return ResponseEntity.noContent().build()
-    }
+    ): Mono<ResponseEntity<Unit>> =
+        tokenFacade
+            .logout(request.refreshToken)
+            .thenReturn(ResponseEntity.noContent().build())
 
     @PostMapping("/tokens/refresh")
-    suspend fun refresh(
+    fun refresh(
         @Valid @RequestBody request: RefreshTokenRequest,
-    ): ResponseEntity<TokenResponse> =
-        ResponseEntity.ok(
-            tokenFacade
-                .refresh(request.refreshToken)
-                .toResponse(),
-        )
+    ): Mono<ResponseEntity<TokenResponse>> =
+        tokenFacade
+            .refresh(request.refreshToken)
+            .map { result -> ResponseEntity.ok(result.toResponse()) }
 }

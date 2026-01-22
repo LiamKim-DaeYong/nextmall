@@ -1,6 +1,6 @@
 package com.nextmall.user.presentation.controller
 
-import com.nextmall.common.security.internal.PassportTokenConstants
+import com.nextmall.common.security.internal.SecurityTokenConstants
 import com.nextmall.common.testsupport.annotation.IntegrationTest
 import com.nextmall.common.testsupport.security.TestPassportTokenIssuer
 import com.nextmall.user.application.UserService
@@ -40,7 +40,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$targetUserId")
-                    .header(PassportTokenConstants.HEADER_NAME, adminToken)
+                    .header(SecurityTokenConstants.PASSPORT_HEADER_NAME, adminToken)
                     .exchange()
                     .expectStatus()
                     .isOk
@@ -66,7 +66,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$myUserId")
-                    .header(PassportTokenConstants.HEADER_NAME, userToken)
+                    .header(SecurityTokenConstants.PASSPORT_HEADER_NAME, userToken)
                     .exchange()
                     .expectStatus()
                     .isOk
@@ -86,7 +86,7 @@ class UserControllerAuthorizationTest(
                 webTestClient
                     .get()
                     .uri("/users/$otherUserId")
-                    .header(PassportTokenConstants.HEADER_NAME, userToken)
+                    .header(SecurityTokenConstants.PASSPORT_HEADER_NAME, userToken)
                     .exchange()
                     .expectStatus()
                     .isForbidden

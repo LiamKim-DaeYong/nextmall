@@ -19,7 +19,8 @@ include("common:identifier") // 식별자 생성 및 관리
 include("common:kafka") // Kafka 메시징 공통 인프라
 include("common:policy") // 정책 기반 인가 (Policy-Based Authorization)
 include("common:redis") // Redis 공통 인프라
-include("common:security") // 공통 인증 인프라 (AuthN only)
+include("common:security") // 공통 인증 인프라 (Servlet)
+include("common:security-core") // 공통 인증 인프라 (Core)
 include("common:test-support") // 테스트 공통 환경 및 테스트 유틸
 include("common:util") // 범용 유틸리티 (시간, 문자열, JSON)
 

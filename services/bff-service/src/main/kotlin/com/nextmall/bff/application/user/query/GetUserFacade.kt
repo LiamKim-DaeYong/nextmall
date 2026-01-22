@@ -1,7 +1,9 @@
 package com.nextmall.bff.application.user.query
 
+import reactor.core.publisher.Mono
+
 interface GetUserFacade {
-    suspend fun getUser(
+    fun getUser(
         userId: Long,
-    ): UserViewResult
+    ): Mono<UserViewResult>
 }

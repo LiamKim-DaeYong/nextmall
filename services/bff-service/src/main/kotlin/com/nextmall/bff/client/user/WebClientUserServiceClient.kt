@@ -5,9 +5,9 @@ import com.nextmall.bff.client.user.response.CreateUserClientResponse
 import com.nextmall.bff.client.user.response.UserViewClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
 import com.nextmall.common.integration.support.WebClientFactory
-import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Component
 class WebClientUserServiceClient(
@@ -20,47 +20,42 @@ class WebClientUserServiceClient(
             filters = arrayOf(PassportTokenPropagationFilter()),
         )
 
-    override suspend fun getUser(
+    override fun getUser(
         userId: Long,
-    ): UserViewClientResponse =
+    ): Mono<UserViewClientResponse> =
         client
             .get()
             .uri(USER_GET_URI, userId)
             .retrieve()
-            .awaitBody<UserViewClientResponse>()
+            .bodyToMono<UserViewClientResponse>()
 
-    override suspend fun createUser(
+    override fun createUser(
         nickname: String,
         email: String?,
-    ): Long =
+    ): Mono<Long> =
         client
             .post()
             .uri(USER_CREATE_URI)
             .bodyValue(CreateUserClientRequest(nickname, email))
             .retrieve()
-            .awaitBody<CreateUserClientResponse>()
-            .userId
+            .bodyToMono<CreateUserClientResponse>()
+            .map { it.userId }
 
-    override suspend fun activateUser(userId: Long) {
+    override fun activateUser(userId: Long): Mono<Void> =
         client
             .post()
             .uri(USER_ACTIVATE_URI, userId)
             .retrieve()
-            .toBodilessEntity()
-            .awaitSingle()
-    }
+            .bodyToMono<Void>()
 
-    override suspend fun markSignupFailed(userId: Long) {
+    override fun markSignupFailed(userId: Long): Mono<Void> =
         client
             .post()
             .uri(USER_SIGNUP_FAIL_URI, userId)
             .retrieve()
-            .toBodilessEntity()
-            .awaitSingle()
-    }
+            .bodyToMono<Void>()
 
     companion object {
-        private const val TARGET_SERVICE = "user-service"
         private const val USER_GET_URI = "/users/{id}"
         private const val USER_CREATE_URI = "/users"
         private const val USER_ACTIVATE_URI = "/users/{id}/activate"

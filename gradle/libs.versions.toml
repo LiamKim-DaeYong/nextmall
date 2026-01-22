@@ -32,6 +32,7 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 
 [libraries]
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api" }
 karate-junit5 = { module = "com.intuit.karate:karate-junit5", version.ref = "karate" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines"}

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/products")
@@ -15,16 +16,16 @@ class ProductController(
     private val getProductFacade: GetProductFacade,
 ) {
     @GetMapping("/{productId}")
-    suspend fun getProduct(
+    fun getProduct(
         @PathVariable productId: Long,
-    ): ResponseEntity<ProductViewResponse> {
-        val result = getProductFacade.getProduct(productId)
-        return ResponseEntity.ok(result.toResponse())
-    }
+    ): Mono<ResponseEntity<ProductViewResponse>> =
+        getProductFacade
+            .getProduct(productId)
+            .map { result -> ResponseEntity.ok(result.toResponse()) }
 
     @GetMapping
-    suspend fun getAllProducts(): ResponseEntity<List<ProductViewResponse>> {
-        val results = getProductFacade.getAllProducts()
-        return ResponseEntity.ok(results.map { it.toResponse() })
-    }
+    fun getAllProducts(): Mono<ResponseEntity<List<ProductViewResponse>>> =
+        getProductFacade
+            .getAllProducts()
+            .map { results -> ResponseEntity.ok(results.map { it.toResponse() }) }
 }
