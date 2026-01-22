@@ -1,4 +1,4 @@
-﻿# User flow (signup -> login -> get user)
+﻿# User flow (signup -> get user)
 # Run All to execute sequentially.
 
 @flowEmail = test+{{$uuid}}@example.com

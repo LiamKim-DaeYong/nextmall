@@ -24,6 +24,7 @@ class OrderController(
 ) {
     @GetMapping("/{orderId}")
     fun getOrder(@PathVariable orderId: Long): ResponseEntity<OrderViewResponse> {
+        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
         val result = orderService.getOrder(orderId)
         return ResponseEntity
             .ok(result.toResponse())
@@ -56,6 +57,7 @@ class OrderController(
 
     @PostMapping("/{orderId}/cancel")
     fun cancelOrder(@PathVariable orderId: Long): ResponseEntity<Unit> {
+        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
         orderService.cancelOrder(orderId)
         return ResponseEntity
             .noContent()

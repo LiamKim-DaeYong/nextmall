@@ -46,7 +46,6 @@ Content-Type: application/json
 ### refresh
 POST {{baseUrl}}/auth/tokens/refresh
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
 {
   "refreshToken":"{{refreshToken}}"
