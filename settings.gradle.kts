@@ -1,9 +1,10 @@
 rootProject.name = "nextmall"
 
-// ──────────────── Service (Execution / Deployment Unit) ────────────────
-include("services:api-gateway") // 외부 요청의 단일 진입점 (인증 위임, 라우팅, 공통 필터)
+// ──────────────── Services (Execution / Deployment Units) ────────────────
+include("services:api-gateway") // 외부 요청 단일 진입점 (인증 위임, 라우팅, 공통 필터)
 include("services:auth-service") // 인증 서비스 실행 단위 (Auth Domain 실행 책임)
 include("services:bff-service") // BFF 실행 단위 (API Entry Point / Runtime Only)
+include("services:checkout-service") // 체크아웃 서비스 실행 단위 (Checkout Capability 책임)
 include("services:order-service") // 주문 서비스 실행 단위 (Order Domain 실행 책임)
 include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
 include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)

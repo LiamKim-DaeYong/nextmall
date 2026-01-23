@@ -1,0 +1,32 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: checkout-service
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${CHECKOUT_DB_URL}
+    username: ${CHECKOUT_DB_USERNAME}
+    password: ${CHECKOUT_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+nextmall:
+  identifier:
+    node-id: ${NODE_ID}
+  kafka:
+    enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+token:
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}
