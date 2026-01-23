@@ -35,7 +35,7 @@ Catalog -> Cart -> Checkout -> Order -> Fulfillment/Adjustment
 - Cancel Checkout
 
 최소 상태 모델
-- incomplete -> ready_for_complete -> complete_in_progress -> cooizmpleted
+- incomplete -> ready_for_complete -> complete_in_progress -> completed
 - 필요 시: requires_escalation (사용자 UI 전환)
 - 취소 흐름: canceled
 

@@ -4,7 +4,9 @@ import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.order.domain.OrderEntity
 import com.nextmall.order.infrastructure.persistence.jpa.OrderJpaRepository
 import com.nextmall.order.presentation.dto.*
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
 
@@ -21,7 +23,7 @@ class OrderService(
         orderJpaRepository
             .findById(orderId)
             .map { it.toSnapshot() }
-            .orElseThrow { IllegalArgumentException("Order not found: $orderId") }
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: $orderId") }
 
     fun createOrder(request: CreateOrderSnapshotRequest): OrderSnapshot {
         val id = idGenerator.generate()
