@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: order_id
-                  type: VARCHAR(64)
+                  type: BIGINT
                   constraints:
                     primaryKey: true
                     nullable: false

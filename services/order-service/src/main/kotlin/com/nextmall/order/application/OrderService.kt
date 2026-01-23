@@ -1,20 +1,15 @@
 package com.nextmall.order.application
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.order.domain.OrderEntity
 import com.nextmall.order.infrastructure.persistence.jpa.OrderJpaRepository
-import com.nextmall.order.presentation.dto.CreateOrderSnapshotRequest
-import com.nextmall.order.presentation.dto.MoneyAmount
-import com.nextmall.order.presentation.dto.OrderFulfillment
-import com.nextmall.order.presentation.dto.OrderLineItem
-import com.nextmall.order.presentation.dto.OrderSnapshot
-import com.nextmall.order.presentation.dto.OrderTotals
+import com.nextmall.order.presentation.dto.*
 import org.springframework.stereotype.Service
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.ObjectMapper
 
 @Service
-class InternalOrderService(
+class OrderService(
     private val idGenerator: IdGenerator,
     private val orderJpaRepository: OrderJpaRepository,
     private val objectMapper: ObjectMapper,
@@ -22,14 +17,14 @@ class InternalOrderService(
     private val lineItemsType = object : TypeReference<List<OrderLineItem>>() {}
     private val adjustmentsType = object : TypeReference<List<Map<String, Any>>>() {}
 
-    fun getOrder(orderId: String): OrderSnapshot =
+    fun getOrder(orderId: Long): OrderSnapshot =
         orderJpaRepository
             .findById(orderId)
             .map { it.toSnapshot() }
             .orElseThrow { IllegalArgumentException("Order not found: $orderId") }
 
     fun createOrder(request: CreateOrderSnapshotRequest): OrderSnapshot {
-        val id = "ord_${idGenerator.generate()}"
+        val id = idGenerator.generate()
         // Phase 1: accept checkout snapshot as-is. Validation/normalization happens in upper layers later.
         val lineItems =
             request.lineItems.map {

@@ -1,6 +1,6 @@
 package com.nextmall.order.presentation.controller
 
-import com.nextmall.order.application.InternalOrderService
+import com.nextmall.order.application.OrderService
 import com.nextmall.order.presentation.dto.CreateOrderSnapshotRequest
 import com.nextmall.order.presentation.dto.OrderSnapshot
 import jakarta.validation.Valid
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/orders")
 class OrderController(
-    private val orderService: InternalOrderService,
+    private val orderService: OrderService,
 ) {
     @GetMapping("/{orderId}")
-    fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderSnapshot> =
+    fun getOrder(@PathVariable orderId: Long): ResponseEntity<OrderSnapshot> =
         ResponseEntity.ok(orderService.getOrder(orderId))
 
     @PostMapping

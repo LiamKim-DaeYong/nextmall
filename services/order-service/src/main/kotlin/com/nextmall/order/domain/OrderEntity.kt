@@ -11,8 +11,8 @@ import jakarta.persistence.Table
 @Table(name = "orders")
 class OrderEntity(
     @Id
-    @Column(name = "order_id", nullable = false, length = 64)
-    val id: String,
+    @Column(name = "order_id", nullable = false)
+    val id: Long,
 
     @Column(name = "checkout_id", nullable = false, length = 64)
     val checkoutId: String,
@@ -20,7 +20,7 @@ class OrderEntity(
     @Column(name = "currency", nullable = false, length = 10)
     val currency: String,
 
-    @Column(name = "permalink_url")
+    @Column(name = "permalink_url", columnDefinition = "TEXT")
     val permalinkUrl: String? = null,
 
     @Lob
