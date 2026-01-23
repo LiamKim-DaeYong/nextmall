@@ -1,67 +1,84 @@
 package com.nextmall.order.application
 
 import com.nextmall.common.identifier.IdGenerator
-import com.nextmall.common.util.Money
-import com.nextmall.order.application.query.OrderView
-import com.nextmall.order.application.result.CreateOrderResult
-import com.nextmall.order.domain.Order
-import com.nextmall.order.domain.exception.OrderNotFoundException
-import com.nextmall.order.domain.model.OrderStatus
-import com.nextmall.order.infrastructure.persistence.jooq.OrderJooqRepository
+import com.nextmall.order.domain.OrderEntity
 import com.nextmall.order.infrastructure.persistence.jpa.OrderJpaRepository
+import com.nextmall.order.presentation.dto.*
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.ObjectMapper
 
 @Service
 class OrderService(
     private val idGenerator: IdGenerator,
     private val orderJpaRepository: OrderJpaRepository,
-    private val orderJooqRepository: OrderJooqRepository,
+    private val objectMapper: ObjectMapper,
 ) {
-    @Transactional(readOnly = true)
-    fun getOrder(orderId: Long): OrderView =
-        orderJooqRepository.findById(orderId)
-            ?: throw OrderNotFoundException()
+    private val lineItemsType = object : TypeReference<List<OrderLineItem>>() {}
+    private val adjustmentsType = object : TypeReference<List<Map<String, Any>>>() {}
 
-    @Transactional(readOnly = true)
-    fun getOrdersByUserId(userId: Long): List<OrderView> = orderJooqRepository.findAllByUserId(userId)
+    fun getOrder(orderId: Long): OrderSnapshot =
+        orderJpaRepository
+            .findById(orderId)
+            .map { it.toSnapshot() }
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: $orderId") }
 
-    @Transactional
-    fun createOrder(
-        userId: Long,
-        productId: Long,
-        quantity: Int,
-    ): CreateOrderResult {
-        require(userId > 0) { "Invalid userId" }
-        require(productId > 0) { "Invalid productId" }
-        require(quantity > 0) { "Quantity must be positive" }
+    fun createOrder(request: CreateOrderSnapshotRequest): OrderSnapshot {
+        val id = idGenerator.generate()
+        // Phase 1: accept checkout snapshot as-is. Validation/normalization happens in upper layers later.
+        val lineItems =
+            request.lineItems.map {
+                OrderLineItem(
+                    id = it.id,
+                    title = it.title,
+                    quantity = it.quantity,
+                    price = MoneyAmount(it.price.amount, it.price.currency),
+                    imageUrl = it.imageUrl,
+                )
+            }
+        val totals =
+            OrderTotals(
+                subtotal = MoneyAmount(request.totals.subtotal.amount, request.totals.subtotal.currency),
+                tax = MoneyAmount(request.totals.tax.amount, request.totals.tax.currency),
+                shipping = MoneyAmount(request.totals.shipping.amount, request.totals.shipping.currency),
+                discount = MoneyAmount(request.totals.discount.amount, request.totals.discount.currency),
+                total = MoneyAmount(request.totals.total.amount, request.totals.total.currency),
+            )
+        val fulfillment = OrderFulfillment()
+        val adjustments = emptyList<Map<String, Any>>()
 
-        // TODO: Phase 2에서 Product 서비스 호출로 실제 가격 조회
-        // val product = productClient.getProduct(productId)
-        // val totalPrice = product.price * quantity
-        val totalPrice = Money.of("10000.00") // 임시 하드코딩
-
-        val order =
-            Order(
-                id = idGenerator.generate(),
-                userId = userId,
-                productId = productId,
-                quantity = quantity,
-                totalPriceAmount = totalPrice.amount,
-                status = OrderStatus.PENDING,
+        val entity =
+            OrderEntity(
+                id = id,
+                checkoutId = request.checkoutId,
+                currency = request.currency,
+                permalinkUrl = request.permalinkUrl,
+                lineItemsJson = objectMapper.writeValueAsString(lineItems),
+                totalsJson = objectMapper.writeValueAsString(totals),
+                fulfillmentJson = objectMapper.writeValueAsString(fulfillment),
+                adjustmentsJson = objectMapper.writeValueAsString(adjustments),
             )
 
-        val saved = orderJpaRepository.save(order)
-        return CreateOrderResult(saved)
+        val saved = orderJpaRepository.save(entity)
+        return saved.toSnapshot()
     }
 
-    @Transactional
-    fun cancelOrder(orderId: Long) {
-        val order =
-            orderJpaRepository
-                .findById(orderId)
-                .orElseThrow { OrderNotFoundException() }
+    private fun OrderEntity.toSnapshot(): OrderSnapshot {
+        val lineItems = objectMapper.readValue(lineItemsJson, lineItemsType)
+        val totals = objectMapper.readValue(totalsJson, OrderTotals::class.java)
+        val fulfillment = objectMapper.readValue(fulfillmentJson, OrderFulfillment::class.java)
+        val adjustments = objectMapper.readValue(adjustmentsJson, adjustmentsType)
 
-        order.cancel()
+        return OrderSnapshot(
+            id = id,
+            checkoutId = checkoutId,
+            permalinkUrl = permalinkUrl,
+            lineItems = lineItems,
+            fulfillment = fulfillment,
+            adjustments = adjustments,
+            totals = totals,
+        )
     }
 }
