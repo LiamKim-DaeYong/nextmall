@@ -1,12 +1,8 @@
 package com.nextmall.order.presentation.controller
 
-import com.nextmall.common.security.principal.AuthenticatedPrincipal
-import com.nextmall.common.security.spring.CurrentUser
-import com.nextmall.order.application.OrderService
-import com.nextmall.order.presentation.request.CreateOrderRequest
-import com.nextmall.order.presentation.response.CreateOrderResponse
-import com.nextmall.order.presentation.response.OrderViewResponse
-import com.nextmall.order.presentation.response.toResponse
+import com.nextmall.order.application.InternalOrderService
+import com.nextmall.order.presentation.dto.CreateOrderSnapshotRequest
+import com.nextmall.order.presentation.dto.OrderSnapshot
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,47 +16,20 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/orders")
 class OrderController(
-    private val orderService: OrderService,
+    private val orderService: InternalOrderService,
 ) {
     @GetMapping("/{orderId}")
-    fun getOrder(@PathVariable orderId: Long): ResponseEntity<OrderViewResponse> {
-        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
-        val result = orderService.getOrder(orderId)
-        return ResponseEntity
-            .ok(result.toResponse())
-    }
-
-    @GetMapping
-    fun getMyOrders(
-        @CurrentUser principal: AuthenticatedPrincipal,
-    ): ResponseEntity<List<OrderViewResponse>> {
-        val results = orderService.getOrdersByUserId(principal.userIdAsLong())
-        return ResponseEntity
-            .ok(results.map { it.toResponse() })
-    }
+    fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderSnapshot> =
+        ResponseEntity.ok(orderService.getOrder(orderId))
 
     @PostMapping
     fun createOrder(
-        @CurrentUser principal: AuthenticatedPrincipal,
-        @Valid @RequestBody request: CreateOrderRequest,
-    ): ResponseEntity<CreateOrderResponse> {
-        val result =
-            orderService.createOrder(
-                userId = principal.userIdAsLong(),
-                productId = request.productId,
-                quantity = request.quantity,
-            )
+        @Valid @RequestBody request: CreateOrderSnapshotRequest,
+    ): ResponseEntity<OrderSnapshot> {
+        // Phase 1: internal contract only. UCP mapping will live in BFF/orchestration.
+        val result = orderService.createOrder(request)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(CreateOrderResponse(result.orderId))
-    }
-
-    @PostMapping("/{orderId}/cancel")
-    fun cancelOrder(@PathVariable orderId: Long): ResponseEntity<Unit> {
-        // TODO(phase-2): Add ownership validation once Passport-based principal is adopted.
-        orderService.cancelOrder(orderId)
-        return ResponseEntity
-            .noContent()
-            .build()
+            .body(result)
     }
 }

@@ -1,6 +1,7 @@
 package com.nextmall.order.infrastructure.persistence.jpa
 
-import com.nextmall.order.domain.Order
+import com.nextmall.order.domain.OrderEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface OrderJpaRepository : JpaRepository<Order, Long>
+interface OrderJpaRepository : JpaRepository<OrderEntity, String>
+
