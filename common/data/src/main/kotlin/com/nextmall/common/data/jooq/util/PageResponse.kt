@@ -14,5 +14,5 @@ fun <T, R> PageResult<T>.toResponse(transform: (T) -> R): PageResponse<R> =
         page = page,
         size = size,
         totalElements = total,
-        totalPages = ((total + size - 1) / size).toInt(),
+        totalPages = if (size > 0) ((total + size - 1) / size).toInt() else 0,
     )

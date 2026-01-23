@@ -1,0 +1,134 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0005-create-checkouts-table
+      author: codex
+      changes:
+        - createTable:
+            tableName: checkouts
+            columns:
+              - column:
+                  name: checkout_id
+                  type: VARCHAR(64)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subtotal_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tax_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shipping_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: discount_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: terms_url
+                  type: TEXT
+              - column:
+                  name: privacy_url
+                  type: TEXT
+              - column:
+                  name: refund_url
+                  type: TEXT
+              - column:
+                  name: expires_at
+                  type: TIMESTAMPTZ
+              - column:
+                  name: payment_type
+                  type: VARCHAR(32)
+              - column:
+                  name: payment_provider
+                  type: VARCHAR(64)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: checkout_line_items
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: checkout_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: line_item_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_currency
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_url
+                  type: TEXT
+
+        - addForeignKeyConstraint:
+            baseTableName: checkout_line_items
+            baseColumnNames: checkout_id
+            referencedTableName: checkouts
+            referencedColumnNames: checkout_id
+            constraintName: fk_checkout_line_items_checkout
+
+        - createIndex:
+            tableName: checkout_line_items
+            indexName: idx_checkout_line_items_checkout_id
+            columns:
+              - column:
+                  name: checkout_id

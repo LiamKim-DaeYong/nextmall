@@ -3,29 +3,37 @@ package com.nextmall.checkout.presentation.request
 import com.nextmall.checkout.application.command.CompleteCheckoutCommand
 import com.nextmall.checkout.application.command.CreateCheckoutCommand
 import com.nextmall.checkout.application.command.UpdateCheckoutCommand
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 
 data class CreateCheckoutRequest(
     @field:NotEmpty
+    @field:Valid
     val lineItems: List<LineItemRequest>,
     @field:NotBlank
     val currency: String,
+    @field:Valid
     val buyer: BuyerRequest? = null,
     val returnUrl: String? = null,
     val cancelUrl: String? = null,
 )
 
 data class UpdateCheckoutRequest(
+    @field:Valid
     val lineItems: List<LineItemRequest>? = null,
+    @field:Valid
     val buyer: BuyerRequest? = null,
+    @field:Valid
     val shippingAddress: AddressRequest? = null,
+    @field:Valid
     val billingAddress: AddressRequest? = null,
 )
 
 data class CompleteCheckoutRequest(
     @field:NotNull
+    @field:Valid
     val payment: PaymentRequest,
     val confirm: Boolean? = null,
 )

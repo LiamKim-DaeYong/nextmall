@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0007-create-checkout-payment-handlers-table
+      author: codex
+      changes:
+        - createTable:
+            tableName: checkout_payment_handlers
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: checkout_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: handler_type
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: handler_provider
+                  type: VARCHAR(64)
+              - column:
+                  name: sort_order
+                  type: INT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: checkout_payment_handlers
+            baseColumnNames: checkout_id
+            referencedTableName: checkouts
+            referencedColumnNames: checkout_id
+            constraintName: fk_checkout_payment_handlers_checkout
+
+        - createIndex:
+            tableName: checkout_payment_handlers
+            indexName: idx_checkout_payment_handlers_checkout_id
+            columns:
+              - column:
+                  name: checkout_id
