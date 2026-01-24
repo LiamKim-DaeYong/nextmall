@@ -3,7 +3,8 @@
 > 목적: 서비스별 적용 전에 공통 키/값을 정리해두는 템플릿
 
 ## 공통 환경 변수(예시)
-- `OTEL_EXPORTER_OTLP_ENDPOINT` = `http://localhost:4318`
+- `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` = `http://localhost:4318/v1/traces`
+- `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` = `http://localhost:4318/v1/metrics`
 - `OTEL_SERVICE_NAME` = `nextmall-<service>`
 - `OTEL_RESOURCE_ATTRIBUTES` = `service.namespace=nextmall,service.version=0.1.0`
 

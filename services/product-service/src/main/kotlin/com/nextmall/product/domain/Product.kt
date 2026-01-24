@@ -104,21 +104,25 @@ class Product(
     }
 
     fun suspend() {
+        require(!isDeleted) { "Cannot change status of deleted product" }
         require(saleStatus != SaleStatus.SUSPENDED) { "Already suspended" }
         saleStatus = SaleStatus.SUSPENDED
     }
 
     fun resume() {
+        require(!isDeleted) { "Cannot change status of deleted product" }
         require(saleStatus == SaleStatus.SUSPENDED) { "Can only resume from SUSPENDED state" }
         require(stockAmount > 0) { "Cannot resume with zero stock" }
         saleStatus = SaleStatus.ON_SALE
     }
 
     fun show() {
+        require(!isDeleted) { "Cannot change status of deleted product" }
         displayStatus = DisplayStatus.VISIBLE
     }
 
     fun hide() {
+        require(!isDeleted) { "Cannot change status of deleted product" }
         displayStatus = DisplayStatus.HIDDEN
     }
 

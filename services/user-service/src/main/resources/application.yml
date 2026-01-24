@@ -31,12 +31,17 @@ management:
     web:
       exposure:
         include: health,info
+  opentelemetry:
+    resource-attributes:
+      service.name: ${spring.application.name}
   tracing:
     sampling:
-      probability: ${OTEL_TRACING_SAMPLING_PROBABILITY:1.0}
+      probability: ${OTEL_TRACING_SAMPLING_PROBABILITY}
   otlp:
     tracing:
-      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT}
+    metrics:
+      endpoint: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}
 
 logging:
   pattern:
