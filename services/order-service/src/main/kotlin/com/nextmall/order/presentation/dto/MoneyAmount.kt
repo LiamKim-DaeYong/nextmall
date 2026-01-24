@@ -4,4 +4,3 @@ data class MoneyAmount(
     val amount: Long,
     val currency: String,
 )
-

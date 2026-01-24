@@ -6,10 +6,9 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.jooq.Field
 import org.jooq.Record
-import org.jooq.Record6
+import org.jooq.Record5
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 data class UserDto(
@@ -22,8 +21,6 @@ class JooqRecordExtensionsTest : FunSpec({
     // Field Definitions
     val ID: Field<Long?> = DSL.field("id", Long::class.java)
     val NAME: Field<String?> = DSL.field("name", String::class.java)
-    val CREATED_AT: Field<LocalDateTime?> =
-        DSL.field("created_at", LocalDateTime::class.java)
     val CREATED_AT_OFFSET: Field<OffsetDateTime?> =
         DSL.field("created_at_offset", OffsetDateTime::class.java)
     val ACTIVE: Field<Boolean?> = DSL.field("active", Boolean::class.java)
@@ -34,16 +31,14 @@ class JooqRecordExtensionsTest : FunSpec({
     fun newRecord(
         id: Long? = null,
         name: String? = null,
-        createdAt: LocalDateTime? = null,
         active: Boolean? = null,
         age: Int? = null,
         createdAtOffset: OffsetDateTime? = null,
-    ): Record6<Long?, String?, LocalDateTime?, Boolean?, Int?, OffsetDateTime?> {
-        val record = ctx.newRecord(ID, NAME, CREATED_AT, ACTIVE, AGE, CREATED_AT_OFFSET)
+    ): Record5<Long?, String?, Boolean?, Int?, OffsetDateTime?> {
+        val record = ctx.newRecord(ID, NAME, ACTIVE, AGE, CREATED_AT_OFFSET)
 
         record[ID] = id
         record[NAME] = name
-        record[CREATED_AT] = createdAt
         record[ACTIVE] = active
         record[AGE] = age
         record[CREATED_AT_OFFSET] = createdAtOffset
@@ -80,19 +75,6 @@ class JooqRecordExtensionsTest : FunSpec({
     }
 
     // ----------------------------------------------------------------------
-    // LocalDateTime → UTC 변환
-    // ----------------------------------------------------------------------
-    val now = LocalDateTime.of(2025, 1, 1, 12, 0)
-
-    test("getUtcFromLocal - LocalDateTime → UTC OffsetDateTime 변환") {
-        val record = newRecord(createdAt = now)
-        val result = record.getUtcFromLocal(CREATED_AT)
-
-        result.offset shouldBe TimeUtils.UTC_ZONE
-        result.toLocalDateTime() shouldBe now
-    }
-
-    // ----------------------------------------------------------------------
     // OffsetDateTime → UTC 변환
     // ----------------------------------------------------------------------
     test("getUtcFromOffset - offset 기반 값을 UTC로 변환") {
@@ -107,17 +89,7 @@ class JooqRecordExtensionsTest : FunSpec({
 
         result.offset shouldBe TimeUtils.UTC_ZONE
 
-        result.toLocalDateTime() shouldBe offsetDate
-            .withOffsetSameInstant(TimeUtils.UTC_ZONE)
-            .toLocalDateTime()
-    }
-
-    // ----------------------------------------------------------------------
-    // nullable UTC 변환
-    // ----------------------------------------------------------------------
-    test("getUtcFromLocalNullable - null이면 null 반환") {
-        val record = newRecord()
-        record.getUtcFromLocalNullable(CREATED_AT).shouldBeNull()
+        result.toInstant() shouldBe offsetDate.toInstant()
     }
 
     // ----------------------------------------------------------------------
@@ -144,7 +116,7 @@ class JooqRecordExtensionsTest : FunSpec({
         val r2 = newRecord(id = 2L, name = "B")
 
         val result = ctx.newResult(
-            ID, NAME, CREATED_AT, ACTIVE, AGE, CREATED_AT_OFFSET
+            ID, NAME, ACTIVE, AGE, CREATED_AT_OFFSET
         ).apply {
             add(r1)
             add(r2)
@@ -161,7 +133,7 @@ class JooqRecordExtensionsTest : FunSpec({
         val r2 = newRecord(id = 2L, name = "B")
 
         val result = ctx.newResult(
-            ID, NAME, CREATED_AT, ACTIVE, AGE, CREATED_AT_OFFSET
+            ID, NAME, ACTIVE, AGE, CREATED_AT_OFFSET
         ).apply {
             add(r1)
             add(r2)

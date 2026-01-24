@@ -4,7 +4,6 @@ import com.nextmall.common.util.TimeUtils
 import org.jooq.Field
 import org.jooq.Record
 import org.jooq.Result
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 // ---------------------------------------------------------------------------
@@ -27,32 +26,14 @@ fun <T> Record.getRequired(field: Field<T?>): T =
         ?: throw IllegalStateException("Required field '${field.name}' is null")
 
 // ---------------------------------------------------------------------------
-//  OffsetDateTime / LocalDateTime Helpers
+//  OffsetDateTime Helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Converts a LocalDateTime column into UTC OffsetDateTime.
- */
-fun Record.getUtcFromLocal(field: Field<LocalDateTime?>): OffsetDateTime =
-    getRequired(field).atOffset(TimeUtils.UTC_ZONE)
 
 /**
  * Converts an OffsetDateTime column value into UTC.
  */
 fun Record.getUtcFromOffset(field: Field<OffsetDateTime?>): OffsetDateTime =
     getRequired(field).withOffsetSameInstant(TimeUtils.UTC_ZONE)
-
-/**
- * Nullable variant for LocalDateTime → UTC.
- */
-fun Record.getUtcFromLocalNullable(field: Field<LocalDateTime?>): OffsetDateTime? =
-    getNullable(field)?.atOffset(TimeUtils.UTC_ZONE)
-
-/**
- * Converts LocalDateTime into KST (Asia/Seoul).
- */
-fun Record.getKst(field: Field<LocalDateTime?>): OffsetDateTime =
-    getRequired(field).atOffset(TimeUtils.DEFAULT_ZONE)
 
 // ---------------------------------------------------------------------------
 //  DTO Mapping

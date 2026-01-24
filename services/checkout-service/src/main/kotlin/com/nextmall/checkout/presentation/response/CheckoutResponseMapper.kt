@@ -95,6 +95,7 @@ private fun Address.toResponse(): AddressResponse =
         postalCode = postalCode,
         country = country,
     )
+
 fun CheckoutView.toResponse(): CheckoutResponse =
     CheckoutResponse(
         id = id,

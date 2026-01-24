@@ -18,4 +18,3 @@ data class OrderTotalsRequest(
     @field:Valid
     val total: MoneyAmountRequest,
 )
-

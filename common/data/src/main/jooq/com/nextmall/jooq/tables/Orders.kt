@@ -5,18 +5,15 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
-import com.nextmall.jooq.indexes.IDX_ORDERS_PRODUCT_ID
-import com.nextmall.jooq.indexes.IDX_ORDERS_USER_ID
+import com.nextmall.jooq.indexes.IDX_ORDERS_CHECKOUT_ID
 import com.nextmall.jooq.keys.ORDERS_PKEY
 import com.nextmall.jooq.tables.records.OrdersRecord
 
-import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 import kotlin.collections.Collection
 import kotlin.collections.List
 
-import org.jooq.Check
 import org.jooq.Condition
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -35,7 +32,6 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
-import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -83,29 +79,39 @@ open class Orders(
     val ORDER_ID: TableField<OrdersRecord, Long?> = createField(DSL.name("order_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.orders.user_id</code>.
+     * The column <code>public.orders.checkout_id</code>.
      */
-    val USER_ID: TableField<OrdersRecord, Long?> = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val CHECKOUT_ID: TableField<OrdersRecord, String?> = createField(DSL.name("checkout_id"), SQLDataType.VARCHAR(64).nullable(false), this, "")
 
     /**
-     * The column <code>public.orders.product_id</code>.
+     * The column <code>public.orders.currency</code>.
      */
-    val PRODUCT_ID: TableField<OrdersRecord, Long?> = createField(DSL.name("product_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val CURRENCY: TableField<OrdersRecord, String?> = createField(DSL.name("currency"), SQLDataType.VARCHAR(10).nullable(false), this, "")
 
     /**
-     * The column <code>public.orders.quantity</code>.
+     * The column <code>public.orders.permalink_url</code>.
      */
-    val QUANTITY: TableField<OrdersRecord, Int?> = createField(DSL.name("quantity"), SQLDataType.INTEGER.nullable(false), this, "")
+    val PERMALINK_URL: TableField<OrdersRecord, String?> = createField(DSL.name("permalink_url"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.orders.total_price</code>.
+     * The column <code>public.orders.line_items_json</code>.
      */
-    val TOTAL_PRICE: TableField<OrdersRecord, BigDecimal?> = createField(DSL.name("total_price"), SQLDataType.NUMERIC(10, 2).nullable(false), this, "")
+    val LINE_ITEMS_JSON: TableField<OrdersRecord, String?> = createField(DSL.name("line_items_json"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
-     * The column <code>public.orders.status</code>.
+     * The column <code>public.orders.totals_json</code>.
      */
-    val STATUS: TableField<OrdersRecord, String?> = createField(DSL.name("status"), SQLDataType.VARCHAR(20).nullable(false), this, "")
+    val TOTALS_JSON: TableField<OrdersRecord, String?> = createField(DSL.name("totals_json"), SQLDataType.CLOB.nullable(false), this, "")
+
+    /**
+     * The column <code>public.orders.fulfillment_json</code>.
+     */
+    val FULFILLMENT_JSON: TableField<OrdersRecord, String?> = createField(DSL.name("fulfillment_json"), SQLDataType.CLOB.nullable(false), this, "")
+
+    /**
+     * The column <code>public.orders.adjustments_json</code>.
+     */
+    val ADJUSTMENTS_JSON: TableField<OrdersRecord, String?> = createField(DSL.name("adjustments_json"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
      * The column <code>public.orders.created_at</code>.
@@ -136,12 +142,8 @@ open class Orders(
      */
     constructor(): this(DSL.name("orders"), null)
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
-    override fun getIndexes(): List<Index> = listOf(IDX_ORDERS_PRODUCT_ID, IDX_ORDERS_USER_ID)
+    override fun getIndexes(): List<Index> = listOf(IDX_ORDERS_CHECKOUT_ID)
     override fun getPrimaryKey(): UniqueKey<OrdersRecord> = ORDERS_PKEY
-    override fun getChecks(): List<Check<OrdersRecord>> = listOf(
-        Internal.createCheck(this, DSL.name("chk_orders_quantity_positive"), "((quantity > 0))", true),
-        Internal.createCheck(this, DSL.name("chk_orders_total_price_positive"), "((total_price > (0)::numeric))", true)
-    )
     override fun `as`(alias: String): Orders = Orders(DSL.name(alias), this)
     override fun `as`(alias: Name): Orders = Orders(alias, this)
     override fun `as`(alias: Table<*>): Orders = Orders(alias.qualifiedName, this)

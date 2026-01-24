@@ -22,6 +22,51 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: buyer_id
+                  type: VARCHAR(64)
+              - column:
+                  name: buyer_email
+                  type: VARCHAR(255)
+              - column:
+                  name: buyer_name
+                  type: VARCHAR(255)
+              - column:
+                  name: shipping_line1
+                  type: VARCHAR(255)
+              - column:
+                  name: shipping_line2
+                  type: VARCHAR(255)
+              - column:
+                  name: shipping_city
+                  type: VARCHAR(100)
+              - column:
+                  name: shipping_region
+                  type: VARCHAR(100)
+              - column:
+                  name: shipping_postal_code
+                  type: VARCHAR(32)
+              - column:
+                  name: shipping_country
+                  type: VARCHAR(2)
+              - column:
+                  name: billing_line1
+                  type: VARCHAR(255)
+              - column:
+                  name: billing_line2
+                  type: VARCHAR(255)
+              - column:
+                  name: billing_city
+                  type: VARCHAR(100)
+              - column:
+                  name: billing_region
+                  type: VARCHAR(100)
+              - column:
+                  name: billing_postal_code
+                  type: VARCHAR(32)
+              - column:
+                  name: billing_country
+                  type: VARCHAR(2)
+              - column:
                   name: subtotal_amount
                   type: BIGINT
                   constraints:
@@ -57,7 +102,7 @@ databaseChangeLog:
                   type: TEXT
               - column:
                   name: expires_at
-                  type: TIMESTAMPTZ
+                  type: TIMESTAMP WITH TIME ZONE
               - column:
                   name: payment_type
                   type: VARCHAR(32)
@@ -66,13 +111,13 @@ databaseChangeLog:
                   type: VARCHAR(64)
               - column:
                   name: created_at
-                  type: TIMESTAMP
+                  type: TIMESTAMP WITH TIME ZONE
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
               - column:
                   name: updated_at
-                  type: TIMESTAMP
+                  type: TIMESTAMP WITH TIME ZONE
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
@@ -82,7 +127,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: BIGINT
                   constraints:
                     primaryKey: true
               - column:
@@ -129,6 +174,47 @@ databaseChangeLog:
         - createIndex:
             tableName: checkout_line_items
             indexName: idx_checkout_line_items_checkout_id
+            columns:
+              - column:
+                  name: checkout_id
+
+        - createTable:
+            tableName: checkout_payment_handlers
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: checkout_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: handler_type
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: handler_provider
+                  type: VARCHAR(64)
+              - column:
+                  name: sort_order
+                  type: INT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: checkout_payment_handlers
+            baseColumnNames: checkout_id
+            referencedTableName: checkouts
+            referencedColumnNames: checkout_id
+            constraintName: fk_checkout_payment_handlers_checkout
+
+        - createIndex:
+            tableName: checkout_payment_handlers
+            indexName: idx_checkout_payment_handlers_checkout_id
             columns:
               - column:
                   name: checkout_id

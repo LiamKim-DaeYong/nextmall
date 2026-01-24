@@ -15,9 +15,7 @@ import com.nextmall.checkout.domain.model.Buyer
 import com.nextmall.checkout.domain.model.CheckoutStatus
 import com.nextmall.checkout.domain.model.Fulfillment
 import com.nextmall.checkout.domain.model.LineItem
-import com.nextmall.checkout.domain.model.Links
 import com.nextmall.checkout.domain.model.Money
-import com.nextmall.checkout.domain.model.Payment
 import com.nextmall.checkout.domain.model.PaymentHandler
 import com.nextmall.checkout.domain.model.Totals
 import com.nextmall.checkout.infrastructure.persistence.jooq.CheckoutJooqRepository
@@ -86,7 +84,8 @@ class CheckoutService(
                 paymentProvider = paymentHandler.provider,
                 paymentHandlers = paymentHandlers.toEntities(),
                 lineItems =
-                    lineItems.map { it.toEntity() }
+                    lineItems
+                        .map { it.toEntity() }
                         .toMutableList(),
             )
 
@@ -126,6 +125,10 @@ class CheckoutService(
             command.lineItems
                 ?.map { it.toDomain() }
                 ?: entity.toDomain().lineItems
+
+        require(lineItems.all { it.price.currency == entity.currency }) {
+            "All line items must match checkout currency"
+        }
 
         val totals = calculateTotals(lineItems, entity.currency)
         val buyer = command.buyer?.toDomain()
@@ -168,6 +171,9 @@ class CheckoutService(
                 .findById(checkoutId)
                 .orElseThrow { CheckoutNotFoundException() }
 
+        require(entity.status != CheckoutStatus.CANCELED) { "Canceled checkout cannot be completed" }
+        require(entity.status != CheckoutStatus.COMPLETED) { "Checkout already completed" }
+
         val handler = command.payment.handlers.firstOrNull()
         entity.status = CheckoutStatus.COMPLETED
         entity.paymentType = handler?.type
@@ -204,6 +210,8 @@ class CheckoutService(
             checkoutJpaRepository
                 .findById(checkoutId)
                 .orElseThrow { CheckoutNotFoundException() }
+
+        require(entity.status != CheckoutStatus.COMPLETED) { "Completed checkout cannot be canceled" }
 
         entity.status = CheckoutStatus.CANCELED
 
@@ -243,6 +251,7 @@ class CheckoutService(
 
     private fun LineItem.toEntity(): CheckoutLineItemEntity =
         CheckoutLineItemEntity(
+            id = idGenerator.generate(),
             lineItemId = id,
             title = title,
             quantity = quantity,
@@ -251,14 +260,15 @@ class CheckoutService(
             imageUrl = imageUrl,
         )
 
-    private fun List<PaymentHandler>.toEntities(): List<CheckoutPaymentHandlerEntity> =
+    private fun List<PaymentHandler>.toEntities(): MutableList<CheckoutPaymentHandlerEntity> =
         mapIndexed { index, handler ->
             CheckoutPaymentHandlerEntity(
+                id = idGenerator.generate(),
                 type = handler.type,
                 provider = handler.provider,
                 sortOrder = index,
             )
-        }
+        }.toMutableList()
 
     private fun com.nextmall.checkout.application.command.BuyerCommand.toDomain(): Buyer =
         Buyer(

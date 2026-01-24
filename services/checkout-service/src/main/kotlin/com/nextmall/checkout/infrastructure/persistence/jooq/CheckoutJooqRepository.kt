@@ -89,7 +89,7 @@ class CheckoutJooqRepository(
                 .orderBy(CHECKOUT_PAYMENT_HANDLERS.SORT_ORDER.asc())
                 .fetch {
                     PaymentHandler(
-                        type = getRequired(CHECKOUT_PAYMENT_HANDLERS.HANDLER_TYPE),
+                        type = it.getRequired(CHECKOUT_PAYMENT_HANDLERS.HANDLER_TYPE),
                         provider = it[CHECKOUT_PAYMENT_HANDLERS.HANDLER_PROVIDER],
                     )
                 }
@@ -113,10 +113,10 @@ class CheckoutJooqRepository(
             .offset(offset)
             .fetch {
                 CheckoutSummaryView(
-                    id = getRequired(CHECKOUTS.CHECKOUT_ID),
-                    status = CheckoutStatus.valueOf(getRequired(CHECKOUTS.STATUS)),
-                    currency = getRequired(CHECKOUTS.CURRENCY),
-                    totalAmount = getRequired(CHECKOUTS.TOTAL_AMOUNT),
+                    id = it.getRequired(CHECKOUTS.CHECKOUT_ID),
+                    status = CheckoutStatus.valueOf(it.getRequired(CHECKOUTS.STATUS)),
+                    currency = it.getRequired(CHECKOUTS.CURRENCY),
+                    totalAmount = it.getRequired(CHECKOUTS.TOTAL_AMOUNT),
                 )
             }
 
@@ -130,41 +130,42 @@ class CheckoutJooqRepository(
                     amount = getRequired(CHECKOUT_LINE_ITEMS.PRICE_AMOUNT),
                     currency = getRequired(CHECKOUT_LINE_ITEMS.PRICE_CURRENCY),
                 ),
-            imageUrl = it[CHECKOUT_LINE_ITEMS.IMAGE_URL],
+            imageUrl = this[CHECKOUT_LINE_ITEMS.IMAGE_URL],
         )
 
     private fun Record.toCheckoutView(
         lineItems: List<LineItem>,
         paymentHandlers: List<PaymentHandler>,
-    ): CheckoutView =
-        CheckoutView(
+    ): CheckoutView {
+        val currency = getRequired(CHECKOUTS.CURRENCY)
+        return CheckoutView(
             id = getRequired(CHECKOUTS.CHECKOUT_ID),
             status = CheckoutStatus.valueOf(getRequired(CHECKOUTS.STATUS)),
-            currency = getRequired(CHECKOUTS.CURRENCY),
+            currency = currency,
             lineItems = lineItems,
             buyer =
                 Buyer(
-                    id = it[CHECKOUTS.BUYER_ID],
-                    email = it[CHECKOUTS.BUYER_EMAIL],
-                    name = it[CHECKOUTS.BUYER_NAME],
+                    id = this[CHECKOUTS.BUYER_ID],
+                    email = this[CHECKOUTS.BUYER_EMAIL],
+                    name = this[CHECKOUTS.BUYER_NAME],
                 ),
             shippingAddress =
                 Address(
-                    line1 = it[CHECKOUTS.SHIPPING_LINE1],
-                    line2 = it[CHECKOUTS.SHIPPING_LINE2],
-                    city = it[CHECKOUTS.SHIPPING_CITY],
-                    region = it[CHECKOUTS.SHIPPING_REGION],
-                    postalCode = it[CHECKOUTS.SHIPPING_POSTAL_CODE],
-                    country = it[CHECKOUTS.SHIPPING_COUNTRY],
+                    line1 = this[CHECKOUTS.SHIPPING_LINE1],
+                    line2 = this[CHECKOUTS.SHIPPING_LINE2],
+                    city = this[CHECKOUTS.SHIPPING_CITY],
+                    region = this[CHECKOUTS.SHIPPING_REGION],
+                    postalCode = this[CHECKOUTS.SHIPPING_POSTAL_CODE],
+                    country = this[CHECKOUTS.SHIPPING_COUNTRY],
                 ),
             billingAddress =
                 Address(
-                    line1 = it[CHECKOUTS.BILLING_LINE1],
-                    line2 = it[CHECKOUTS.BILLING_LINE2],
-                    city = it[CHECKOUTS.BILLING_CITY],
-                    region = it[CHECKOUTS.BILLING_REGION],
-                    postalCode = it[CHECKOUTS.BILLING_POSTAL_CODE],
-                    country = it[CHECKOUTS.BILLING_COUNTRY],
+                    line1 = this[CHECKOUTS.BILLING_LINE1],
+                    line2 = this[CHECKOUTS.BILLING_LINE2],
+                    city = this[CHECKOUTS.BILLING_CITY],
+                    region = this[CHECKOUTS.BILLING_REGION],
+                    postalCode = this[CHECKOUTS.BILLING_POSTAL_CODE],
+                    country = this[CHECKOUTS.BILLING_COUNTRY],
                 ),
             totals =
                 Totals(
@@ -177,11 +178,11 @@ class CheckoutJooqRepository(
             messages = emptyList(),
             links =
                 Links(
-                    terms = it[CHECKOUTS.TERMS_URL],
-                    privacy = it[CHECKOUTS.PRIVACY_URL],
-                    refund = it[CHECKOUTS.REFUND_URL],
+                    terms = this[CHECKOUTS.TERMS_URL],
+                    privacy = this[CHECKOUTS.PRIVACY_URL],
+                    refund = this[CHECKOUTS.REFUND_URL],
                 ),
-            expiresAt = it[CHECKOUTS.EXPIRES_AT],
+            expiresAt = this[CHECKOUTS.EXPIRES_AT],
             payment =
                 Payment(
                     handlers =
@@ -189,10 +190,11 @@ class CheckoutJooqRepository(
                             listOf(
                                 PaymentHandler(
                                     type = getRequired(CHECKOUTS.PAYMENT_TYPE),
-                                    provider = it[CHECKOUTS.PAYMENT_PROVIDER],
+                                    provider = this[CHECKOUTS.PAYMENT_PROVIDER],
                                 ),
-                            )
+                    )
                         },
                 ),
         )
+    }
 }

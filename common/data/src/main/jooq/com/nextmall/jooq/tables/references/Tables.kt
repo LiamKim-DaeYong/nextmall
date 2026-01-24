@@ -6,6 +6,9 @@ package com.nextmall.jooq.tables.references
 
 
 import com.nextmall.jooq.tables.AuthAccounts
+import com.nextmall.jooq.tables.CheckoutLineItems
+import com.nextmall.jooq.tables.CheckoutPaymentHandlers
+import com.nextmall.jooq.tables.Checkouts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Orders
@@ -18,6 +21,21 @@ import com.nextmall.jooq.tables.Users
  * The table <code>public.auth_accounts</code>.
  */
 val AUTH_ACCOUNTS: AuthAccounts = AuthAccounts.AUTH_ACCOUNTS
+
+/**
+ * The table <code>public.checkout_line_items</code>.
+ */
+val CHECKOUT_LINE_ITEMS: CheckoutLineItems = CheckoutLineItems.CHECKOUT_LINE_ITEMS
+
+/**
+ * The table <code>public.checkout_payment_handlers</code>.
+ */
+val CHECKOUT_PAYMENT_HANDLERS: CheckoutPaymentHandlers = CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS
+
+/**
+ * The table <code>public.checkouts</code>.
+ */
+val CHECKOUTS: Checkouts = Checkouts.CHECKOUTS
 
 /**
  * The table <code>public.databasechangelog</code>.

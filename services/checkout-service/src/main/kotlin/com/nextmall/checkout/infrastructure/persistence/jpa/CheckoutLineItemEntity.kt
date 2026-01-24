@@ -2,8 +2,6 @@ package com.nextmall.checkout.infrastructure.persistence.jpa
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
@@ -11,8 +9,7 @@ import jakarta.persistence.Table
 @Table(name = "checkout_line_items")
 class CheckoutLineItemEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    val id: Long,
 
     @Column(name = "line_item_id", nullable = false, length = 64)
     val lineItemId: String,

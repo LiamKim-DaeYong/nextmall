@@ -7,4 +7,3 @@ data class OrderTotals(
     val discount: MoneyAmount,
     val total: MoneyAmount,
 )
-

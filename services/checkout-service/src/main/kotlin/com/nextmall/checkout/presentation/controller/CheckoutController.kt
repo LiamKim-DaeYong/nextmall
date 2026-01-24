@@ -50,7 +50,9 @@ class CheckoutController(
         @RequestParam(defaultValue = "20") limit: Int,
         @RequestParam(defaultValue = "0") offset: Int,
     ): ResponseEntity<List<CheckoutSummaryResponse>> {
-        val results = checkoutService.getCheckoutSummaries(limit, offset)
+        val cappedLimit = limit.coerceIn(1, 100)
+        val cappedOffset = offset.coerceAtLeast(0)
+        val results = checkoutService.getCheckoutSummaries(cappedLimit, cappedOffset)
         return ResponseEntity
             .ok(results.map { it.toResponse() })
     }

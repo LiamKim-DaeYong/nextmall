@@ -126,3 +126,7 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
 - Product/Catalog은 Mock 가능
 - Checkout/Order 흐름을 UCP 구조로 먼저 고정
 - 결제 핸들러는 내부 mock 처리 가능
+### 4.3.1 List Checkouts (Internal)
+- GET /checkouts?limit=20&offset=0
+- limit 범위: 1~100 (상한 적용)
+- offset: 0 이상

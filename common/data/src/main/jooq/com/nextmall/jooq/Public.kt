@@ -5,6 +5,9 @@ package com.nextmall.jooq
 
 
 import com.nextmall.jooq.tables.AuthAccounts
+import com.nextmall.jooq.tables.CheckoutLineItems
+import com.nextmall.jooq.tables.CheckoutPaymentHandlers
+import com.nextmall.jooq.tables.Checkouts
 import com.nextmall.jooq.tables.Databasechangelog
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Orders
@@ -38,6 +41,21 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
     val AUTH_ACCOUNTS: AuthAccounts get() = AuthAccounts.AUTH_ACCOUNTS
 
     /**
+     * The table <code>public.checkout_line_items</code>.
+     */
+    val CHECKOUT_LINE_ITEMS: CheckoutLineItems get() = CheckoutLineItems.CHECKOUT_LINE_ITEMS
+
+    /**
+     * The table <code>public.checkout_payment_handlers</code>.
+     */
+    val CHECKOUT_PAYMENT_HANDLERS: CheckoutPaymentHandlers get() = CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS
+
+    /**
+     * The table <code>public.checkouts</code>.
+     */
+    val CHECKOUTS: Checkouts get() = Checkouts.CHECKOUTS
+
+    /**
      * The table <code>public.databasechangelog</code>.
      */
     val DATABASECHANGELOG: Databasechangelog get() = Databasechangelog.DATABASECHANGELOG
@@ -66,6 +84,9 @@ open class Public : SchemaImpl(DSL.name("public"), DefaultCatalog.DEFAULT_CATALO
 
     override fun getTables(): List<Table<*>> = listOf(
         AuthAccounts.AUTH_ACCOUNTS,
+        CheckoutLineItems.CHECKOUT_LINE_ITEMS,
+        CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS,
+        Checkouts.CHECKOUTS,
         Databasechangelog.DATABASECHANGELOG,
         Databasechangeloglock.DATABASECHANGELOGLOCK,
         Orders.ORDERS,
