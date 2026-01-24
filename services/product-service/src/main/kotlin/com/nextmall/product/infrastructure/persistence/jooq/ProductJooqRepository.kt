@@ -89,11 +89,37 @@ class ProductJooqRepository(
             description = this[PRODUCTS.DESCRIPTION],
             price = Money.of(getRequired(PRODUCTS.PRICE)),
             stock = getRequired(PRODUCTS.STOCK),
-            saleStatus = SaleStatus.valueOf(getRequired(PRODUCTS.SALE_STATUS)),
-            displayStatus = DisplayStatus.valueOf(getRequired(PRODUCTS.DISPLAY_STATUS)),
+            saleStatus =
+                parseEnum(
+                    value = getRequired(PRODUCTS.SALE_STATUS),
+                    column = "products.sale_status",
+                    parser = SaleStatus::valueOf,
+                    allowed = SaleStatus.entries.map { it.name },
+                ),
+            displayStatus =
+                parseEnum(
+                    value = getRequired(PRODUCTS.DISPLAY_STATUS),
+                    column = "products.display_status",
+                    parser = DisplayStatus::valueOf,
+                    allowed = DisplayStatus.entries.map { it.name },
+                ),
             sellerId = getRequired(PRODUCTS.SELLER_ID),
             category = get(PRODUCTS.CATEGORY),
             isDeleted = getRequired(PRODUCTS.IS_DELETED),
             createdAt = getRequired(PRODUCTS.CREATED_AT).toInstant(),
         )
+
+    private fun <T> parseEnum(
+        value: String,
+        column: String,
+        parser: (String) -> T,
+        allowed: List<String>,
+    ): T =
+        runCatching { parser(value) }
+            .getOrElse {
+                throw IllegalArgumentException(
+                    "Invalid enum value '$value' for $column. Allowed: $allowed",
+                    it,
+                )
+            }
 }

@@ -85,7 +85,7 @@ Quality / Convention (Additional)
       - common/authorization/src/main/kotlin/com/nextmall/common/authorization/aop/PolicyEnforcementAspect.kt:89-102
 
 11) Order service DTO package and naming diverge from other services
-    - Evidence: order-service uses presentation/dto and *Snapshot naming, while other services use presentation/request|response with *Request/*Response.
+    - Evidence: order-service uses presentation/dto and \*Snapshot naming, while other services use presentation/request|response with *Request/*Response.
     - Risk: Inconsistent API conventions increase onboarding cost and DTO mapping churn.
     - References:
       - services/order-service/src/main/kotlin/com/nextmall/order/presentation/dto/CreateOrderSnapshotRequest.kt:1-22
@@ -243,6 +243,7 @@ Suggested next steps
 7) Clarify principal extraction source (authentication.principal vs details) for policy enforcement.
 8) Consolidate UCP documentation (single source of truth + API-only details split).
 9) Add a docs index entry for reviews and define doc ownership/status rules.
+10) Define MVP Kafka event contract and consumer role (ProductCreated → catalog-indexer cache update).
 
 Appendix: Scope reminder
 - Working tree changes were not reviewed; re-run after stabilizing those changes if needed.
