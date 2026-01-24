@@ -1,0 +1,10 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: orchestrator-service
+
+token:
+  passport:
+    secret-key: ${TOKEN_PASSPORT_SECRET}

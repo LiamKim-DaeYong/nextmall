@@ -1,6 +1,6 @@
-# UCP Checkout 최소 스키마/엔드포인트 (초안)
+# UCP Checkout 최소 스키마/엔드포인트
 
-이 문서는 UCP 기준으로 Checkout 기능을 최소 구현하기 위한 API 계약 초안이다.
+이 문서는 UCP 기준으로 Checkout 기능을 최소 구현하기 위한 API 계약을 정의한다.
 Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑한다.
 
 ## 1) 리소스
@@ -55,7 +55,7 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
 - POST /v1/ucp/checkout/{checkout_id}/complete (Gateway/BFF)
 - POST /checkouts/{checkout_id}/complete (Checkout Service 내부용)
 - Request
-  - payment (필수)
+  - payment (필요)
   - confirm (옵션)
 - Response
   - order 객체 (또는 checkout + order_ref)

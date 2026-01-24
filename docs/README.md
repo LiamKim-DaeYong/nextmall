@@ -4,7 +4,7 @@
 
 ---
 
-## 아키텍처
+## 아키텍처 (현재 기준)
 
 프로젝트 구조와 설계 원칙을 설명합니다.
 
@@ -15,12 +15,12 @@
 | [공통화 및 컨벤션 기준](architecture/commonization-standards.md) | 서비스 간 공통화/컨벤션 기준 초안 |
 | [이벤트 스키마 기준](architecture/event-schema.md) | Kafka 이벤트 스키마 최소 기준 |
 | [서킷브레이커 최소 설계](architecture/circuit-breaker.md) | 최소 리질리언스 설계 기준 |
-| [UCP 기반 쇼핑몰 설계](architecture/ucp-design.md) | UCP 프로토콜 기준의 쇼핑몰 설계 초안 |
-| [UCP Checkout API](architecture/ucp-checkout-api.md) | Checkout 최소 스키마/엔드포인트 초안 |
+| [UCP 기반 쇼핑몰 설계](architecture/ucp-design.md) | UCP 프로토콜 기준의 쇼핑몰 설계 |
+| [UCP Checkout API](architecture/ucp-checkout-api.md) | Checkout 최소 스키마/엔드포인트 |
 
 ---
 
-## 기술 결정 (ADR)
+## 기술 결정 (ADR, 현재 기준)
 
 Architecture Decision Records - 주요 기술 선택과 근거를 기록합니다.
 
@@ -32,7 +32,8 @@ Architecture Decision Records - 주요 기술 선택과 근거를 기록합니�
 | [ADR-004](decisions/ADR-004-PBAC-선택이유.md) | PBAC 선택 | RBAC 대신 Policy 기반 인가 |
 | [ADR-005](decisions/ADR-005-BFF에서-사가-오케스트레이션-통합.md) | BFF + Saga | 초기 단계 오케스트레이션 전략 |
 | [ADR-006](decisions/ADR-006-모듈-의존성-원칙.md) | 모듈 의존성 | 단방향 의존성 원칙 |
-| [ADR-007](decisions/ADR-007-Edge-Authentication.md) | Edge Authentication | Netflix 패턴 적용, Gateway 토큰 처리 |
+| [ADR-007](decisions/ADR-007-Edge-Authentication.md) | Edge Authentication | Gateway 토큰 처리 |
+| [ADR-008](decisions/ADR-008-Orchestrator-분리.md) | Orchestrator 분리 | 분리 범위와 책임 정의 |
 
 ---
 
@@ -46,19 +47,8 @@ Architecture Decision Records - 주요 기술 선택과 근거를 기록합니�
 
 ---
 
-## 배경 및 경험
+## 읽는 순서 (제안)
 
-프로젝트의 배경이 된 실무 경험을 정리합니다.
-
-| 문서 | 설명 |
-|------|------|
-| [물류 오케스트레이션](experience/logistics-orchestration.md) | Event Loop 기반 설계 실무 경험 |
-
----
-
-## 읽는 순서 (권장)
-
-1. **배경 이해**: [물류 오케스트레이션](experience/logistics-orchestration.md) - 왜 이 프로젝트를 시작했는지
-2. **아키텍처 이해**: [아키텍처 발전 과정](architecture/evolution.md) - 전체 구조와 진화 방향
-3. **핵심 결정**: [ADR-007 Edge Authentication](decisions/ADR-007-Edge-Authentication.md) - 현재 인증 구조
-4. **세부 사항**: 관심 있는 ADR 선택해서 읽기
+1. **아키텍처 이해**: [아키텍처 발전 과정](architecture/evolution.md) - 전체 구조와 진화 방향
+2. **핵심 결정**: [ADR-007 Edge Authentication](decisions/ADR-007-Edge-Authentication.md) - 현재 인증 구조
+3. **세부 사항**: 관심 있는 ADR 선택해서 읽기

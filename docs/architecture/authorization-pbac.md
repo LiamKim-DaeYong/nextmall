@@ -3,26 +3,33 @@
 ## 개요
 
 NextMall은 PBAC(Policy-Based Access Control) 방식으로 인가를 처리합니다.
-각 서비스가 자신의 리소스에 대한 정책을 정의하고, auth-service가 정책 마스터 데이터를 관리합니다.
+각 서비스가 자신의 리소스에 대한 정책을 정의하며, 정책 중앙화/동기화는 단계적으로 확장합니다.
 
-## 아키텍처
+## 현재 구현 범위
+- 각 서비스 내 `PolicyProvider`에 로컬 정책(DSL) 정의
+- `AuthorizationService + PolicyEvaluator`로 정책 평가
+- `@RequiresPolicy` 기반 AOP 인가 적용
 
-```mermaid
-flowchart TB
-    subgraph master["auth-service (정책 마스터)"]
-        API[정책 CRUD API]
-        VER[정책 버전 관리]
-    end
+## 향후 확장
+- auth-service에서 정책 마스터 관리
+- Redis 캐시 + 정책 변경 이벤트(Kafka)로 동기화
 
-    subgraph services["각 서비스"]
-        CACHE[Redis/로컬 캐시]
-        EVAL[PolicyEvaluator]
-        DOMAIN[리소스 검증]
-    end
+## 아키텍처 (확장 시)
 
-    master -->|PolicyChangedEvent| services
-    CACHE --> EVAL --> DOMAIN
-```
+### 구성 요소
+
+| 영역 | 구성 요소 | 역할 |
+|---|---|---|
+| auth-service | 정책 CRUD API | 정책 생성/수정/삭제 |
+| auth-service | 정책 버전 관리 | 정책 변경 이력 관리 |
+| 각 서비스 | 로컬/Redis 캐시 | 정책 캐싱 (L1/L2) |
+| 각 서비스 | PolicyEvaluator | 정책 평가 |
+| 각 서비스 | 리소스 검증 | 리소스 속성 로딩 및 검증 |
+
+### 정책 변경 전파(확장 시)
+1. auth-service에서 정책 변경
+2. PolicyChangedEvent 발행
+3. 각 서비스에서 캐시 갱신 및 로컬 캐시 무효화
 
 ## 모듈 구조
 
@@ -91,9 +98,9 @@ PolicyResult.isAllowed → 통과
 PolicyResult.isDenied → AccessDeniedException
 ```
 
-## 정책 동기화
+## 정책 동기화 (확장 시)
 
-### 정책 변경 시
+### 정책 변경 시 (확장 시)
 ```
 auth-service (정책 수정)
   ↓
@@ -110,7 +117,7 @@ user-service (이벤트 수신)
 2. 로컬 캐시 삭제 (있다면)
 ```
 
-### 캐시 전략
+### 캐시 전략 (확장 시)
 - **L1 (로컬 캐시)**: Caffeine, TTL 5분, 최대 1000개
 - **L2 (Redis)**: TTL 1시간
 - **L3 (auth-service API)**: 최종 fallback

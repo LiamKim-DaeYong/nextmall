@@ -1,6 +1,6 @@
-# UCP Order 최소 스키마/엔드포인트 (초안)
+# UCP Order 최소 스키마/엔드포인트
 
-이 문서는 UCP 기준으로 Order 기능을 최소 구현하기 위한 API 계약 초안이다.
+이 문서는 UCP 기준으로 Order 기능을 최소 구현하기 위한 API 계약을 정의한다.
 Checkout 서비스는 별도로 존재한다고 가정하며, Order는 Checkout 완료 결과를
 UCP Order 엔티티로 확정/보관/조회하는 역할을 가진다.
 
@@ -15,8 +15,8 @@ UCP Order 엔티티로 확정/보관/조회하는 역할을 가진다.
 Order는 불변 스냅샷(line_items/totals)을 가진다.
 상태 변화는 fulfillment/adjustments 이벤트로 누적한다.
 
-필수 이벤트
-- Order created (반드시 발행)
+핵심 이벤트
+- Order created (발행을 기본으로 가정)
 
 ## 3) 공통 규칙
 
@@ -36,10 +36,10 @@ Order는 불변 스냅샷(line_items/totals)을 가진다.
 ### 4.2 Create Order (Checkout 완료용)
 - POST /v1/ucp/orders
 - Request (최소)
-  - checkout_id (필수)
-  - line_items[] (필수)
-  - totals (필수)
-  - currency (필수)
+  - checkout_id (필요)
+  - line_items[] (필요)
+  - totals (필요)
+  - currency (필요)
   - permalink_url (옵션)
 - Response
   - order 객체
@@ -77,7 +77,7 @@ Order는 불변 스냅샷(line_items/totals)을 가진다.
 
 ## 6) Order 이벤트 전송 (Webhook)
 
-- Order created 이벤트는 반드시 발행
+- Order created 이벤트는 발행을 기본으로 가정
 - 이벤트 payload는 전체 Order 엔티티 포함
 - 플랫폼이 제공한 webhook URL로 전송
 - 요청 헤더: Request-Signature (detached JWT)
@@ -90,7 +90,7 @@ Order는 불변 스냅샷(line_items/totals)을 가진다.
 - Order created 웹훅 발행
 - fulfillment/adjustments는 빈 리스트로 시작
 
-## 8) 미정/결정 필요
+## 8) 결정 사항
 
 - webhook 서명 키 관리 주체(order-service vs gateway)
 - permalink_url 생성 규칙

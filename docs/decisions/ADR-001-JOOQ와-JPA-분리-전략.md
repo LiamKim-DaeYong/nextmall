@@ -1,25 +1,25 @@
 # ADR-001: JOOQ와 JPA 분리 전략
 
-> QueryDSL의 KAPT 의존성 문제 + N+1 근본 해결을 위해 Command는 JPA, Query는 jOOQ로 분리 (CQRS)
+> QueryDSL의 KAPT 의존성 문제와 N+1 문제 완화를 위해 Command는 JPA, Query는 jOOQ로 분리 (CQRS)
 
 ## 상태
 채택됨 (Accepted)
 
 ## 배경
 
-### 실무에서 겪은 문제 (JPA + QueryDSL)
+### 문제 배경 (JPA + QueryDSL)
 
-현재 실무에서 JPA와 QueryDSL을 사용하고 있으며, 시간이 지날수록 다음 문제들이 심화되고 있다:
+JPA와 QueryDSL을 사용할 때 다음과 같은 문제가 발생할 수 있다:
 
 **1. Repository 복잡도 증가**
 - 단일 Repository에 Command와 Query 로직이 혼재
 - 파일이 비대해지고 책임 구분이 모호해짐
 - 중복 코드 발생
 
-**2. N+1 문제의 지속적 발생**
+**2. N+1 문제가 지속적으로 발생할 수 있음**
 - 계층이 많아질수록 Lazy Loading으로 인한 쿼리 폭발
 - 예: `in` 쿼리로 조회 → Mapper에서 연관 엔티티 접근 → N+1 발생
-- Fetch Join으로 해결해도 Mapper 계층에서 다시 발생
+- Fetch Join으로 완화해도 Mapper 계층에서 다시 발생
 
 **3. Command와 Query의 호출 패턴 차이**
 - Query: `Controller → QueryService` (단순 조회)
@@ -28,7 +28,7 @@
 
 **4. 개선 시도와 한계**
 - QueryRepository 분리 → QueryDSL 기반 Projection 조회로 전환 중
-- 하지만 근본적인 문제는 여전히 존재
+- 하지만 근본적인 문제는 남을 수 있음
 
 ### Kotlin 생태계 문제
 
@@ -41,14 +41,14 @@
 - 커뮤니티 플러그인은 불안정하고 유지보수 불확실
 
 **대안: JOOQ**
-- KSP를 공식 지원
+- KotlinGenerator로 Kotlin 코드 생성(빌드 시 codegen 방식)
 - Type-safe SQL 작성 가능
-- Kotlin과의 호환성 우수
+- Kotlin과의 호환성이 상대적으로 유리
 
 ### 핵심 인사이트
 
 **Query와 Command는 역할이 다르다**
-- Query: 읽기 최적화, 성능, Projection
+- Query: 읽기 최적화, 성능 고려, Projection
 - Command: 쓰기 최적화, 트랜잭션, 도메인 로직
 - 같은 도구를 사용할 필요가 없음
 
@@ -56,18 +56,18 @@
 
 | 구분 | JPA 단일 사용 | JPA + QueryDSL | JPA + JOOQ |
 |------|--------------|----------------|------------|
-| **Command 처리** | 우수 | 우수 | 우수 |
-| **Query 처리** | 부족 (N+1) | 우수 | 우수 |
+| **Command 처리** | 상대적으로 유리 | 상대적으로 유리 | 상대적으로 유리 |
+| **Query 처리** | 한계 (N+1) | 상대적으로 유리 | 상대적으로 유리 |
 | **Kotlin 지원** | 보통 | KAPT 의존 | KSP 지원 |
 | **Repository 복잡도** | 높음 | 높음 | 낮음 (분리) |
 | **학습 곡선** | 낮음 | 중간 | 중간 |
 | **타입 안정성** | 보통 | 높음 | 높음 |
-| **미래 지속성** | 높음 | 불확실 (KAPT) | 높음 (KSP) |
+| **미래 지속성** | 상대적으로 높음 | 불확실 (KAPT) | 상대적으로 높음 (KSP) |
 
 ### JPA 단일 사용을 선택하지 않은 이유
-- N+1 문제 해결 어려움
+- N+1 문제 완화가 어려움
 - 복잡한 조회 쿼리 작성 한계
-- Projection 최적화 부족
+- Projection 최적화 한계
 
 ### JPA + QueryDSL을 선택하지 않은 이유
 - KAPT 의존성으로 인한 미래 불확실성
@@ -82,7 +82,7 @@
 
 **1. CQRS 패턴 적용**
 - Command: JPA로 도메인 모델 중심 처리
-- Query: JOOQ로 성능 최적화된 조회
+- Query: JOOQ로 조회 성능 고려
 - 각 역할에 최적화된 도구 사용
 
 **2. Kotlin 생태계 대응**
@@ -93,9 +93,9 @@
 **3. Repository 책임 분리**
 - CommandRepository (JPA): 엔티티 저장, 수정, 삭제
 - QueryRepository (JOOQ): 복잡한 조회, Projection
-- 파일 크기 감소, 책임 명확화
+- 파일 크기 감소, 책임 구분에 도움
 
-**4. N+1 문제 근본 해결**
+**4. N+1 문제 완화**
 - JOOQ는 명시적 SQL 작성
 - Lazy Loading 없음
 - 필요한 데이터만 정확히 조회
@@ -190,8 +190,8 @@ class UserQueryService(
 ## 트레이드오프
 
 ### 얻는 것
-- CQRS 패턴으로 책임 명확히 분리
-- N+1 문제 근본 해결
+- CQRS 패턴으로 책임 구분에 도움
+- N+1 문제 완화
 - Kotlin 생태계 변화에 안전 (KSP)
 - Repository 복잡도 감소
 - 각 역할에 최적화된 도구 사용
@@ -203,7 +203,7 @@ class UserQueryService(
 
 ### 리스크 완화
 - JPA와 JOOQ 모두 성숙한 기술
-- 명확한 사용 기준 문서화 (Command는 JPA, Query는 JOOQ)
+- 사용 기준 문서화 (Command는 JPA, Query는 JOOQ)
 
 ## 사용 기준
 
@@ -218,23 +218,6 @@ class UserQueryService(
 - Projection이 필요한 조회
 - 성능이 중요한 대량 조회
 - 동적 쿼리 작성
-
-### 학습 목적의 의도적 적용
-
-본 프로젝트는 토이 프로젝트로서, 실무에서 경험하기 어려운 패턴을 학습하기 위해
-**의도적으로 복잡한 환경을 가정**하고 CQRS + JOOQ 전략을 적용한다.
-
-- 실제로는 단순 CRUD 중심의 도메인이 많을 수 있음
-- 하지만 "조회 복잡도가 높고 정책 확장이 빈번한 환경"을 가정
-- 이를 통해 실무에서 필요할 때 적용할 수 있는 패턴 학습
-- 오버엔지니어링을 인지하되, 학습 가치를 우선시
-
-## 실무 적용 계획
-
-1. **토이 프로젝트에서 검증**: 패턴 확립 및 문제점 파악
-2. **실무 점진적 도입**: QueryRepository부터 JOOQ로 전환
-3. **성과 측정**: N+1 문제 감소, 쿼리 성능 개선 확인
-4. **팀 공유**: 학습 내용 및 베스트 프랙티스 공유
 
 ## jOOQ 생성 코드 Git 관리
 

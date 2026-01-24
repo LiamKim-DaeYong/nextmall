@@ -26,7 +26,7 @@ class OrderController(
     fun createOrder(
         @Valid @RequestBody request: CreateOrderSnapshotRequest,
     ): ResponseEntity<OrderSnapshot> {
-        // Phase 1: internal contract only. UCP mapping will live in BFF/orchestration.
+        // Phase 1: internal contract only. UCP mapping will live in orchestrator-service.
         val result = orderService.createOrder(request)
         return ResponseEntity
             .status(HttpStatus.CREATED)
