@@ -6,19 +6,27 @@ package com.nextmall.jooq.keys
 
 
 import com.nextmall.jooq.tables.AuthAccounts
+import com.nextmall.jooq.tables.CheckoutLineItems
+import com.nextmall.jooq.tables.CheckoutPaymentHandlers
+import com.nextmall.jooq.tables.Checkouts
 import com.nextmall.jooq.tables.Databasechangeloglock
 import com.nextmall.jooq.tables.Orders
 import com.nextmall.jooq.tables.Products
 import com.nextmall.jooq.tables.Users
 import com.nextmall.jooq.tables.records.AuthAccountsRecord
+import com.nextmall.jooq.tables.records.CheckoutLineItemsRecord
+import com.nextmall.jooq.tables.records.CheckoutPaymentHandlersRecord
+import com.nextmall.jooq.tables.records.CheckoutsRecord
 import com.nextmall.jooq.tables.records.DatabasechangeloglockRecord
 import com.nextmall.jooq.tables.records.OrdersRecord
 import com.nextmall.jooq.tables.records.ProductsRecord
 import com.nextmall.jooq.tables.records.UsersRecord
 
+import org.jooq.ForeignKey
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
+import org.jooq.impl.QOM.ForeignKeyRule
 
 
 
@@ -28,7 +36,17 @@ import org.jooq.impl.Internal
 
 val AUTH_ACCOUNTS_PKEY: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("auth_accounts_pkey"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.ID), true)
 val UK_AUTH_ACCOUNTS_PROVIDER_ACCOUNT_ID: UniqueKey<AuthAccountsRecord> = Internal.createUniqueKey(AuthAccounts.AUTH_ACCOUNTS, DSL.name("uk_auth_accounts_provider_account_id"), arrayOf(AuthAccounts.AUTH_ACCOUNTS.PROVIDER, AuthAccounts.AUTH_ACCOUNTS.PROVIDER_ACCOUNT_ID), true)
+val CHECKOUT_LINE_ITEMS_PKEY: UniqueKey<CheckoutLineItemsRecord> = Internal.createUniqueKey(CheckoutLineItems.CHECKOUT_LINE_ITEMS, DSL.name("checkout_line_items_pkey"), arrayOf(CheckoutLineItems.CHECKOUT_LINE_ITEMS.ID), true)
+val CHECKOUT_PAYMENT_HANDLERS_PKEY: UniqueKey<CheckoutPaymentHandlersRecord> = Internal.createUniqueKey(CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS, DSL.name("checkout_payment_handlers_pkey"), arrayOf(CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS.ID), true)
+val CHECKOUTS_PKEY: UniqueKey<CheckoutsRecord> = Internal.createUniqueKey(Checkouts.CHECKOUTS, DSL.name("checkouts_pkey"), arrayOf(Checkouts.CHECKOUTS.CHECKOUT_ID), true)
 val DATABASECHANGELOGLOCK_PKEY: UniqueKey<DatabasechangeloglockRecord> = Internal.createUniqueKey(Databasechangeloglock.DATABASECHANGELOGLOCK, DSL.name("databasechangeloglock_pkey"), arrayOf(Databasechangeloglock.DATABASECHANGELOGLOCK.ID), true)
 val ORDERS_PKEY: UniqueKey<OrdersRecord> = Internal.createUniqueKey(Orders.ORDERS, DSL.name("orders_pkey"), arrayOf(Orders.ORDERS.ORDER_ID), true)
 val PRODUCTS_PKEY: UniqueKey<ProductsRecord> = Internal.createUniqueKey(Products.PRODUCTS, DSL.name("products_pkey"), arrayOf(Products.PRODUCTS.PRODUCT_ID), true)
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)
+
+// -------------------------------------------------------------------------
+// FOREIGN KEY definitions
+// -------------------------------------------------------------------------
+
+val CHECKOUT_LINE_ITEMS__FK_CHECKOUT_LINE_ITEMS_CHECKOUT: ForeignKey<CheckoutLineItemsRecord, CheckoutsRecord> = Internal.createForeignKey(CheckoutLineItems.CHECKOUT_LINE_ITEMS, DSL.name("fk_checkout_line_items_checkout"), arrayOf(CheckoutLineItems.CHECKOUT_LINE_ITEMS.CHECKOUT_ID), com.nextmall.jooq.keys.CHECKOUTS_PKEY, arrayOf(Checkouts.CHECKOUTS.CHECKOUT_ID), true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION)
+val CHECKOUT_PAYMENT_HANDLERS__FK_CHECKOUT_PAYMENT_HANDLERS_CHECKOUT: ForeignKey<CheckoutPaymentHandlersRecord, CheckoutsRecord> = Internal.createForeignKey(CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS, DSL.name("fk_checkout_payment_handlers_checkout"), arrayOf(CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS.CHECKOUT_ID), com.nextmall.jooq.keys.CHECKOUTS_PKEY, arrayOf(Checkouts.CHECKOUTS.CHECKOUT_ID), true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION)

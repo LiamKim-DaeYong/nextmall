@@ -9,7 +9,7 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 
 ## 2. Baseline 정책
 ### 2.1 Baseline 목적
-- 초기 스키마 정의(0001-init-schema.yaml)
+- 초기 스키마 정의(0001-create-users-table.yaml)
 - 개발 환경에서는 자동 적용
 - 운영 환경에서는 기존 스키마가 있을 경우 baseline 절대 적용 금지
 
@@ -23,9 +23,9 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 ## 3. ChangeSet 작성 규칙
 ### 3.1 파일명 규칙
 ```yaml
-0001-init-schema.yaml
-0002-product.yaml
-0003-order.yaml
+0001-create-users-table.yaml
+0002-create-products-table.yaml
+0003-create-orders-table.yaml
 ...
 ```
 
@@ -58,7 +58,7 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 
 ## 5. 스키마 변경 절차 (개발 → 운영)
 
-1. 새로운 changeSet 생성 (예: 0002-product.yaml)
+1. 새로운 changeSet 생성 (예: 0002-create-products-table.yaml)
 2. db.changelog-master.yaml에 include 추가
 3. 로컬 환경에서 Liquibase 실행 테스트
 4. 필요한 경우 jOOQ Codegen 재생성
@@ -108,7 +108,7 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 src/main/resources/db/changelog/
  ├── db.changelog-master.yaml
  └── changes/
-      ├── 0001-init-schema.yaml
+      ├── 0001-create-users-table.yaml
       ├── 0002-*.yaml
       ├── 0003-*.yaml
 ```
@@ -134,7 +134,7 @@ databaseChangeLog:
       author: liam
       changes:
         - createTable:
-            tableName: product
+            tableName: products
             columns:
               - column:
                   name: id

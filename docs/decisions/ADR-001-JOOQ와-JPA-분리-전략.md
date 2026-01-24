@@ -143,7 +143,7 @@ data class UserDetailProjection(
     val id: Long,
     val nickname: String,
     val email: String?,
-    val createdAt: LocalDateTime,
+    val createdAt: Instant,
     val orderCount: Int,
 )
 

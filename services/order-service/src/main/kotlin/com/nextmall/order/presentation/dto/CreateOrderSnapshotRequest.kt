@@ -20,4 +20,3 @@ data class CreateOrderSnapshotRequest(
 
     val permalinkUrl: String? = null,
 )
-

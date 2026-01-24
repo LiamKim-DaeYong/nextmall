@@ -1,6 +1,6 @@
 package com.nextmall.common.util
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -15,17 +15,20 @@ object TimeUtils {
     /** Standard UTC timezone offset */
     val UTC_ZONE: ZoneOffset = ZoneOffset.UTC
 
-    /** Current time in the default zone (KST) */
-    fun now(): OffsetDateTime = OffsetDateTime.now(DEFAULT_ZONE)
+    /** Current time as an Instant (UTC) */
+    fun now(): Instant = Instant.now()
 
     /** Current time in UTC */
     fun nowUtc(): OffsetDateTime = OffsetDateTime.now(UTC_ZONE)
 
-    /** Converts a given LocalDateTime to OffsetDateTime (KST) */
-    fun toKst(localDateTime: LocalDateTime): OffsetDateTime = localDateTime.atOffset(DEFAULT_ZONE)
+    /** Current time in the default zone (KST) */
+    fun nowKst(): OffsetDateTime = OffsetDateTime.now(DEFAULT_ZONE)
 
-    /** Converts a given LocalDateTime to OffsetDateTime (UTC) */
-    fun toUtc(localDateTime: LocalDateTime): OffsetDateTime = localDateTime.atOffset(UTC_ZONE)
+    /** Converts a given Instant to OffsetDateTime (KST) */
+    fun toKst(instant: Instant): OffsetDateTime = instant.atOffset(DEFAULT_ZONE)
+
+    /** Converts a given Instant to OffsetDateTime (UTC) */
+    fun toUtc(instant: Instant): OffsetDateTime = instant.atOffset(UTC_ZONE)
 
     /** Converts an OffsetDateTime from UTC to KST */
     fun toKst(offsetDateTime: OffsetDateTime): OffsetDateTime = offsetDateTime.withOffsetSameInstant(DEFAULT_ZONE)
@@ -33,17 +36,15 @@ object TimeUtils {
     /** Converts an OffsetDateTime from KST to UTC */
     fun toUtc(offsetDateTime: OffsetDateTime): OffsetDateTime = offsetDateTime.withOffsetSameInstant(UTC_ZONE)
 
-    fun toUtcOrNull(localDateTime: LocalDateTime?): OffsetDateTime? =
-        localDateTime?.atOffset(UTC_ZONE)
+    fun toInstant(offsetDateTime: OffsetDateTime): Instant = offsetDateTime.toInstant()
 
-    fun toKstOrNull(localDateTime: LocalDateTime?): OffsetDateTime? =
-        localDateTime?.atOffset(DEFAULT_ZONE)
+    fun toInstantOrNull(offsetDateTime: OffsetDateTime?): Instant? = offsetDateTime?.toInstant()
 }
 
-fun LocalDateTime.toUtc(): OffsetDateTime =
+fun Instant.toUtc(): OffsetDateTime =
     this.atOffset(TimeUtils.UTC_ZONE)
 
-fun LocalDateTime?.toUtcOrNull(): OffsetDateTime? =
+fun Instant?.toUtcOrNull(): OffsetDateTime? =
     this?.atOffset(TimeUtils.UTC_ZONE)
 
 fun OffsetDateTime.toUtc(): OffsetDateTime =
@@ -52,10 +53,10 @@ fun OffsetDateTime.toUtc(): OffsetDateTime =
 fun OffsetDateTime?.toUtcOrNull(): OffsetDateTime? =
     this?.withOffsetSameInstant(ZoneOffset.UTC)
 
-fun LocalDateTime.toKst(): OffsetDateTime =
+fun Instant.toKst(): OffsetDateTime =
     this.atOffset(TimeUtils.DEFAULT_ZONE)
 
-fun LocalDateTime?.toKstOrNull(): OffsetDateTime? =
+fun Instant?.toKstOrNull(): OffsetDateTime? =
     this?.atOffset(TimeUtils.DEFAULT_ZONE)
 
 fun OffsetDateTime.toKst(): OffsetDateTime =

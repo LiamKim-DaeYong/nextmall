@@ -8,4 +8,3 @@ data class MoneyAmountRequest(
     @field:NotBlank
     val currency: String,
 )
-

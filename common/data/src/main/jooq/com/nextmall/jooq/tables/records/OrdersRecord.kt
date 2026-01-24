@@ -6,7 +6,6 @@ package com.nextmall.jooq.tables.records
 
 import com.nextmall.jooq.tables.Orders
 
-import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 import org.jooq.Record1
@@ -23,33 +22,41 @@ open class OrdersRecord() : UpdatableRecordImpl<OrdersRecord>(Orders.ORDERS) {
         set(value): Unit = set(0, value)
         get(): Long? = get(0) as Long?
 
-    open var userId: Long?
+    open var checkoutId: String?
         set(value): Unit = set(1, value)
-        get(): Long? = get(1) as Long?
+        get(): String? = get(1) as String?
 
-    open var productId: Long?
+    open var currency: String?
         set(value): Unit = set(2, value)
-        get(): Long? = get(2) as Long?
+        get(): String? = get(2) as String?
 
-    open var quantity: Int?
+    open var permalinkUrl: String?
         set(value): Unit = set(3, value)
-        get(): Int? = get(3) as Int?
+        get(): String? = get(3) as String?
 
-    open var totalPrice: BigDecimal?
+    open var lineItemsJson: String?
         set(value): Unit = set(4, value)
-        get(): BigDecimal? = get(4) as BigDecimal?
+        get(): String? = get(4) as String?
 
-    open var status: String?
+    open var totalsJson: String?
         set(value): Unit = set(5, value)
         get(): String? = get(5) as String?
 
-    open var createdAt: OffsetDateTime?
+    open var fulfillmentJson: String?
         set(value): Unit = set(6, value)
-        get(): OffsetDateTime? = get(6) as OffsetDateTime?
+        get(): String? = get(6) as String?
+
+    open var adjustmentsJson: String?
+        set(value): Unit = set(7, value)
+        get(): String? = get(7) as String?
+
+    open var createdAt: OffsetDateTime?
+        set(value): Unit = set(8, value)
+        get(): OffsetDateTime? = get(8) as OffsetDateTime?
 
     open var updatedAt: OffsetDateTime?
-        set(value): Unit = set(7, value)
-        get(): OffsetDateTime? = get(7) as OffsetDateTime?
+        set(value): Unit = set(9, value)
+        get(): OffsetDateTime? = get(9) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -60,13 +67,15 @@ open class OrdersRecord() : UpdatableRecordImpl<OrdersRecord>(Orders.ORDERS) {
     /**
      * Create a detached, initialised OrdersRecord
      */
-    constructor(orderId: Long? = null, userId: Long? = null, productId: Long? = null, quantity: Int? = null, totalPrice: BigDecimal? = null, status: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(orderId: Long? = null, checkoutId: String? = null, currency: String? = null, permalinkUrl: String? = null, lineItemsJson: String? = null, totalsJson: String? = null, fulfillmentJson: String? = null, adjustmentsJson: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.orderId = orderId
-        this.userId = userId
-        this.productId = productId
-        this.quantity = quantity
-        this.totalPrice = totalPrice
-        this.status = status
+        this.checkoutId = checkoutId
+        this.currency = currency
+        this.permalinkUrl = permalinkUrl
+        this.lineItemsJson = lineItemsJson
+        this.totalsJson = totalsJson
+        this.fulfillmentJson = fulfillmentJson
+        this.adjustmentsJson = adjustmentsJson
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()

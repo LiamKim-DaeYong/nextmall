@@ -19,4 +19,3 @@ data class OrderLineItemRequest(
 
     val imageUrl: String? = null,
 )
-

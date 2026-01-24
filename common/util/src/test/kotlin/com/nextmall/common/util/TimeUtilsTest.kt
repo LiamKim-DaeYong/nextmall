@@ -1,10 +1,12 @@
 package com.nextmall.common.util
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlin.math.abs
 
 class TimeUtilsTest :
     FunSpec({
@@ -17,9 +19,10 @@ class TimeUtilsTest :
             TimeUtils.UTC_ZONE shouldBe ZoneOffset.UTC
         }
 
-        test("now() should return time with DEFAULT_ZONE (UTC+9)") {
+        test("now() should return near-current Instant") {
             val now = TimeUtils.now()
-            now.offset shouldBe ZoneOffset.ofHours(9)
+            val diffMillis = abs(Instant.now().toEpochMilli() - now.toEpochMilli())
+            diffMillis.shouldBeLessThan(2000)
         }
 
         test("nowUtc() should return time with UTC offset") {
@@ -27,20 +30,25 @@ class TimeUtilsTest :
             nowUtc.offset shouldBe ZoneOffset.UTC
         }
 
-        test("toKst(LocalDateTime) should convert correctly") {
-            val local = LocalDateTime.of(2024, 1, 1, 10, 0)
-            val result = TimeUtils.toKst(local)
-
-            result.offset shouldBe ZoneOffset.ofHours(9)
-            result.toLocalDateTime() shouldBe local
+        test("nowKst() should return time with DEFAULT_ZONE (UTC+9)") {
+            val nowKst = TimeUtils.nowKst()
+            nowKst.offset shouldBe ZoneOffset.ofHours(9)
         }
 
-        test("toUtc(LocalDateTime) should convert correctly") {
-            val local = LocalDateTime.of(2024, 1, 1, 10, 0)
-            val result = TimeUtils.toUtc(local)
+        test("toKst(Instant) should convert correctly") {
+            val instant = Instant.parse("2024-01-01T01:00:00Z")
+            val result = TimeUtils.toKst(instant)
+
+            result.offset shouldBe ZoneOffset.ofHours(9)
+            result.toInstant() shouldBe instant
+        }
+
+        test("toUtc(Instant) should convert correctly") {
+            val instant = Instant.parse("2024-01-01T01:00:00Z")
+            val result = TimeUtils.toUtc(instant)
 
             result.offset shouldBe ZoneOffset.UTC
-            result.toLocalDateTime() shouldBe local
+            result.toInstant() shouldBe instant
         }
 
         test("toKst(OffsetDateTime) should convert UTC -> KST correctly") {
@@ -48,7 +56,7 @@ class TimeUtilsTest :
             val result = TimeUtils.toKst(utcDateTime)
 
             result.offset shouldBe ZoneOffset.ofHours(9)
-            result.toLocalDateTime() shouldBe utcDateTime.toInstant().atOffset(ZoneOffset.ofHours(9)).toLocalDateTime()
+            result.toInstant() shouldBe utcDateTime.toInstant()
         }
 
         test("toUtc(OffsetDateTime) should convert KST -> UTC correctly") {
@@ -56,6 +64,6 @@ class TimeUtilsTest :
             val result = TimeUtils.toUtc(kstDateTime)
 
             result.offset shouldBe ZoneOffset.UTC
-            result.toLocalDateTime() shouldBe kstDateTime.toInstant().atOffset(ZoneOffset.UTC).toLocalDateTime()
+            result.toInstant() shouldBe kstDateTime.toInstant()
         }
     })

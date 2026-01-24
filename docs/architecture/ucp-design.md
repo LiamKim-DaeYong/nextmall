@@ -9,6 +9,7 @@ UCP(Universal Commerce Protocol)는 전자상거래에서 플랫폼(에이전트
 
 참고: UCP는 초기 핵심 Capability로 Checkout, Identity Linking, Order를 정의한다.
 이 문서는 UCP 프로토콜 버전 2026-01-11을 기준으로 정리한다.
+공식 문서: [UCP Specification Overview](https://ucp.dev/specification/overview)
 
 ## 2) 적용 원칙 (우리 프로젝트 기준)
 1. 내부 구현은 자유, 외부 계약은 UCP 형태에 맞춘다.
@@ -57,6 +58,7 @@ Catalog -> Cart -> Checkout -> Order -> Fulfillment/Adjustment
 - requires_escalation 시 messages 포함 (에러 핸들링 규칙 준수)
 - Checkout 생성 시 결제 구성(payment.handlers)을 명시
 - Checkout 완료는 신뢰 가능한 UI를 통해 진행 (AP2 예외)
+  - AP2 = Application-to-Application 연동 예외 (머신-투-머신 결제 흐름)
 
 ### 4.2 Order (필수)
 목표: 주문 확정 이후의 상태와 이벤트 기록 표준화

@@ -23,7 +23,8 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
 ## 4) 엔드포인트 (REST)
 
 ### 4.1 Create Checkout
-- POST /v1/ucp/checkout
+- POST /v1/ucp/checkout (Gateway/BFF)
+- POST /checkouts (Checkout Service 내부용)
 - Request (최소)
   - line_items[]
   - currency
@@ -34,12 +35,14 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
   - checkout 객체
 
 ### 4.2 Get Checkout
-- GET /v1/ucp/checkout/{checkout_id}
+- GET /v1/ucp/checkout/{checkout_id} (Gateway/BFF)
+- GET /checkouts/{checkout_id} (Checkout Service 내부용)
 - Response
   - checkout 객체
 
 ### 4.3 Update Checkout
-- PATCH /v1/ucp/checkout/{checkout_id}
+- PATCH /v1/ucp/checkout/{checkout_id} (Gateway/BFF)
+- PATCH /checkouts/{checkout_id} (Checkout Service 내부용)
 - Request
   - line_items[] (옵션)
   - buyer (옵션)
@@ -49,7 +52,8 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
   - checkout 객체
 
 ### 4.4 Complete Checkout
-- POST /v1/ucp/checkout/{checkout_id}/complete
+- POST /v1/ucp/checkout/{checkout_id}/complete (Gateway/BFF)
+- POST /checkouts/{checkout_id}/complete (Checkout Service 내부용)
 - Request
   - payment (필수)
   - confirm (옵션)
@@ -57,7 +61,8 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
   - order 객체 (또는 checkout + order_ref)
 
 ### 4.5 Cancel Checkout
-- POST /v1/ucp/checkout/{checkout_id}/cancel
+- POST /v1/ucp/checkout/{checkout_id}/cancel (Gateway/BFF)
+- POST /checkouts/{checkout_id}/cancel (Checkout Service 내부용)
 - Response
   - checkout 객체
 
@@ -121,4 +126,7 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
 - Product/Catalog은 Mock 가능
 - Checkout/Order 흐름을 UCP 구조로 먼저 고정
 - 결제 핸들러는 내부 mock 처리 가능
-
+### 4.3.1 List Checkouts (Internal)
+- GET /checkouts?limit=20&offset=0
+- limit 범위: 1~100 (상한 적용)
+- offset: 0 이상

@@ -7,4 +7,3 @@ data class OrderLineItem(
     val price: MoneyAmount,
     val imageUrl: String? = null,
 )
-
