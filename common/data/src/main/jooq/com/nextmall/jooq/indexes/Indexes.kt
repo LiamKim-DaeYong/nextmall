@@ -23,4 +23,8 @@ import org.jooq.impl.Internal
 val IDX_CHECKOUT_LINE_ITEMS_CHECKOUT_ID: Index = Internal.createIndex(DSL.name("idx_checkout_line_items_checkout_id"), CheckoutLineItems.CHECKOUT_LINE_ITEMS, arrayOf(CheckoutLineItems.CHECKOUT_LINE_ITEMS.CHECKOUT_ID), false)
 val IDX_CHECKOUT_PAYMENT_HANDLERS_CHECKOUT_ID: Index = Internal.createIndex(DSL.name("idx_checkout_payment_handlers_checkout_id"), CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS, arrayOf(CheckoutPaymentHandlers.CHECKOUT_PAYMENT_HANDLERS.CHECKOUT_ID), false)
 val IDX_ORDERS_CHECKOUT_ID: Index = Internal.createIndex(DSL.name("idx_orders_checkout_id"), Orders.ORDERS, arrayOf(Orders.ORDERS.CHECKOUT_ID), false)
+val IDX_PRODUCTS_CATEGORY: Index = Internal.createIndex(DSL.name("idx_products_category"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.CATEGORY), false)
+val IDX_PRODUCTS_DISPLAY_STATUS: Index = Internal.createIndex(DSL.name("idx_products_display_status"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.DISPLAY_STATUS), false)
+val IDX_PRODUCTS_IS_DELETED: Index = Internal.createIndex(DSL.name("idx_products_is_deleted"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.IS_DELETED), false)
+val IDX_PRODUCTS_SALE_STATUS: Index = Internal.createIndex(DSL.name("idx_products_sale_status"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.SALE_STATUS), false)
 val IDX_PRODUCTS_SELLER_ID: Index = Internal.createIndex(DSL.name("idx_products_seller_id"), Products.PRODUCTS, arrayOf(Products.PRODUCTS.SELLER_ID), false)

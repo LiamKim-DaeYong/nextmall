@@ -12,6 +12,7 @@
 |------|------|
 | [아키텍처 발전 과정](architecture/evolution.md) | 모듈러 모놀리식 → MSA → Edge Auth 전환 히스토리 |
 | [PBAC 인가 구조](architecture/authorization-pbac.md) | Policy-Based Access Control 설계 |
+| [공통화 및 컨벤션 기준](architecture/commonization-standards.md) | 서비스 간 공통화/컨벤션 기준 초안 |
 | [UCP 기반 쇼핑몰 설계](architecture/ucp-design.md) | UCP 프로토콜 기준의 쇼핑몰 설계 초안 |
 | [UCP Checkout API](architecture/ucp-checkout-api.md) | Checkout 최소 스키마/엔드포인트 초안 |
 
