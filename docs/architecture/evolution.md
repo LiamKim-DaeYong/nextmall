@@ -80,14 +80,15 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 | Client | Access Token 전달 |
 | API Gateway (8080) | Access Token 검증, Passport Token 발급, 라우팅 |
 | BFF (8082) | UI 집계 |
+| Orchestrator (8087) | Saga/Workflow |
 | Auth (8081) | 토큰 발급 |
 | User (8083) | 회원 관리 |
 | Product/Order/Payment/Stock | 도메인 서비스 |
 
 ### 요청 흐름
 1. Client → Gateway: Access Token 전달
-2. Gateway → BFF/Auth/User: Passport Token 전달
-3. BFF → 도메인 서비스: Passport Token 전달
+2. Gateway → BFF/Orchestrator/Auth/User: Passport Token 전달
+3. BFF/Orchestrator → 도메인 서비스: Passport Token 전달
 
 ---
 

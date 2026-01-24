@@ -104,6 +104,7 @@ nextmall/
 ├── services/                    # 배포 단위 (Self-Contained)
 │   ├── api-gateway/            # WebFlux, 토큰 검증, 라우팅
 │   ├── bff-service/            # WebFlux, UI 집계, Saga
+│   ├── orchestrator-service/   # WebFlux, 오케스트레이션
 │   ├── auth-service/           # 인증/인가, 토큰 발급
 │   ├── user-service/           # 회원 관리
 │   ├── product-service/        # 상품 관리

@@ -210,16 +210,16 @@ services:
       order-service:
         condition: service_healthy
     environment:
-      SERVER_PORT: 8086
+      SERVER_PORT: 8087
       # Service URLs
       CLIENT_USER_BASE_URL: http://user-service:8083
       CLIENT_AUTH_BASE_URL: http://auth-service:8081
       CLIENT_PRODUCT_BASE_URL: http://product-service:8084
       CLIENT_ORDER_BASE_URL: http://order-service:8085
     ports:
-      - "18086:8086"
+      - "18087:8087"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8086/actuator/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8087/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -251,7 +251,7 @@ services:
       CLIENT_AUTH_BASE_URL: http://auth-service:8081
       CLIENT_PRODUCT_BASE_URL: http://product-service:8084
       CLIENT_ORDER_BASE_URL: http://order-service:8085
-      CLIENT_ORCHESTRATOR_BASE_URL: http://orchestrator-service:8086
+      CLIENT_ORCHESTRATOR_BASE_URL: http://orchestrator-service:8087
     ports:
       - "18082:8082"
     healthcheck:

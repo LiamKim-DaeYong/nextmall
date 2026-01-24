@@ -8,4 +8,4 @@ client:
   order:
     base-url: http://localhost:8085
   orchestrator:
-    base-url: http://localhost:8086
+    base-url: http://localhost:8087

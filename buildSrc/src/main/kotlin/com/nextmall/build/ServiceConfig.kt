@@ -15,7 +15,7 @@ object ServiceConfig {
         const val PRODUCT_SERVICE = 8084
         const val ORDER_SERVICE = 8085
         const val CHECKOUT_SERVICE = 8086
-        const val ORCHESTRATOR_SERVICE = 8086
+        const val ORCHESTRATOR_SERVICE = 8087
     }
 
     object Images {
