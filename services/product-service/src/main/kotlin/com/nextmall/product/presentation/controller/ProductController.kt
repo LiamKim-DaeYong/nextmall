@@ -7,8 +7,8 @@ import com.nextmall.product.application.ProductService
 import com.nextmall.product.presentation.request.CreateProductRequest
 import com.nextmall.product.presentation.request.UpdateProductRequest
 import com.nextmall.product.presentation.response.CreateProductResponse
-import com.nextmall.product.presentation.response.ProductViewResponse
-import com.nextmall.product.presentation.response.toResponse
+import com.nextmall.product.presentation.response.ProductResponse
+import com.nextmall.product.presentation.response.toPublicResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -27,17 +27,17 @@ class ProductController(
     private val productService: ProductService,
 ) {
     @GetMapping("/{productId}")
-    fun getProduct(@PathVariable productId: Long): ResponseEntity<ProductViewResponse> {
-        val result = productService.getProduct(productId)
+    fun getProduct(@PathVariable productId: Long): ResponseEntity<ProductResponse> {
+        val result = productService.getProductForPublic(productId)
         return ResponseEntity
-            .ok(result.toResponse())
+            .ok(result.toPublicResponse())
     }
 
     @GetMapping
-    fun getAllProducts(): ResponseEntity<List<ProductViewResponse>> {
-        val results = productService.getAllProducts()
+    fun getAllProducts(): ResponseEntity<List<ProductResponse>> {
+        val results = productService.getAllProductsForPublic()
         return ResponseEntity
-            .ok(results.map { it.toResponse() })
+            .ok(results.map { it.toPublicResponse() })
     }
 
     @PostMapping
@@ -48,6 +48,7 @@ class ProductController(
         val result =
             productService.createProduct(
                 name = request.name,
+                description = request.description,
                 price = Money.of(request.price),
                 stock = request.stock,
                 sellerId = principal.userIdAsLong(),
@@ -60,15 +61,18 @@ class ProductController(
 
     @PutMapping("/{productId}")
     fun updateProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
         @PathVariable productId: Long,
         @Valid @RequestBody request: UpdateProductRequest,
     ): ResponseEntity<Unit> {
         productService.updateProduct(
             productId = productId,
             name = request.name,
+            description = request.description,
             price = Money.of(request.price),
             stock = request.stock,
             category = request.category,
+            sellerId = principal.userIdAsLong(),
         )
         return ResponseEntity
             .noContent()
@@ -76,8 +80,66 @@ class ProductController(
     }
 
     @DeleteMapping("/{productId}")
-    fun deleteProduct(@PathVariable productId: Long): ResponseEntity<Unit> {
-        productService.deleteProduct(productId)
+    fun deleteProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.deleteProduct(productId, principal.userIdAsLong())
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
+
+    @PostMapping("/{productId}/restore")
+    fun restoreProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.restoreProduct(productId, principal.userIdAsLong())
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
+
+    @PostMapping("/{productId}/suspend")
+    fun suspendProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.suspendProduct(productId, principal.userIdAsLong())
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
+
+    @PostMapping("/{productId}/resume")
+    fun resumeProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.resumeProduct(productId, principal.userIdAsLong())
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
+
+    @PostMapping("/{productId}/show")
+    fun showProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.showProduct(productId, principal.userIdAsLong())
+        return ResponseEntity
+            .noContent()
+            .build()
+    }
+
+    @PostMapping("/{productId}/hide")
+    fun hideProduct(
+        @CurrentUser principal: AuthenticatedPrincipal,
+        @PathVariable productId: Long,
+    ): ResponseEntity<Unit> {
+        productService.hideProduct(productId, principal.userIdAsLong())
         return ResponseEntity
             .noContent()
             .build()

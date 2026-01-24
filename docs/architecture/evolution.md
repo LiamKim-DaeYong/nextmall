@@ -94,7 +94,8 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 │      │                                                                 │
 │      ▼                                                                 │
 │  ┌──────────────────────────────────────────────────────────────┐      │
-│  │  Product / Order / Payment / Stock (planned)                 │      │
+│  │  Product / Checkout / Order (Core Flow)                      │      │
+│  │  Payment / Stock (planned)                                   │      │
 │  └──────────────────────────────────────────────────────────────┘      │
 └────────────────────────────────────────────────────────────────────────┘
 ```

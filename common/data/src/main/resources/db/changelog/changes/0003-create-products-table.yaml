@@ -18,6 +18,9 @@ databaseChangeLog:
                   type: VARCHAR(200)
                   constraints:
                     nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(2000)
 
               - column:
                   name: price
@@ -28,6 +31,18 @@ databaseChangeLog:
               - column:
                   name: stock
                   type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sale_status
+                  type: VARCHAR(20)
+                  defaultValue: ON_SALE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: display_status
+                  type: VARCHAR(20)
+                  defaultValue: VISIBLE
                   constraints:
                     nullable: false
 
@@ -42,6 +57,21 @@ databaseChangeLog:
                   type: VARCHAR(100)
                   constraints:
                     nullable: true
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: version
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
 
               - column:
                   name: created_at
@@ -63,6 +93,30 @@ databaseChangeLog:
             columns:
               - column:
                   name: seller_id
+        - createIndex:
+            tableName: products
+            indexName: idx_products_sale_status
+            columns:
+              - column:
+                  name: sale_status
+        - createIndex:
+            tableName: products
+            indexName: idx_products_display_status
+            columns:
+              - column:
+                  name: display_status
+        - createIndex:
+            tableName: products
+            indexName: idx_products_is_deleted
+            columns:
+              - column:
+                  name: is_deleted
+        - createIndex:
+            tableName: products
+            indexName: idx_products_category
+            columns:
+              - column:
+                  name: category
 
   - changeSet:
       id: 0003-add-products-check-constraints

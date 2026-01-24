@@ -5,6 +5,10 @@ package com.nextmall.jooq.tables
 
 
 import com.nextmall.jooq.Public
+import com.nextmall.jooq.indexes.IDX_PRODUCTS_CATEGORY
+import com.nextmall.jooq.indexes.IDX_PRODUCTS_DISPLAY_STATUS
+import com.nextmall.jooq.indexes.IDX_PRODUCTS_IS_DELETED
+import com.nextmall.jooq.indexes.IDX_PRODUCTS_SALE_STATUS
 import com.nextmall.jooq.indexes.IDX_PRODUCTS_SELLER_ID
 import com.nextmall.jooq.keys.PRODUCTS_PKEY
 import com.nextmall.jooq.tables.records.ProductsRecord
@@ -87,6 +91,11 @@ open class Products(
     val NAME: TableField<ProductsRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(200).nullable(false), this, "")
 
     /**
+     * The column <code>public.products.description</code>.
+     */
+    val DESCRIPTION: TableField<ProductsRecord, String?> = createField(DSL.name("description"), SQLDataType.VARCHAR(2000), this, "")
+
+    /**
      * The column <code>public.products.price</code>.
      */
     val PRICE: TableField<ProductsRecord, BigDecimal?> = createField(DSL.name("price"), SQLDataType.NUMERIC(10, 2).nullable(false), this, "")
@@ -97,6 +106,16 @@ open class Products(
     val STOCK: TableField<ProductsRecord, Int?> = createField(DSL.name("stock"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
+     * The column <code>public.products.sale_status</code>.
+     */
+    val SALE_STATUS: TableField<ProductsRecord, String?> = createField(DSL.name("sale_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ON_SALE'::character varying"), SQLDataType.VARCHAR)), this, "")
+
+    /**
+     * The column <code>public.products.display_status</code>.
+     */
+    val DISPLAY_STATUS: TableField<ProductsRecord, String?> = createField(DSL.name("display_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'VISIBLE'::character varying"), SQLDataType.VARCHAR)), this, "")
+
+    /**
      * The column <code>public.products.seller_id</code>.
      */
     val SELLER_ID: TableField<ProductsRecord, Long?> = createField(DSL.name("seller_id"), SQLDataType.BIGINT.nullable(false), this, "")
@@ -105,6 +124,21 @@ open class Products(
      * The column <code>public.products.category</code>.
      */
     val CATEGORY: TableField<ProductsRecord, String?> = createField(DSL.name("category"), SQLDataType.VARCHAR(100), this, "")
+
+    /**
+     * The column <code>public.products.is_deleted</code>.
+     */
+    val IS_DELETED: TableField<ProductsRecord, Boolean?> = createField(DSL.name("is_deleted"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "")
+
+    /**
+     * The column <code>public.products.deleted_at</code>.
+     */
+    val DELETED_AT: TableField<ProductsRecord, OffsetDateTime?> = createField(DSL.name("deleted_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
+
+    /**
+     * The column <code>public.products.version</code>.
+     */
+    val VERSION: TableField<ProductsRecord, Long?> = createField(DSL.name("version"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BIGINT)), this, "")
 
     /**
      * The column <code>public.products.created_at</code>.
@@ -135,7 +169,7 @@ open class Products(
      */
     constructor(): this(DSL.name("products"), null)
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
-    override fun getIndexes(): List<Index> = listOf(IDX_PRODUCTS_SELLER_ID)
+    override fun getIndexes(): List<Index> = listOf(IDX_PRODUCTS_CATEGORY, IDX_PRODUCTS_DISPLAY_STATUS, IDX_PRODUCTS_IS_DELETED, IDX_PRODUCTS_SALE_STATUS, IDX_PRODUCTS_SELLER_ID)
     override fun getPrimaryKey(): UniqueKey<ProductsRecord> = PRODUCTS_PKEY
     override fun getChecks(): List<Check<ProductsRecord>> = listOf(
         Internal.createCheck(this, DSL.name("chk_products_price_positive"), "((price > (0)::numeric))", true),

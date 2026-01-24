@@ -27,29 +27,55 @@ open class ProductsRecord() : UpdatableRecordImpl<ProductsRecord>(Products.PRODU
         set(value): Unit = set(1, value)
         get(): String? = get(1) as String?
 
-    open var price: BigDecimal?
+    open var description: String?
         set(value): Unit = set(2, value)
-        get(): BigDecimal? = get(2) as BigDecimal?
+        get(): String? = get(2) as String?
+
+    open var price: BigDecimal?
+        set(value): Unit = set(3, value)
+        get(): BigDecimal? = get(3) as BigDecimal?
 
     open var stock: Int?
-        set(value): Unit = set(3, value)
-        get(): Int? = get(3) as Int?
-
-    open var sellerId: Long?
         set(value): Unit = set(4, value)
-        get(): Long? = get(4) as Long?
+        get(): Int? = get(4) as Int?
 
-    open var category: String?
+    open var saleStatus: String?
         set(value): Unit = set(5, value)
         get(): String? = get(5) as String?
 
-    open var createdAt: OffsetDateTime?
+    open var displayStatus: String?
         set(value): Unit = set(6, value)
-        get(): OffsetDateTime? = get(6) as OffsetDateTime?
+        get(): String? = get(6) as String?
+
+    open var sellerId: Long?
+        set(value): Unit = set(7, value)
+        get(): Long? = get(7) as Long?
+
+    open var category: String?
+        set(value): Unit = set(8, value)
+        get(): String? = get(8) as String?
+
+    @Suppress("INAPPLICABLE_JVM_NAME")
+    @set:JvmName("setIsDeleted")
+    open var isDeleted: Boolean?
+        set(value): Unit = set(9, value)
+        get(): Boolean? = get(9) as Boolean?
+
+    open var deletedAt: OffsetDateTime?
+        set(value): Unit = set(10, value)
+        get(): OffsetDateTime? = get(10) as OffsetDateTime?
+
+    open var version: Long?
+        set(value): Unit = set(11, value)
+        get(): Long? = get(11) as Long?
+
+    open var createdAt: OffsetDateTime?
+        set(value): Unit = set(12, value)
+        get(): OffsetDateTime? = get(12) as OffsetDateTime?
 
     open var updatedAt: OffsetDateTime?
-        set(value): Unit = set(7, value)
-        get(): OffsetDateTime? = get(7) as OffsetDateTime?
+        set(value): Unit = set(13, value)
+        get(): OffsetDateTime? = get(13) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -60,13 +86,19 @@ open class ProductsRecord() : UpdatableRecordImpl<ProductsRecord>(Products.PRODU
     /**
      * Create a detached, initialised ProductsRecord
      */
-    constructor(productId: Long? = null, name: String? = null, price: BigDecimal? = null, stock: Int? = null, sellerId: Long? = null, category: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(productId: Long? = null, name: String? = null, description: String? = null, price: BigDecimal? = null, stock: Int? = null, saleStatus: String? = null, displayStatus: String? = null, sellerId: Long? = null, category: String? = null, isDeleted: Boolean? = null, deletedAt: OffsetDateTime? = null, version: Long? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.productId = productId
         this.name = name
+        this.description = description
         this.price = price
         this.stock = stock
+        this.saleStatus = saleStatus
+        this.displayStatus = displayStatus
         this.sellerId = sellerId
         this.category = category
+        this.isDeleted = isDeleted
+        this.deletedAt = deletedAt
+        this.version = version
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()
