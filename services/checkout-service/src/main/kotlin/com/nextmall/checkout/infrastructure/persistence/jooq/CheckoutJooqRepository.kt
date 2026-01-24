@@ -92,23 +92,27 @@ class CheckoutJooqRepository(
         limit: Int,
         offset: Int,
     ): List<CheckoutSummaryView> =
-        dsl.select(
-            CHECKOUTS.CHECKOUT_ID,
-            CHECKOUTS.STATUS,
-            CHECKOUTS.CURRENCY,
-            CHECKOUTS.TOTAL_AMOUNT,
-        )
-            .from(CHECKOUTS)
-            .orderBy(CHECKOUTS.CREATED_AT.desc())
-            .limit(limit)
-            .offset(offset)
-            .fetch {
-                CheckoutSummaryView(
-                    id = it.getRequired(CHECKOUTS.CHECKOUT_ID),
-                    status = CheckoutStatus.valueOf(it.getRequired(CHECKOUTS.STATUS)),
-                    currency = it.getRequired(CHECKOUTS.CURRENCY),
-                    totalAmount = it.getRequired(CHECKOUTS.TOTAL_AMOUNT),
+        require(limit >= 0) { "limit must be >= 0" }
+            .let { require(offset >= 0) { "offset must be >= 0" } }
+            .let {
+                dsl.select(
+                    CHECKOUTS.CHECKOUT_ID,
+                    CHECKOUTS.STATUS,
+                    CHECKOUTS.CURRENCY,
+                    CHECKOUTS.TOTAL_AMOUNT,
                 )
+                .from(CHECKOUTS)
+                .orderBy(CHECKOUTS.CREATED_AT.desc())
+                .limit(limit)
+                .offset(offset)
+                .fetch {
+                    CheckoutSummaryView(
+                        id = it.getRequired(CHECKOUTS.CHECKOUT_ID),
+                        status = CheckoutStatus.valueOf(it.getRequired(CHECKOUTS.STATUS)),
+                        currency = it.getRequired(CHECKOUTS.CURRENCY),
+                        totalAmount = it.getRequired(CHECKOUTS.TOTAL_AMOUNT),
+                    )
+                }
             }
 
     private fun Record.toLineItem(): LineItem =
