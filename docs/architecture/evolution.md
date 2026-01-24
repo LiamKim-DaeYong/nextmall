@@ -3,7 +3,7 @@
 ## 개요
 
 NextMall 아키텍처는 모듈러 모놀리식에서 시작해 마이크로서비스, Edge Authentication으로 발전해왔습니다.
-각 전환에는 실제 문제 경험과 학습이 있었으며, 이 문서는 그 과정을 기록합니다.
+각 전환에는 문제 인지와 학습이 있었고, 이 문서는 그 과정을 기록합니다.
 
 ---
 
@@ -41,7 +41,7 @@ services/ (배포 단위 분리)
 ```
 
 **전환 이유:**
-- WebFlux Gateway와 MVC 서비스의 프레임워크 충돌 해결
+- WebFlux Gateway와 MVC 서비스의 프레임워크 충돌 회피
 - 독립 배포 단위 확보
 
 **결정:**
@@ -63,9 +63,9 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 ```
 
 **전환 이유:**
-- 인증 없이 시작하는 플로우(회원가입 등)에서 내부 서비스 보안 문제 발견
-- Gateway에서 Passport 발급 → 내부 서비스는 Passport 없이 호출 불가
-- BFF 책임 과다 문제 해결
+- 인증 없이 시작하는 플로우(회원가입 등)에서 내부 서비스 보안 위험 인지
+- Gateway에서 Passport 발급 → 내부 서비스는 Passport 없이 호출이 어려움
+- BFF 책임 과다에 대한 조정 필요
 
 > 상세: [ADR-007](../decisions/ADR-007-Edge-Authentication.md)
 
@@ -73,32 +73,21 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 
 ## 현재 아키텍처
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│  Client                                                                │
-│      │ [Access Token]                                                  │
-│      ▼                                                                 │
-│  ┌──────────────────────────────────────────────────────────────┐      │
-│  │  API Gateway (8080)                                          │      │
-│  │  • Access Token validation (JWKS cache, local verify)        │      │
-│  │  • Passport Token issuance                                   │      │
-│  │  • Routing, rate limiting                                    │      │
-│  └──────────────────────────────────────────────────────────────┘      │
-│      │ [Passport Token only]                                           │
-│      ▼                                                                 │
-│  ┌────────────────┐    ┌────────────────┐    ┌─────────────────┐       │
-│  │    BFF         │    │    Auth        │    │    User         │       │
-│  │   (8082)       │    │   (8081)       │    │   (8083)        │       │
-│  │ UI Aggregation │    │ Token Issuance │    │ User Management │       │
-│  └────────────────┘    └────────────────┘    └─────────────────┘       │
-│      │                                                                 │
-│      ▼                                                                 │
-│  ┌──────────────────────────────────────────────────────────────┐      │
-│  │  Product / Checkout / Order (Core Flow)                      │      │
-│  │  Payment / Stock (planned)                                   │      │
-│  └──────────────────────────────────────────────────────────────┘      │
-└────────────────────────────────────────────────────────────────────────┘
-```
+**구성 요소**
+
+| 영역 | 역할 |
+|---|---|
+| Client | Access Token 전달 |
+| API Gateway (8080) | Access Token 검증, Passport Token 발급, 라우팅 |
+| BFF (8082) | UI 집계 |
+| Auth (8081) | 토큰 발급 |
+| User (8083) | 회원 관리 |
+| Product/Order/Payment/Stock | 도메인 서비스 |
+
+**요청 흐름**
+1. Client → Gateway: Access Token 전달
+2. Gateway → BFF/Auth/User: Passport Token 전달
+3. BFF → 도메인 서비스: Passport Token 전달
 
 ---
 
@@ -133,19 +122,22 @@ Client ─[Access Token]─→ Gateway
 
 ## 향후 진화 로드맵
 
-### Phase 4: BFF WebFlux 전환
+### Phase 4: BFF WebFlux 전환 (적용됨)
 
 **전환 이유:**
 - MVC + Coroutines + WebClient 조합에서 ThreadLocal 한계
 - RequestContextHolder/SecurityContextHolder가 스레드 전환 후 접근 불가
-- Passport Token 전파 실패 문제
+- Passport Token 전파 실패 이슈
 
-**해결 방향:**
-- BFF를 WebFlux로 전환
-- Reactor Context 기반으로 컨텍스트 자동 전파
+**현재 상태:**
+- BFF는 WebFlux 기반으로 구성됨
+- WebClient 필터로 Passport Token 전파
+
+**남은 과제:**
+- Reactor Context 기반 컨텍스트 전파 검증/테스트 보강
 
 **학습 포인트:**
-- ThreadLocal은 비동기 흐름에서 취약
+- ThreadLocal은 비동기 흐름에서 제약이 큼
 - 동기/비동기 혼합 모델의 복잡도
 
 ### Phase 5: Kafka 도입 (Choreography)
@@ -178,51 +170,39 @@ Gateway → BFF (동기 응답)
 **학습 포인트:**
 - 워크플로우 엔진의 장단점
 - Saga 패턴의 진화
-- Uber, Stripe 사례 연구
+- 워크플로우 엔진의 장단점
 
 ---
 
 ## 하이브리드 최종 목표
 
-```text
-┌─────────────────────────────────────────┐
-│                Gateway                  │
-└─────────────────────────────────────────┘
-                    │
-        ┌───────────┴───────────┐
-        ▼                       ▼
-   ┌─────────┐            ┌─────────────┐
-   │   BFF   │            │ Orchestrator│
-   │ (Query) │            │ (Sync Edge) │
-   │ WebFlux │            │   WebFlux   │
-   └─────────┘            └─────────────┘
-        │                       │
-        │                       ▼
-        │                 ┌──────────┐
-        │                 │  Kafka   │
-        │                 └──────────┘
-        │                       │
-        └───────────┬───────────┘
-                    ▼
-    ┌───────┬───────┬───────┬───────┐
-    │ user  │ auth  │ order │payment│
-    └───────┴───────┴───────┴───────┘
-```
+**구성 요소**
+
+| 영역 | 역할 |
+|---|---|
+| Gateway | 인증/라우팅 |
+| BFF (Query, WebFlux) | UI 집계 및 조회 |
+| Orchestrator (Sync Edge, WebFlux) | 사가/워크플로우 |
+| Kafka | 비동기 이벤트 처리 |
+| User/Auth/Order/Payment | 도메인 서비스 |
+
+**데이터 흐름**
+1. Gateway → BFF: 조회 중심 요청
+2. Gateway → Orchestrator: 동기 흐름 요청
+3. Orchestrator → Kafka: 비동기 이벤트 발행
+4. Kafka → 도메인 서비스: 이벤트 처리
 
 ---
 
 ## 핵심 원칙
 
-> **"왜"를 설명할 수 있는 경험 > 처음부터 정답**
+> **"왜"를 설명할 수 있는 경험 > 단일 정답을 단정하지 않기**
 
-각 단계에서 문제를 경험하고, 그 문제를 해결하기 위해 다음 단계로 전환하는 과정이 가장 큰 학습입니다.
+각 단계에서 문제를 인지하고, 대응을 위해 다음 단계로 전환하는 과정을 기록하는 데 의미를 둡니다.
 
 ---
 
 ## 참고 자료
 
-- [Netflix - Edge Authentication](https://netflixtechblog.com/edge-authentication-and-token-agnostic-identity-propagation-514e47e0b602)
-- [Netflix - User & Device Identity](https://www.infoq.com/presentations/netflix-user-identity/)
 - [Sam Newman - BFF Pattern](https://samnewman.io/patterns/architectural/bff/)
 - [AWS - Saga Orchestration](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/saga-orchestration.html)
-- [Uber - Cadence](https://github.com/uber/cadence)
