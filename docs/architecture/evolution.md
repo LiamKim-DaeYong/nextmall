@@ -37,7 +37,7 @@ services/ (배포 단위 분리)
 ├── api-gateway/    (WebFlux)
 ├── auth-service/   (MVC)
 ├── user-service/   (MVC)
-└── bff-service/    (MVC)
+└── bff-service/    (MVC → 이후 WebFlux 전환)
 ```
 
 **전환 이유:**
@@ -73,7 +73,7 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 
 ## 현재 아키텍처
 
-**구성 요소**
+### 구성 요소
 
 | 영역 | 역할 |
 |---|---|
@@ -84,7 +84,7 @@ Client → Gateway (검증 + Passport 발급) → BFF/Services (Passport 소비)
 | User (8083) | 회원 관리 |
 | Product/Order/Payment/Stock | 도메인 서비스 |
 
-**요청 흐름**
+### 요청 흐름
 1. Client → Gateway: Access Token 전달
 2. Gateway → BFF/Auth/User: Passport Token 전달
 3. BFF → 도메인 서비스: Passport Token 전달
@@ -144,7 +144,7 @@ Client ─[Access Token]─→ Gateway
 
 **구조:**
 ```text
-Gateway → BFF (동기 응답)
+Gateway → BFF (요청-응답 기반)
              ↓
           Kafka (이벤트)
              ↓
@@ -152,7 +152,7 @@ Gateway → BFF (동기 응답)
 ```
 
 **적용 대상:**
-- 동기 응답 필요: BFF/Orchestrator가 직접 처리 (회원가입, 결제)
+- 요청-응답 필요: BFF/Orchestrator가 직접 처리 (회원가입, 결제)
 - 비동기 OK: Kafka Choreography (알림, 통계, 후처리)
 
 **학습 포인트:**
@@ -168,7 +168,6 @@ Gateway → BFF (동기 응답)
 - 내구성(Durability) 필요 시
 
 **학습 포인트:**
-- 워크플로우 엔진의 장단점
 - Saga 패턴의 진화
 - 워크플로우 엔진의 장단점
 
@@ -176,7 +175,7 @@ Gateway → BFF (동기 응답)
 
 ## 하이브리드 최종 목표
 
-**구성 요소**
+### 구성 요소
 
 | 영역 | 역할 |
 |---|---|
@@ -186,9 +185,9 @@ Gateway → BFF (동기 응답)
 | Kafka | 비동기 이벤트 처리 |
 | User/Auth/Order/Payment | 도메인 서비스 |
 
-**데이터 흐름**
+### 데이터 흐름
 1. Gateway → BFF: 조회 중심 요청
-2. Gateway → Orchestrator: 동기 흐름 요청
+2. Gateway → Orchestrator: 요청-응답 흐름 요청
 3. Orchestrator → Kafka: 비동기 이벤트 발행
 4. Kafka → 도메인 서비스: 이벤트 처리
 

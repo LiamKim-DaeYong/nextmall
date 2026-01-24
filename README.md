@@ -38,7 +38,7 @@
 
 Edge Authentication 패턴을 적용했습니다.
 
-**구성 요소**
+### 구성 요소
 
 | 영역 | 역할 | 비고 |
 |---|---|---|
@@ -50,7 +50,7 @@ Edge Authentication 패턴을 적용했습니다.
 | User | 회원 관리 | Passport Token 소비 |
 | Product/Order/... | 도메인 서비스 | Passport Token 소비 |
 
-**요청 흐름**
+### 요청 흐름
 1. Client → Gateway: Access Token 전달
 2. Gateway: 토큰 검증 + Passport Token 발급
 3. Gateway → BFF/Orchestrator/Auth/User: Passport Token 전달
@@ -58,7 +58,7 @@ Edge Authentication 패턴을 적용했습니다.
 
 ### 왜 이 구조인가요?
 
-**Edge Authentication (Gateway 토큰 검증)**
+#### Edge Authentication (Gateway 토큰 검증)
 
 Gateway에서 외부 토큰을 처리하고 내부에는 Passport 토큰만 전파하는 구조를 채택했습니다.
 

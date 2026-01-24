@@ -41,7 +41,7 @@ JPA와 QueryDSL을 사용할 때 다음과 같은 문제가 발생할 수 있다
 - 커뮤니티 플러그인은 불안정하고 유지보수 불확실
 
 **대안: JOOQ**
-- KSP를 공식 지원
+- KotlinGenerator로 Kotlin 코드 생성(빌드 시 codegen 방식)
 - Type-safe SQL 작성 가능
 - Kotlin과의 호환성이 상대적으로 유리
 

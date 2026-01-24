@@ -16,7 +16,7 @@ NextMall은 PBAC(Policy-Based Access Control) 방식으로 인가를 처리합�
 
 ## 아키텍처 (확장 시)
 
-**구성 요소**
+### 구성 요소
 
 | 영역 | 구성 요소 | 역할 |
 |---|---|---|
@@ -26,7 +26,7 @@ NextMall은 PBAC(Policy-Based Access Control) 방식으로 인가를 처리합�
 | 각 서비스 | PolicyEvaluator | 정책 평가 |
 | 각 서비스 | 리소스 검증 | 리소스 속성 로딩 및 검증 |
 
-**정책 변경 전파(확장 시)**
+### 정책 변경 전파(확장 시)
 1. auth-service에서 정책 변경
 2. PolicyChangedEvent 발행
 3. 각 서비스에서 캐시 갱신 및 로컬 캐시 무효화

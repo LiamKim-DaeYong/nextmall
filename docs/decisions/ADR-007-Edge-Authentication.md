@@ -85,7 +85,7 @@ Gateway에서 Access Token 검증 및 Internal Token 발급으로 변경한다.
 
 ## 목표 아키텍처
 
-**구성 요소**
+### 구성 요소
 
 | 영역 | 역할 |
 |---|---|
@@ -96,7 +96,7 @@ Gateway에서 Access Token 검증 및 Internal Token 발급으로 변경한다.
 | Auth | 토큰 발급 |
 | User/Product/Order/Payment | 도메인 서비스 |
 
-**요청 흐름**
+### 요청 흐름
 1. Client → Gateway: Access Token 전달
 2. Gateway → BFF/Orchestrator/Auth: Passport Token 전달
 3. BFF/Orchestrator → 도메인 서비스: Passport Token 전달
