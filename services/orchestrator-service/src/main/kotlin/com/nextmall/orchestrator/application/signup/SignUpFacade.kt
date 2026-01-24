@@ -1,16 +1,19 @@
-package com.nextmall.bff.application.signup
+package com.nextmall.orchestrator.application.signup
 
-import com.nextmall.bff.client.auth.AuthServiceClient
-import com.nextmall.bff.client.user.UserServiceClient
+import com.nextmall.orchestrator.client.auth.AuthServiceClient
+import com.nextmall.orchestrator.client.user.UserServiceClient
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class SignUpFacadeImpl(
+class SignUpFacade(
     private val userServiceClient: UserServiceClient,
     private val authServiceClient: AuthServiceClient,
-) : SignUpFacade {
-    override fun signUp(command: SignUpCommand): Mono<SignUpResult> =
+) {
+    /**
+     * 사용자 생성과 인증 계정 생성을 하나의 흐름으로 처리한다.
+     */
+    fun signUp(command: SignUpCommand): Mono<SignUpResult> =
         userServiceClient
             .createUser(
                 nickname = command.nickname,

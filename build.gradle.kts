@@ -187,7 +187,15 @@ tasks.named("clean") {
 // ==================== Docker Image Build Tasks ====================
 
 val allServices =
-    listOf("api-gateway", "auth-service", "bff-service", "user-service", "order-service", "product-service")
+    listOf(
+        "api-gateway",
+        "auth-service",
+        "bff-service",
+        "orchestrator-service",
+        "user-service",
+        "order-service",
+        "product-service",
+    )
 
 fun loadDockerImages(services: List<String>) {
     services.forEach { service ->
@@ -226,7 +234,15 @@ tasks.register("buildAllImages") {
 // ==================== E2E Test Tasks ====================
 
 val e2eServices =
-    listOf("auth-service", "bff-service", "user-service", "product-service", "order-service", "api-gateway")
+    listOf(
+        "auth-service",
+        "bff-service",
+        "orchestrator-service",
+        "user-service",
+        "product-service",
+        "order-service",
+        "api-gateway",
+    )
 
 tasks.register("e2eBuildImages") {
     group = "e2e"

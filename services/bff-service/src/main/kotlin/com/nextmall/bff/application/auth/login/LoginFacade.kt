@@ -1,14 +1,27 @@
 package com.nextmall.bff.application.auth.login
 
 import com.nextmall.bff.application.auth.token.TokenResult
+import com.nextmall.bff.client.auth.AuthServiceClient
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-interface LoginFacade {
+@Component
+class LoginFacade(
+    private val authServiceClient: AuthServiceClient,
+) {
     /**
-     * 사용자 로그인을 처리한다.
-     *
-     * 클라이언트로부터 전달된 인증 정보로 로그인을 시도하며,
-     * 토큰 발급 여부 및 인증 실패 판단은 Auth 서비스에 위임한다.
+     * 로그인 요청을 인증 서비스에 위임한다.
      */
-    fun login(command: LoginCommand): Mono<TokenResult>
+    fun login(command: LoginCommand): Mono<TokenResult> =
+        authServiceClient
+            .login(
+                provider = command.provider,
+                principal = command.principal,
+                credential = command.credential,
+            ).map { token ->
+                TokenResult(
+                    accessToken = token.accessToken,
+                    refreshToken = token.refreshToken,
+                )
+            }
 }

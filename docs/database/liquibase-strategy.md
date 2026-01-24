@@ -46,13 +46,13 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 ### 4.2 Staging
 - 배포 시 Liquibase 자동 수행
 - 스키마 변경 검증 환경
-- 배포 전 DB 백업 필수
+- 배포 전 DB 백업 권장
 
 ### 4.3 Production
 - CI/CD 파이프라인에서 Liquibase 자동 실행
 - 모든 changeSet은 databasechangelog 기준으로 한 번만 실행
 - 위험 작업 배포 전 별도 검토 필요
-- 운영 배포 전 백업 필수
+- 운영 배포 전 백업 권장
 
 ---
 
@@ -81,7 +81,7 @@ NextMall 프로젝트는 데이터베이스 스키마 관리를 Liquibase를 통
 - 운영 환경에서는 rollback 실패 위험이 있으므로 테스트 환경에서 충분히 검증
 
 ### 6.3 백업
-- Staging/Production 배포 전에는 반드시 DB Snapshot 백업
+- Staging/Production 배포 전에는 DB Snapshot 백업 권장
 - Liquibase lock 문제 발생 시 운영 가이드 절차에 따라 해제
 
 ---
