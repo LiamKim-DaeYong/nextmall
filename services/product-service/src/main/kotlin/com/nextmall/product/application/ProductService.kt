@@ -1,10 +1,11 @@
 package com.nextmall.product.application
 
+import com.nextmall.common.authorization.exception.AccessDeniedException
 import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.common.util.Money
-import com.nextmall.common.authorization.exception.AccessDeniedException
 import com.nextmall.product.application.query.ProductView
 import com.nextmall.product.application.result.CreateProductResult
+import com.nextmall.product.domain.Product
 import com.nextmall.product.domain.exception.ProductNotFoundException
 import com.nextmall.product.infrastructure.persistence.jooq.ProductJooqRepository
 import com.nextmall.product.infrastructure.persistence.jpa.ProductJpaRepository

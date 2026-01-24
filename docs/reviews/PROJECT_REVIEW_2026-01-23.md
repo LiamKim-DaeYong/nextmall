@@ -229,6 +229,27 @@ Quality / API Consistency (Additional)
     - Reference:
       - services/auth-service/src/main/kotlin/com/nextmall/auth/presentation/request/account/CreateAuthAccountRequest.kt:7-16
 
+Package Structure / Layering (Additional)
+31) Service package structure is inconsistent across modules
+    - Evidence: order-service uses presentation/dto with *Snapshot naming, while other services use presentation/request|response.
+    - Risk: Inconsistent package conventions slow onboarding and increase DTO mapping mistakes during refactoring.
+    - References:
+      - services/order-service/src/main/kotlin/com/nextmall/order/presentation/dto/CreateOrderSnapshotRequest.kt:1-22
+      - services/order-service/src/main/kotlin/com/nextmall/order/presentation/controller/OrderController.kt:3-34
+      - services/product-service/src/main/kotlin/com/nextmall/product/presentation/request/CreateProductRequest.kt:1-22
+
+32) Domain-to-API mapping is not consistently isolated
+    - Evidence: checkout response mapping is centralized but duplicates domain/query mappings; other services rely on inline conversions.
+    - Risk: API contract drift and missed fields during evolution.
+    - Reference:
+      - services/checkout-service/src/main/kotlin/com/nextmall/checkout/presentation/response/CheckoutResponseMapper.kt:15-113
+
+33) Layer boundaries are not explicitly documented as rules
+    - Evidence: No shared document exists that locks controller/application/domain/infrastructure boundaries as project-wide rules.
+    - Risk: Future modules will diverge in structure and responsibility, increasing technical debt.
+    - Reference:
+      - docs/architecture/commonization-standards.md:1-68
+
 Notes
 - Checkout controller returns domain models directly (Checkout/Order) rather than response DTOs. This is a consistency/contract choice to revisit if you want tighter API stability.
     - Reference: services/checkout-service/src/main/kotlin/com/nextmall/checkout/presentation/controller/CheckoutController.kt:26-72

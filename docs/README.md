@@ -43,6 +43,8 @@ Architecture Decision Records - 주요 기술 선택과 근거를 기록합니�
 | 문서 | 설명 |
 |------|------|
 | [Liquibase 전략](database/liquibase-strategy.md) | DB 마이그레이션 운영 가이드 |
+| [로컬 스모크 테스트 가이드](operations/local-smoke-test.md) | 게이트웨이 기반 최소 테스트 루틴 |
+| [IntelliJ 원클릭 기동 가이드](operations/intellij-runbook.md) | IDE 기반 전체 서비스 기동 |
 
 ---
 
