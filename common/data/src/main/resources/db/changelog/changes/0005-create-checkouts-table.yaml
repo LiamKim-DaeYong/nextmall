@@ -162,7 +162,9 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: image_url
-                  type: TEXT
+                  type: VARCHAR(2048)
+                  constraints:
+                    nullable: true
 
         - addForeignKeyConstraint:
             baseTableName: checkout_line_items

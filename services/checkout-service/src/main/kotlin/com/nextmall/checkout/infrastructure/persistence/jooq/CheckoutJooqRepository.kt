@@ -1,17 +1,8 @@
 package com.nextmall.checkout.infrastructure.persistence.jooq
 
-import com.nextmall.checkout.application.query.CheckoutView
 import com.nextmall.checkout.application.query.CheckoutSummaryView
-import com.nextmall.checkout.domain.model.Address
-import com.nextmall.checkout.domain.model.Buyer
-import com.nextmall.checkout.domain.model.CheckoutStatus
-import com.nextmall.checkout.domain.model.LineItem
-import com.nextmall.checkout.domain.model.Links
-import com.nextmall.checkout.domain.model.Message
-import com.nextmall.checkout.domain.model.Money
-import com.nextmall.checkout.domain.model.Payment
-import com.nextmall.checkout.domain.model.PaymentHandler
-import com.nextmall.checkout.domain.model.Totals
+import com.nextmall.checkout.application.query.CheckoutView
+import com.nextmall.checkout.domain.model.*
 import com.nextmall.common.data.jooq.JooqRepository
 import com.nextmall.common.data.jooq.util.getRequired
 import com.nextmall.jooq.tables.references.CHECKOUTS
@@ -138,6 +129,20 @@ class CheckoutJooqRepository(
         paymentHandlers: List<PaymentHandler>,
     ): CheckoutView {
         val currency = getRequired(CHECKOUTS.CURRENCY)
+        val handlers =
+            paymentHandlers.ifEmpty {
+                val paymentType = this[CHECKOUTS.PAYMENT_TYPE]
+                if (paymentType != null) {
+                    listOf(
+                        PaymentHandler(
+                            type = paymentType,
+                            provider = this[CHECKOUTS.PAYMENT_PROVIDER],
+                        ),
+                    )
+                } else {
+                    emptyList()
+                }
+            }
         return CheckoutView(
             id = getRequired(CHECKOUTS.CHECKOUT_ID),
             status = CheckoutStatus.valueOf(getRequired(CHECKOUTS.STATUS)),
@@ -182,18 +187,10 @@ class CheckoutJooqRepository(
                     privacy = this[CHECKOUTS.PRIVACY_URL],
                     refund = this[CHECKOUTS.REFUND_URL],
                 ),
-            expiresAt = this[CHECKOUTS.EXPIRES_AT],
+            expiresAt = this[CHECKOUTS.EXPIRES_AT]?.toInstant(),
             payment =
                 Payment(
-                    handlers =
-                        paymentHandlers.ifEmpty {
-                            listOf(
-                                PaymentHandler(
-                                    type = getRequired(CHECKOUTS.PAYMENT_TYPE),
-                                    provider = this[CHECKOUTS.PAYMENT_PROVIDER],
-                                ),
-                    )
-                        },
+                    handlers = handlers,
                 ),
         )
     }

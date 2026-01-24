@@ -113,7 +113,7 @@ open class CheckoutLineItems(
     /**
      * The column <code>public.checkout_line_items.image_url</code>.
      */
-    val IMAGE_URL: TableField<CheckoutLineItemsRecord, String?> = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "")
+    val IMAGE_URL: TableField<CheckoutLineItemsRecord, String?> = createField(DSL.name("image_url"), SQLDataType.VARCHAR(2048), this, "")
 
     private constructor(alias: Name, aliased: Table<CheckoutLineItemsRecord>?): this(alias, null, null, null, aliased, null, null)
     private constructor(alias: Name, aliased: Table<CheckoutLineItemsRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
