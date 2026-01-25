@@ -26,56 +26,14 @@ Catalog -> Cart -> Checkout -> Order -> Fulfillment/Adjustment
 ## 4) Capability별 최소 설계
 
 ### 4.1 Checkout (핵심)
-목표: 장바구니와 결제 직전까지의 세션을 표준 구조로 관리
-
-최소 동작
-- Create Checkout
-- Get Checkout
-- Update Checkout
-- Complete Checkout
-- Cancel Checkout
-
-최소 상태 모델
-- incomplete -> ready_for_complete -> complete_in_progress -> completed
-- 필요 시: requires_escalation (사용자 UI 전환)
-- 취소 흐름: canceled
-
-핵심 필드(최소)
-- id
-- line_items (상품/수량/가격)
-- currency
-- totals
-- status
-- messages (옵션)
-- continue_url (requires_escalation 시 필요)
-- links (약관/개인정보/환불 정책 링크)
-- expires_at (옵션, RFC 3339)
-- payment (응답에 포함, 결제 핸들러 규칙에 맞춤)
-
-비즈니스 요구 요건(요약)
-- Checkout 완료 시 확인 이메일 발송
-- requires_escalation 상태에서는 continue_url 제공을 기본으로 가정
-- requires_escalation 시 messages 포함을 권장 (에러 핸들링 규칙 준수)
-- Checkout 생성 시 결제 구성(payment.handlers) 명시를 권장
-- Checkout 완료는 신뢰 가능한 UI를 통해 진행하는 흐름을 기본으로 가정 (AP2 예외)
-  - AP2 = Application-to-Application 연동 예외 (머신-투-머신 결제 흐름)
+Checkout은 장바구니와 결제 직전까지의 세션을 표준 구조로 관리하는 것을 목표로 한다.
+세부 스키마/엔드포인트는 아래 문서에 정리한다.
+- [UCP Checkout 최소 스키마/엔드포인트](ucp-checkout-api.md)
 
 ### 4.2 Order (핵심)
-목표: 주문 확정 이후의 상태와 이벤트 기록 표준화
-
-최소 구조
-- id, checkout_id, permalink_url
-- line_items (불변)
-- fulfillment (expectations + events)
-- adjustments (환불/취소 등 이벤트 로그)
-- totals
-
-주문 이벤트 전송
-- 플랫폼이 제공한 webhook URL로 주문 이벤트를 전송
-- 이벤트에는 전체 Order 엔티티를 포함
-- 웹훅 요청은 `Request-Signature` 헤더로 서명 (detached JWT)
-- "Order created" 이벤트는 발행을 기본으로 가정
-- 실패한 웹훅은 재시도
+Order는 주문 확정 이후의 상태와 이벤트 기록을 표준 구조로 관리하는 것을 목표로 한다.
+세부 스키마/엔드포인트는 아래 문서에 정리한다.
+- [UCP Order 최소 스키마/엔드포인트](ucp-order-api.md)
 
 ### 4.3 Identity Linking (보류, 설계만)
 목표: 플랫폼 계정과 쇼핑몰 계정을 OAuth 2.0으로 연결

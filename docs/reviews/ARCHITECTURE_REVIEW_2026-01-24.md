@@ -1,4 +1,4 @@
-# NextMall Architecture Review - 2026-01-24
+﻿# NextMall Architecture Review - 2026-01-24
 
 ## Scope
 
@@ -67,7 +67,7 @@ nextmall/
 | **의존성 방향** | ✅ 우수 | 순환 의존성 없음, ADR-006 준수 |
 | **Edge Authentication** | ✅ 우수 | Gateway에서 검증 → Passport 발급 패턴 |
 | **CQRS 분리** | ✅ 우수 | JPA(Command) + jOOQ(Query) 일관 적용 |
-| **ADR 문서화** | ✅ 우수 | 8개 ADR로 의사결정 추적 가능 |
+| **ADR 문서화** | ✅ 우수 | 현재 ADR을 통해 의사결정 추적 가능 |
 | **기술 스택 선택** | ✅ 적절 | WebFlux(Gateway/BFF), MVC(Domain) 합리적 |
 
 ### 2.2 구조적 이슈
@@ -80,7 +80,7 @@ nextmall/
 
 **문제점**:
 - 두 서비스가 동일한 패턴 사용 (`common/integration` 통한 서비스 호출)
-- ADR-008에 "라우팅/보안 책임 재정의 예정"만 명시
+- 라우팅/보안 책임 재정의가 문서로 충분히 정리되지 않음
 - 어떤 워크플로우가 어디에 속하는지 기준 불명확
 
 **영향**: 새로운 워크플로우 추가 시 배치 기준 모호
@@ -93,13 +93,13 @@ Orchestrator = 비즈니스 워크플로우 전용 (사가, 트랜잭션 조율)
 
 ---
 
-#### Issue 2: ADR-002와 실제 구조 불일치
+#### Issue 2: 문서와 실제 구조 불일치
 
 **현황**:
-ADR-002에서 언급한 `modules/` 폴더가 settings.gradle.kts에 없음
+문서에 언급된 `modules/` 폴더가 settings.gradle.kts에 없음
 
 ```kotlin
-// ADR-002 설계
+// 문서 설계
 modules/  // 비즈니스 모듈 재사용
 
 // 실제 구조
@@ -108,7 +108,7 @@ modules/  // 비즈니스 모듈 재사용
 
 **영향**: 문서와 실제 구조 간 혼란 유발
 
-**권장**: ADR-002를 Superseded 처리하거나 현재 구조 반영하여 업데이트
+**권장**: 문서를 최신 구조로 정리
 
 ---
 
@@ -132,7 +132,7 @@ implementation(project(":common:util"))
 - 단순 조회 전용 서비스는 불필요한 의존성 가질 수 있음
 - Copy-Paste 방식으로 확장 시 기술 부채 누적
 
-**권장**: 서비스별 필수 의존성 분석 후 최소화
+**권장**: 서비스별 기본 의존성 분석 후 최소화
 
 ---
 
@@ -218,8 +218,8 @@ implementation(project(":common:security"))
 - [ ] WebFlux 필요? (Gateway, BFF, Orchestrator 패턴)
 - [ ] MVC로 충분? (Domain Service)
 
-### 2. 필수 의존성 선택
-- [ ] common/exception (필수)
+### 2. 기본 의존성 선택
+- [ ] common/exception (기본)
 - [ ] common/security 또는 common/security-core (택1)
 - [ ] common/data (JPA/jOOQ 필요 시)
 - [ ] common/authorization (인가 필요 시)
@@ -248,7 +248,7 @@ implementation(project(":common:security"))
 - api() 대신 implementation()으로 전이 의존성 최소화
 - 테스트 의존성은 testImplementation으로 분리
 
-## DON'T (금지)
+## DON'T (피하기)
 - common 모듈 간 순환 의존성 생성
 - services에서 다른 services 직접 의존
 - Domain Service에서 WebFlux 의존성 추가
@@ -264,23 +264,8 @@ implementation(project(":common:security"))
 
 ### 4.5 워크플로우 배치 기준
 
-```
-## BFF에 배치
-- 단순 데이터 조회 + 조합
-- UI 렌더링용 응답 구성
-- 인증/인가 없는 공개 데이터 집계
-
-## Orchestrator에 배치
-- 여러 서비스 상태 변경이 필요한 경우
-- 실패 시 보상 트랜잭션 필요한 경우
-- 순서가 중요한 비즈니스 플로우
-
-## 예시
-- 회원가입: Orchestrator (User 생성 → Auth 계정 생성 → 이메일 발송)
-- 상품 목록 조회: BFF (Product 조회 + 리뷰 조회 + 재고 조회)
-- 주문 생성: Orchestrator (재고 차감 → 주문 생성 → 결제)
-- 주문 상세 조회: BFF (주문 + 상품 + 배송 정보 조합)
-```
+워크플로우 배치는 별도 문서로 정리한다.
+- [워크플로우 아키텍처](../architecture/workflow-architecture.md)
 
 ---
 
@@ -290,8 +275,8 @@ implementation(project(":common:security"))
 
 | 액션 | 담당 | 산출물 |
 |------|------|--------|
-| BFF/Orchestrator 책임 명확화 | 설계 | ADR-008 업데이트 |
-| ADR-002 현행화 | 문서 | ADR-002 Superseded 또는 수정 |
+| BFF/Orchestrator 책임 명확화 | 설계 | 최신 문서에 정리 |
+| 문서 현행화 | 문서 | 최신 구조 반영 |
 | 보안 모듈 선택 기준 문서화 | 문서 | commonization-standards.md 추가 |
 
 ### Phase 2: 단기 (인프라 완성)
@@ -354,6 +339,6 @@ implementation(project(":common:security"))
 
 - [ADR-006 모듈 의존성 원칙](../decisions/ADR-006-모듈-의존성-원칙.md)
 - [ADR-007 Edge Authentication](../decisions/ADR-007-Edge-Authentication.md)
-- [ADR-008 Orchestrator 분리](../decisions/ADR-008-Orchestrator-분리.md)
 - [공통화 및 컨벤션 기준](../architecture/commonization-standards.md)
-- [아키텍처 발전 과정](../architecture/evolution.md)
+
+

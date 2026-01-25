@@ -104,22 +104,10 @@ Catalog/Cart는 내부 도메인으로 두고, Checkout의 line_items에 매핑�
 }
 ```
 
-## 6) Order 스키마 (Complete 응답 최소형)
+## 6) Complete 응답 내 Order 형태
 
-```json
-{
-  "id": "ord_123",
-  "checkout_id": "chk_123",
-  "permalink_url": "https://example.com/order/ord_123",
-  "line_items": [ /* checkout line_items 복사 */ ],
-  "fulfillment": {
-    "expectations": [],
-    "events": []
-  },
-  "adjustments": [],
-  "totals": { /* checkout totals 복사 */ }
-}
-```
+Order 상세 스키마는 아래 문서를 참고한다.
+- [UCP Order 최소 스키마/엔드포인트](ucp-order-api.md)
 
 ## 7) 구현 범위 (MVP)
 

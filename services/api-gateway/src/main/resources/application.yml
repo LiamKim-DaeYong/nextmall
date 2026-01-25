@@ -22,14 +22,17 @@ management:
   opentelemetry:
     resource-attributes:
       service.name: ${spring.application.name}
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT}
   tracing:
     sampling:
       probability: ${OTEL_TRACING_SAMPLING_PROBABILITY}
   otlp:
-    tracing:
-      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT}
     metrics:
-      endpoint: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}
+      export:
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}
 
 gateway:
   security:

@@ -22,7 +22,7 @@
 
 ## 4. 서비스 기동 설정
 각 서비스에 대해 Spring Boot 실행 구성을 만든다.
-- 예: `auth-service`, `api-gateway`, `user-service`, `product-service`, `order-service`, `checkout-service`, `bff-service`
+- 예: `auth-service`, `api-gateway`, `user-service`, `product-service`, `order-service`, `checkout-service`, `bff-service`, `orchestrator-service`
 
 ## 5. Compound Run 구성
 1) 새 구성 추가 → **Compound**
@@ -35,6 +35,7 @@
    - `order-service`
    - `checkout-service`
    - `bff-service`
+   - `orchestrator-service`
 3) 이름 예: `all-services`
 
 ## 6. 실행

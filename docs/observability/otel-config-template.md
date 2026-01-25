@@ -5,12 +5,13 @@
 ## 공통 환경 변수(예시)
 - `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` = `http://localhost:4318/v1/traces`
 - `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` = `http://localhost:4318/v1/metrics`
-- `OTEL_SERVICE_NAME` = `nextmall-<service>`
-- `OTEL_RESOURCE_ATTRIBUTES` = `service.namespace=nextmall,service.version=0.1.0`
+- `OTEL_TRACING_SAMPLING_PROBABILITY` = `1.0`
 
 ## 적용 위치(후속 단계)
-- 각 서비스 `application.yml` 또는 실행 환경 변수
+- 각 서비스 `application.yml`에서 `management.opentelemetry.*` 설정으로 반영
+- 실제 값은 `.env`/`docker/.env`에서 주입
 - OpenTelemetry Collector OTLP(HTTP/GRPC) 엔드포인트 사용
 
 ## 참고
+- `service.name`은 `spring.application.name`을 사용하도록 설정됨
 - 현재 단계는 **인프라 준비**가 우선이며, 서비스 적용은 후속 작업에서 진행
