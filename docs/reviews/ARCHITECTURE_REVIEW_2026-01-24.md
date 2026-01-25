@@ -13,7 +13,7 @@
 
 ### 1.1 모듈 구성
 
-```
+```text
 nextmall/
 ├── services/              # 배포 단위 (독립 실행)
 │   ├── api-gateway/       # WebFlux - 진입점 (8080)
@@ -44,7 +44,7 @@ nextmall/
 
 ### 1.2 의존성 계층
 
-```
+```text
 [Tier 4] services/*
     ↑
 [Tier 3] common/authorization, common/integration, common/test-support
@@ -54,7 +54,7 @@ nextmall/
 [Tier 1] common/exception, common/util, common/policy, common/identifier
 ```
 
-**원칙**: 의존성은 위에서 아래로만 흐름 (ADR-006 준수)
+**원칙**: 의존성은 위에서 아래로만 흐름 (ADR-004 준수)
 
 ---
 
@@ -64,7 +64,7 @@ nextmall/
 
 | 영역 | 평가 | 비고 |
 |------|------|------|
-| **의존성 방향** | ✅ 우수 | 순환 의존성 없음, ADR-006 준수 |
+| **의존성 방향** | ✅ 우수 | 순환 의존성 없음, ADR-004 준수 |
 | **Edge Authentication** | ✅ 우수 | Gateway에서 검증 → Passport 발급 패턴 |
 | **CQRS 분리** | ✅ 우수 | JPA(Command) + jOOQ(Query) 일관 적용 |
 | **ADR 문서화** | ✅ 우수 | 현재 ADR을 통해 의사결정 추적 가능 |
@@ -86,7 +86,7 @@ nextmall/
 **영향**: 새로운 워크플로우 추가 시 배치 기준 모호
 
 **권장**:
-```
+```text
 BFF = UI 집계 전용 (데이터 조합, 포맷팅)
 Orchestrator = 비즈니스 워크플로우 전용 (사가, 트랜잭션 조율)
 ```
@@ -162,7 +162,7 @@ implementation(project(":common:security"))
 **문제점**:
 - 테스트 모듈이 4개의 인프라 모듈에 의존
 - 특정 테스트에 불필요한 의존성까지 끌려옴
-- ADR-006에서도 "향후 분리 검토" 언급
+- ADR-004에서도 "향후 분리 검토" 언급
 
 **권장**: 도메인별 test-support 분리 검토 (e.g., test-support-data, test-support-messaging)
 
@@ -184,24 +184,24 @@ implementation(project(":common:security"))
 
 ### 4.1 서비스 책임 분리 원칙
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      API Gateway                            │
-│  - 외부 토큰 검증                                            │
-│  - Passport 토큰 발급                                        │
-│  - 라우팅                                                   │
-│  - Rate Limiting (향후)                                     │
+│  - External token verification                              │
+│  - Passport token issuance                                  │
+│  - Routing                                                  │
+│  - Rate Limiting (future)                                   │
 └─────────────────────────────────────────────────────────────┘
                               │
           ┌───────────────────┼───────────────────┐
           ▼                   ▼                   ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│       BFF       │  │   Orchestrator  │  │  Domain Service │
-│                 │  │                 │  │                 │
-│ - UI 데이터 집계 │  │ - 사가 패턴     │  │ - 단일 도메인   │
-│ - 응답 포맷팅   │  │ - 분산 트랜잭션 │  │ - CRUD 작업     │
-│ - 캐시 조합     │  │ - 보상 트랜잭션 │  │ - 비즈니스 규칙 │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
+┌──────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│       BFF        │  │   Orchestrator  │  │  Domain Service │
+│                  │  │                 │  │                 │
+│ - UI aggregation │  │ - Saga pattern  │  │ - Single domain │
+│ - Response fmt   │  │ - Dist. txn     │  │ - CRUD ops      │
+│ - Cache merge    │  │ - Compensation  │  │ - Biz rules     │
+└──────────────────┘  └─────────────────┘  └─────────────────┘
 ```
 
 **원칙**:
@@ -299,7 +299,7 @@ implementation(project(":common:security"))
 
 ## 6. 서비스 의존관계 다이어그램
 
-```
+```text
                     ┌──────────────┐
                     │   Client     │
                     └──────┬───────┘
@@ -318,27 +318,27 @@ implementation(project(":common:security"))
            │               │               │
            └───────────────┼───────────────┘
                            │
-    ┌──────────────────────┼──────────────────────┐
-    │                      │                      │
-┌───▼────┐  ┌─────────┐  ┌─▼──────┐  ┌──────────┐
-│  User  │  │ Product │  │ Order  │  │ Checkout │
-│ (8083) │  │ (8084)  │  │ (8085) │  │  (8086)  │
-└───┬────┘  └────┬────┘  └───┬────┘  └────┬─────┘
-    │            │           │            │
-    └────────────┴───────────┴────────────┘
-                       │
-              ┌────────▼────────┐
-              │   PostgreSQL    │
-              │     + Redis     │
-              └─────────────────┘
+       ┌────────────┬──────┴─────┬────────────┐
+       │            │            │            │
+   ┌───▼────┐  ┌────▼────┐   ┌───▼────┐  ┌────▼─────┐
+   │  User  │  │ Product │   │ Order  │  │ Checkout │
+   │ (8083) │  │ (8084)  │   │ (8085) │  │  (8086)  │
+   └───┬────┘  └────┬────┘   └───┬────┘  └────┬─────┘
+       │            │            │            │
+       └────────────┴─────┬──────┴────────────┘
+                          │
+                 ┌────────▼────────┐
+                 │   PostgreSQL    │
+                 │     + Redis     │
+                 └─────────────────┘
 ```
 
 ---
 
 ## Appendix: 참고 문서
 
-- [ADR-006 모듈 의존성 원칙](../decisions/ADR-006-모듈-의존성-원칙.md)
-- [ADR-007 Edge Authentication](../decisions/ADR-007-Edge-Authentication.md)
+- [ADR-004 모듈 의존성 원칙](../decisions/ADR-004-모듈-의존성-원칙.md)
+- [ADR-005 Edge Authentication](../decisions/ADR-005-Edge-Authentication.md)
 - [공통화 및 컨벤션 기준](../architecture/commonization-standards.md)
 
 

@@ -127,7 +127,7 @@ Edge case와 Validation 테스트를 포함하고 있습니다.
 
 ## 모듈 구조
 
-```
+```text
 nextmall/
 ├── services/                 # 도메인 서비스
 │   ├── api-gateway          # 인증, 라우팅

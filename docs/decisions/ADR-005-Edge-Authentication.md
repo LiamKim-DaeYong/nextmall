@@ -1,4 +1,4 @@
-﻿# ADR-007: Edge Authentication
+# ADR-005: Edge Authentication
 
 ## 상태
 채택됨 (Accepted)
@@ -10,5 +10,6 @@
 
 ## 관련 문서
 - [아키텍처 정리](../architecture/architecture.md)
+
 
 

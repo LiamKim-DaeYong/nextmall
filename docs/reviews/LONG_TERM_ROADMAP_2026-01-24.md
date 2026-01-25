@@ -54,7 +54,7 @@
 - [이벤트 스키마 기준](../architecture/event-schema.md)
 - [Circuit Breaker 기준](../architecture/circuit-breaker.md)
 - [OpenTelemetry 설정 템플릿](../observability/otel-config-template.md)
-- [ADR-006 모듈 의존성 원칙](../decisions/ADR-006-모듈-의존성-원칙.md)
+- [ADR-004 모듈 의존성 원칙](../decisions/ADR-004-모듈-의존성-원칙.md)
 - [아키텍처 정리](../architecture/architecture.md)
 
 

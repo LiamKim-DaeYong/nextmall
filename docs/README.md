@@ -28,10 +28,10 @@ Architecture Decision Records - 주요 기술 선택과 근거를 기록합니�
 | ADR | 제목 | 요약 |
 |-----|------|------|
 | [ADR-001](decisions/ADR-001-JOOQ와-JPA-분리-전략.md) | CQRS (JPA + jOOQ) | Command는 JPA, Query는 jOOQ로 분리 |
-| [ADR-003](decisions/ADR-003-Policy-모듈-도입.md) | Policy 모듈 | 정책을 코드에서 분리 |
-| [ADR-004](decisions/ADR-004-PBAC-선택이유.md) | PBAC 선택 | RBAC 대신 Policy 기반 인가 |
-| [ADR-006](decisions/ADR-006-모듈-의존성-원칙.md) | 모듈 의존성 | 단방향 의존성 원칙 |
-| [ADR-007](decisions/ADR-007-Edge-Authentication.md) | Edge Authentication | Gateway 토큰 처리 |
+| [ADR-002](decisions/ADR-002-Policy-모듈-도입.md) | Policy 모듈 | 정책을 코드에서 분리 |
+| [ADR-003](decisions/ADR-003-PBAC-선택이유.md) | PBAC 선택 | RBAC 대신 Policy 기반 인가 |
+| [ADR-004](decisions/ADR-004-모듈-의존성-원칙.md) | 모듈 의존성 | 단방향 의존성 원칙 |
+| [ADR-005](decisions/ADR-005-Edge-Authentication.md) | Edge Authentication | Gateway 토큰 처리 |
 
 ---
 
@@ -62,7 +62,5 @@ Architecture Decision Records - 주요 기술 선택과 근거를 기록합니�
 ## 읽는 순서 (제안)
 
 1. **아키텍처 이해**: [아키텍처 정리](architecture/architecture.md) - 최신 구조와 역할 정리
-2. **핵심 결정**: [ADR-007 Edge Authentication](decisions/ADR-007-Edge-Authentication.md) - 현재 인증 구조
+2. **핵심 결정**: [ADR-005 Edge Authentication](decisions/ADR-005-Edge-Authentication.md) - 현재 인증 구조
 3. **세부 사항**: 관심 있는 ADR 선택해서 읽기
-
-
