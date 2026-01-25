@@ -242,7 +242,7 @@ implementation(project(":common:security"))
 
 ### 4.3 의존성 관리 원칙
 
-```
+```text
 ## DO (권장)
 - 필요한 common 모듈만 선택적으로 의존
 - api() 대신 implementation()으로 전이 의존성 최소화
