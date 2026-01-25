@@ -57,6 +57,10 @@ class PassportTokenSecurityConfig(
             arrayOf(
                 "/actuator/**",
                 "/.well-known/jwks.json",
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/webjars/**",
             )
     }
 }

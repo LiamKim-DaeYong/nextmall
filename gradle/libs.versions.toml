@@ -1,5 +1,6 @@
 [versions]
 jib = "3.5.2"
+springdoc = "3.0.1"
 jooq-plugin = "10.2"
 karate = "1.4.1"
 kotest = "6.0.7"
@@ -82,3 +83,5 @@ testcontainers-kafka = { module = "org.testcontainers:testcontainers-kafka" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql"}
 testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref = "redis-testcontainers"}
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+springdoc-openapi-starter-webflux-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
