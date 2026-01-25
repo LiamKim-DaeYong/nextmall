@@ -61,7 +61,7 @@ fun getUser(@PathVariable userId: Long): UserResponse {
 ```
 
 ### 2. AOP 인터셉트
-```
+```text
 PolicyEnforcementAspect
   ↓
 AuthorizationContext 생성
@@ -73,7 +73,7 @@ AuthorizationContext 생성
 ```
 
 ### 3. 정책 조회
-```
+```text
 AuthorizationService
   ↓
 PolicyProvider.getPolicy("user", "read")
@@ -84,7 +84,7 @@ PolicyProvider.getPolicy("user", "read")
 ```
 
 ### 4. 정책 평가
-```
+```text
 PolicyEvaluator.evaluate(policy, context)
   ↓
 1. DENY 규칙 평가 (하나라도 매칭되면 즉시 거부)
@@ -93,7 +93,7 @@ PolicyEvaluator.evaluate(policy, context)
 ```
 
 ### 5. 결과 처리
-```
+```text
 PolicyResult.isAllowed → 통과
 PolicyResult.isDenied → AccessDeniedException
 ```

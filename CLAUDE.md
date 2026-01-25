@@ -22,7 +22,7 @@
 | Command | JPA | 쓰기 작업 |
 | Query | jOOQ | 읽기 작업 (CQRS) |
 | Gateway | Spring Cloud Gateway | WebFlux 기반 |
-| BFF | Spring MVC | 오케스트레이션 담당 |
+| BFF | WebFlux | UI 집계 담당 |
 | Database | PostgreSQL | |
 | Cache | Redis | 세션, 캐시, 분산 락 |
 | Message Queue | Kafka | 이벤트 드리븐 (예정) |

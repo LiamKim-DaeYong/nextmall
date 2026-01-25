@@ -28,3 +28,27 @@ nextmall:
 token:
   passport:
     secret-key: ${TOKEN_PASSPORT_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  opentelemetry:
+    resource-attributes:
+      service.name: ${spring.application.name}
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT}
+  tracing:
+    sampling:
+      probability: ${OTEL_TRACING_SAMPLING_PROBABILITY}
+  otlp:
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}
+
+logging:
+  pattern:
+    level: "%5p [traceId=%X{traceId} spanId=%X{spanId}]"
