@@ -90,7 +90,7 @@ services:
       - nextmall-net
 
   tempo:
-    image: grafana/tempo:2.6.1
+    image: grafana/tempo:2.9.1
     container_name: tempo
     restart: unless-stopped
     command: ["-config.file=/etc/tempo.yaml"]
@@ -103,7 +103,7 @@ services:
       - nextmall-net
 
   loki:
-    image: grafana/loki:2.9.8
+    image: grafana/loki:3.6.3
     container_name: loki
     restart: unless-stopped
     command: ["-config.file=/etc/loki/local-config.yaml"]
@@ -116,7 +116,7 @@ services:
       - nextmall-net
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3.9.1
     container_name: prometheus
     restart: unless-stopped
     volumes:
@@ -128,7 +128,7 @@ services:
       - nextmall-net
 
   grafana:
-    image: grafana/grafana:11.1.0
+    image: grafana/grafana:12.3.1
     container_name: grafana
     restart: unless-stopped
     depends_on:

@@ -180,7 +180,7 @@ Documentation / Information Architecture (Additional)
 - 리스크: 품질 기준 문서가 묻힐 수 있음.
 - 참고:
   - docs/README.md:7-62
-  - docs/reviews/PROJECT_REVIEW_2026-01-23.md:1-200
+  - docs/reviews/PROJECT_REVIEW_2026-01-23.md
 
 24) 에러 응답 계약이 운영용으로는 최소
 - 근거: ErrorResponse는 code/message만 포함, trace/correlation/path/validation 상세가 없음.
