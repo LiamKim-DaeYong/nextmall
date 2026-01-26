@@ -26,7 +26,14 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .authorizeExchange { exchanges ->
                 exchanges
-                    .pathMatchers("/actuator/**", "/.well-known/jwks.json")
+                    .pathMatchers(
+                        "/actuator/**",
+                        "/.well-known/jwks.json",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/webjars/**",
+                    )
                     .permitAll()
                     .anyExchange()
                     .authenticated()

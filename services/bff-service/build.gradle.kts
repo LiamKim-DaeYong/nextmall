@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webflux)
+    implementation(libs.springdoc.openapi.starter.webflux.ui)
 
     testImplementation(project(":common:test-support"))
 }

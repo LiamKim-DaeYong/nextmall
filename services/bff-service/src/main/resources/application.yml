@@ -5,6 +5,12 @@ spring:
   application:
     name: bff-service
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 token:
   passport:
     secret-key: ${TOKEN_PASSPORT_SECRET}

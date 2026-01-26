@@ -32,6 +32,12 @@ token:
   passport:
     secret-key: ${TOKEN_PASSPORT_SECRET}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 nextmall:
   identifier:
     node-id: ${NODE_ID}

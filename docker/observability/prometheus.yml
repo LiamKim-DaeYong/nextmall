@@ -8,17 +8,9 @@ scrape_configs:
       - targets: ["prometheus:9090"]
 
   - job_name: otel-collector
-    # Prometheus 3.x validates Content-Type more strictly; fallback when missing/incorrect.
-    fallback_scrape_protocol: PrometheusText0.0.4
-    # Prometheus 3.9+ requires explicit native histogram config (flag removed).
-    scrape_native_histograms: true
     static_configs:
       - targets: ["otel-collector:8889"]
 
   - job_name: otel-collector-internal
-    # Prometheus 3.x validates Content-Type more strictly; fallback when missing/incorrect.
-    fallback_scrape_protocol: PrometheusText0.0.4
-    # Prometheus 3.9+ requires explicit native histogram config (flag removed).
-    scrape_native_histograms: true
     static_configs:
       - targets: ["otel-collector:8888"]
