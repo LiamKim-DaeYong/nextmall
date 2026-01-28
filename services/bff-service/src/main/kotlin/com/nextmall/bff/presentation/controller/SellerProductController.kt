@@ -1,7 +1,8 @@
 package com.nextmall.bff.presentation.controller
 
 import com.nextmall.bff.client.product.ProductServiceClient
-import com.nextmall.bff.client.product.response.SellerProductViewClientResponse
+import com.nextmall.bff.presentation.response.product.SellerProductViewResponse
+import com.nextmall.bff.presentation.response.product.toResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,14 +18,14 @@ class SellerProductController(
     @GetMapping("/{productId}")
     fun getMyProduct(
         @PathVariable productId: Long,
-    ): Mono<ResponseEntity<SellerProductViewClientResponse>> =
+    ): Mono<ResponseEntity<SellerProductViewResponse>> =
         productServiceClient
             .getMyProduct(productId)
-            .map { ResponseEntity.ok(it) }
+            .map { ResponseEntity.ok(it.toResponse()) }
 
     @GetMapping
-    fun getMyProducts(): Mono<ResponseEntity<List<SellerProductViewClientResponse>>> =
+    fun getMyProducts(): Mono<ResponseEntity<List<SellerProductViewResponse>>> =
         productServiceClient
             .getMyProducts()
-            .map { ResponseEntity.ok(it) }
+            .map { ResponseEntity.ok(it.map { response -> response.toResponse() }) }
 }

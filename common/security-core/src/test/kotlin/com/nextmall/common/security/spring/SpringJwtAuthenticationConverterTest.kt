@@ -47,6 +47,6 @@ private fun createTestJwt(
         mapOf("alg" to "none"),
         mapOf(
             "sub" to subject,
-            "userId" to userId,
+            "user_id" to userId,
         ),
     )
