@@ -33,8 +33,7 @@ class SecurityConfig(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/webjars/**",
-                    )
-                    .permitAll()
+                    ).permitAll()
                     .anyExchange()
                     .authenticated()
             }.oauth2ResourceServer { oauth2 ->

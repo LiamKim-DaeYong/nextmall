@@ -1,5 +1,9 @@
 package com.nextmall.bff.client.user.response
 
+import tools.jackson.databind.annotation.JsonSerialize
+import tools.jackson.databind.ser.std.ToStringSerializer
+
 data class CreateUserClientResponse(
+    @JsonSerialize(using = ToStringSerializer::class)
     val userId: Long,
 )

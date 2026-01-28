@@ -1,0 +1,138 @@
+# Product flow (create -> get -> update -> get my -> list my -> delete)
+# Run All to execute sequentially.
+
+@flowEmail = test+{{$uuid}}@example.com
+@flowPassword = Test1234!
+@productName = Flow Product {{$uuid}}
+@productDescription = Flow product description
+@productPrice = 19.99
+@productStock = 10
+@productCategory = FLOW
+
+### signup
+POST {{baseUrl}}/sign-up/local
+Content-Type: application/json
+
+{
+  "email":"{{flowEmail}}",
+  "password":"{{flowPassword}}",
+  "nickname":"Flow Seller"
+}
+
+> {%
+  client.test("signup status", function() {
+    client.assert(response.status === 201);
+  });
+%}
+
+### login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "provider": "LOCAL",
+  "principal":"{{flowEmail}}",
+  "credential":"{{flowPassword}}"
+}
+
+> {%
+  client.test("login status", function() {
+    client.assert(response.status === 200);
+  });
+  client.global.set("accessToken", response.body.accessToken);
+%}
+
+### create product
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name":"{{productName}}",
+  "description":"{{productDescription}}",
+  "price":{{productPrice}},
+  "stock":{{productStock}},
+  "category":"{{productCategory}}"
+}
+
+> {%
+  client.test("create product status", function() {
+    client.assert(response.status === 201);
+  });
+  console.log("Response body:", JSON.stringify(response.body));
+  console.log("productId:", response.body.productId);
+  client.global.set("productId", response.body.productId.toString());
+  console.log("Stored productId:", client.global.get("productId"));
+%}
+
+### get product (public)
+GET {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+  console.log("GET product - using productId:", client.global.get("productId"));
+  client.test("get product status", function() {
+    client.assert(response.status === 200);
+  });
+%}
+
+### update product
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name":"{{productName}} - updated",
+  "description":"{{productDescription}} - updated",
+  "price":{{productPrice}},
+  "stock":{{productStock}},
+  "category":"{{productCategory}}"
+}
+
+> {%
+  console.log("UPDATE product - using productId:", client.global.get("productId"));
+  console.log("UPDATE response status:", response.status);
+  client.test("update product status", function() {
+    client.assert(response.status === 204);
+  });
+%}
+
+### get my product
+GET {{baseUrl}}/sellers/me/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+  client.test("get my product status", function() {
+    client.assert(response.status === 200);
+  });
+%}
+
+### list my products
+GET {{baseUrl}}/sellers/me/products
+Authorization: Bearer {{accessToken}}
+
+> {%
+  client.test("list my products status", function() {
+    client.assert(response.status === 200);
+  });
+%}
+
+### suspend product (before delete)
+POST {{baseUrl}}/products/{{productId}}/suspend
+Authorization: Bearer {{accessToken}}
+
+> {%
+  client.test("suspend product status", function() {
+    client.assert(response.status === 204);
+  });
+%}
+
+### delete product
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+  client.test("delete product status", function() {
+    client.assert(response.status === 204);
+  });
+%}
