@@ -25,4 +25,5 @@ dependencies {
     api(libs.spring.boot.starter.security)
 
     compileOnly(libs.jakarta.servlet.api)
+    compileOnly(libs.spring.boot.starter.webmvc)
 }

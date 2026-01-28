@@ -99,6 +99,7 @@ services:
       - tempo-data:/var/tempo
     ports:
       - "${TEMPO_PORT:-3200}:3200"
+      # 4317은 otel-collector가 사용하므로 tempo는 내부 네트워크로만 접근
     networks:
       - nextmall-net
 

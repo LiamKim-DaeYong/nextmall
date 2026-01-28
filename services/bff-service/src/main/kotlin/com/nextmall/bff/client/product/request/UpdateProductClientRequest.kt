@@ -1,10 +1,11 @@
 package com.nextmall.bff.client.product.request
 
-import com.nextmall.common.util.Money
+import java.math.BigDecimal
 
 data class UpdateProductClientRequest(
     val name: String,
-    val price: Money,
+    val description: String?,
+    val price: BigDecimal,
     val stock: Int,
     val category: String?,
 )
