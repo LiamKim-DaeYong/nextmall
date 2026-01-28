@@ -5,6 +5,12 @@ interface StockCacheRepository {
 
     fun decrease(productId: Long, amount: Int): StockDecreaseResult
 
+    fun decreaseOrInit(
+        productId: Long,
+        amount: Int,
+        initialStock: Int,
+    ): StockDecreaseResult
+
     fun increase(productId: Long, amount: Int): Int
 
     fun set(productId: Long, stock: Int)

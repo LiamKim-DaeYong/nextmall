@@ -10,6 +10,7 @@ data class CreateOrderSnapshotClientRequest(
 
 data class OrderLineItemClientRequest(
     val id: String,
+    val productId: String,
     val title: String,
     val quantity: Int,
     val price: MoneyAmountClientRequest,

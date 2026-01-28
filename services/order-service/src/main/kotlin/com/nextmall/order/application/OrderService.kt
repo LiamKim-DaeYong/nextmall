@@ -38,6 +38,7 @@ class OrderService(
             request.lineItems.map {
                 OrderLineItem(
                     id = it.id,
+                    productId = it.productId,
                     title = it.title,
                     quantity = it.quantity,
                     price = MoneyAmount(it.price.amount, it.price.currency),
@@ -97,8 +98,8 @@ class OrderService(
     ) {
         lineItems.forEach { item ->
             val productId =
-                item.id.toLongOrNull()
-                    ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid productId: ${item.id}")
+                item.productId.toLongOrNull()
+                    ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid productId: ${item.productId}")
             eventPublisher.publish(
                 topic = ORDER_CREATED_TOPIC,
                 event =

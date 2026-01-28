@@ -37,7 +37,8 @@ class CreateOrderFacade(
                 val totalAmount = toMinorAmount(totalPrice.amount)
                 val lineItem =
                     OrderLineItemClientRequest(
-                        id = product.id.toString(),
+                        id = UUID.randomUUID().toString(),
+                        productId = product.id.toString(),
                         title = product.name,
                         quantity = command.quantity,
                         price = MoneyAmountClientRequest(unitPrice, currency),
@@ -78,30 +79,11 @@ class CreateOrderFacade(
         quantity: Int,
     ): Mono<Unit> =
         Mono
-            .fromCallable { stockCacheRepository.decrease(productId, quantity) }
-            .subscribeOn(Schedulers.boundedElastic())
+            .fromCallable {
+                stockCacheRepository.decreaseOrInit(productId, quantity, currentStock)
+            }.subscribeOn(Schedulers.boundedElastic())
             .flatMap { result ->
                 when (result) {
-                    is StockDecreaseResult.Success -> Mono.empty()
-                    StockDecreaseResult.InsufficientStock ->
-                        Mono.error(InsufficientStockException(productId, quantity))
-                    StockDecreaseResult.NotFound ->
-                        initializeAndRetry(productId, currentStock, quantity)
-                }
-            }
-
-    private fun initializeAndRetry(
-        productId: Long,
-        currentStock: Int,
-        quantity: Int,
-    ): Mono<Unit> =
-        Mono
-            .fromCallable {
-                stockCacheRepository.set(productId, currentStock)
-                stockCacheRepository.decrease(productId, quantity)
-            }.subscribeOn(Schedulers.boundedElastic())
-            .flatMap { retryResult ->
-                when (retryResult) {
                     is StockDecreaseResult.Success -> Mono.empty()
                     StockDecreaseResult.InsufficientStock ->
                         Mono.error(InsufficientStockException(productId, quantity))
