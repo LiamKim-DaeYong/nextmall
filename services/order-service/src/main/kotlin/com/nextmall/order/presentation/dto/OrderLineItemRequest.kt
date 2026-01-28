@@ -9,6 +9,9 @@ data class OrderLineItemRequest(
     val id: String,
 
     @field:NotBlank
+    val productId: String,
+
+    @field:NotBlank
     val title: String,
 
     @field:Min(1)

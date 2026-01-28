@@ -1,5 +1,6 @@
 package com.nextmall.user.presentation.controller
 
+import com.nextmall.common.authorization.annotation.RequiresPolicy
 import com.nextmall.user.application.UserService
 import com.nextmall.user.presentation.request.CreateUserRequest
 import com.nextmall.user.presentation.response.CreateUserResponse
@@ -21,6 +22,7 @@ class UserController(
     private val userService: UserService,
 ) {
     @GetMapping("/{userId}")
+    @RequiresPolicy(resource = "user", action = "read", resourceIdParam = "userId")
     fun getUser(
         @PathVariable userId: Long,
     ): ResponseEntity<UserViewResponse> {

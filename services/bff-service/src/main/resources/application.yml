@@ -5,6 +5,18 @@ spring:
   application:
     name: bff-service
 
+client:
+  user:
+    base-url: http://localhost:8083
+  auth:
+    base-url: http://localhost:8081
+  product:
+    base-url: http://localhost:8084
+  order:
+    base-url: http://localhost:8085
+  orchestrator:
+    base-url: http://localhost:8087
+
 springdoc:
   api-docs:
     path: /v3/api-docs

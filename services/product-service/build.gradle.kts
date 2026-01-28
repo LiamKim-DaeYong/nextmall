@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":common:data"))
     implementation(project(":common:exception"))
     implementation(project(":common:identifier"))
+    implementation(project(":common:kafka"))
     implementation(project(":common:security"))
     implementation(project(":common:util"))
 
@@ -25,6 +26,7 @@ dependencies {
     implementation(libs.spring.boot.starter.jooq)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.spring.kafka)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
 
     runtimeOnly(libs.postgresql)
