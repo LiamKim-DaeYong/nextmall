@@ -1,11 +1,15 @@
 package com.nextmall.order.application
 
 import com.nextmall.common.identifier.IdGenerator
+import com.nextmall.common.kafka.event.order.OrderCreatedEvent
+import com.nextmall.common.kafka.producer.EventPublisher
 import com.nextmall.order.domain.OrderEntity
+import com.nextmall.order.domain.OrderStatus
 import com.nextmall.order.infrastructure.persistence.jpa.OrderJpaRepository
 import com.nextmall.order.presentation.dto.*
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
@@ -15,6 +19,7 @@ class OrderService(
     private val idGenerator: IdGenerator,
     private val orderJpaRepository: OrderJpaRepository,
     private val objectMapper: ObjectMapper,
+    private val eventPublisher: EventPublisher,
 ) {
     private val lineItemsType = object : TypeReference<List<OrderLineItem>>() {}
     private val adjustmentsType = object : TypeReference<List<Map<String, Any>>>() {}
@@ -25,6 +30,7 @@ class OrderService(
             .map { it.toSnapshot() }
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: $orderId") }
 
+    @Transactional
     fun createOrder(request: CreateOrderSnapshotRequest): OrderSnapshot {
         val id = idGenerator.generate()
         // Phase 1: accept checkout snapshot as-is. Validation/normalization happens in upper layers later.
@@ -59,9 +65,12 @@ class OrderService(
                 totalsJson = objectMapper.writeValueAsString(totals),
                 fulfillmentJson = objectMapper.writeValueAsString(fulfillment),
                 adjustmentsJson = objectMapper.writeValueAsString(adjustments),
+                status = OrderStatus.PENDING,
             )
 
         val saved = orderJpaRepository.save(entity)
+        saved.confirm()
+        publishOrderCreatedEvent(saved.id, lineItems)
         return saved.toSnapshot()
     }
 
@@ -72,7 +81,7 @@ class OrderService(
         val adjustments = objectMapper.readValue(adjustmentsJson, adjustmentsType)
 
         return OrderSnapshot(
-            id = id,
+            orderId = id,
             checkoutId = checkoutId,
             permalinkUrl = permalinkUrl,
             lineItems = lineItems,
@@ -80,5 +89,29 @@ class OrderService(
             adjustments = adjustments,
             totals = totals,
         )
+    }
+
+    private fun publishOrderCreatedEvent(
+        orderId: Long,
+        lineItems: List<OrderLineItem>,
+    ) {
+        lineItems.forEach { item ->
+            val productId =
+                item.id.toLongOrNull()
+                    ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid productId: ${item.id}")
+            eventPublisher.publish(
+                topic = ORDER_CREATED_TOPIC,
+                event =
+                    OrderCreatedEvent(
+                        orderId = orderId,
+                        productId = productId,
+                        quantity = item.quantity,
+                    ),
+            )
+        }
+    }
+
+    companion object {
+        private const val ORDER_CREATED_TOPIC = "order.created"
     }
 }

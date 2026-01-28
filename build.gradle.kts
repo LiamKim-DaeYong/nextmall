@@ -100,6 +100,13 @@ subprojects {
             events("passed", "skipped", "failed")
         }
 
+        val envFromFile = loadEnvFile(rootProject.file(".env"))
+        envFromFile.forEach { (key, value) ->
+            if (System.getenv(key).isNullOrEmpty()) {
+                environment(key, value)
+            }
+        }
+
         // 테스트용 환경변수 자동 설정
         environment(
             "TOKEN_PASSPORT_SECRET",
@@ -127,6 +134,21 @@ subprojects {
             html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
         }
     }
+}
+
+fun loadEnvFile(envFile: File): Map<String, String> {
+    if (!envFile.exists()) return emptyMap()
+    return envFile
+        .readLines()
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && !it.startsWith("#") }
+        .mapNotNull { line ->
+            val parts = line.split("=", limit = 2)
+            if (parts.size != 2) return@mapNotNull null
+            val key = parts[0].trim()
+            val value = parts[1].trim()
+            if (key.isEmpty()) null else key to value
+        }.toMap()
 }
 
 tasks.register<JacocoReport>("jacocoRootReport") {

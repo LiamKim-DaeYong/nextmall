@@ -3,6 +3,8 @@ package com.nextmall.order.domain
 import com.nextmall.common.data.jpa.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Lob
 import jakarta.persistence.Table
@@ -38,5 +40,13 @@ class OrderEntity(
     @Lob
     @Column(name = "adjustments_json", nullable = false, columnDefinition = "TEXT")
     val adjustmentsJson: String,
-) : BaseEntity()
-// Phase 1: store UCP-like snapshots as JSON. Phase 2 may normalize to line_items/adjustments tables.
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    var status: OrderStatus = OrderStatus.PENDING,
+) : BaseEntity() {
+    // Phase 1: store UCP-like snapshots as JSON. Phase 2 may normalize to line_items/adjustments tables.
+    fun confirm() {
+        status = OrderStatus.CONFIRMED
+    }
+}

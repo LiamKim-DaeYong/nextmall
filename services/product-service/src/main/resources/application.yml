@@ -30,6 +30,8 @@ nextmall:
   kafka:
     enabled: true
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: product-service
 
 token:
   passport:

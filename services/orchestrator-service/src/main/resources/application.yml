@@ -4,6 +4,20 @@ server:
 spring:
   application:
     name: orchestrator-service
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+client:
+  user:
+    base-url: http://localhost:8083
+  auth:
+    base-url: http://localhost:8081
+  product:
+    base-url: http://localhost:8084
+  order:
+    base-url: http://localhost:8085
 
 token:
   passport:
