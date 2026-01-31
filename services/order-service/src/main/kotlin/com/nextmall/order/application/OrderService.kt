@@ -37,7 +37,7 @@ class OrderService(
         val lineItems =
             request.lineItems.map {
                 OrderLineItem(
-                    id = it.id,
+                    lineItemId = it.lineItemId,
                     productId = it.productId,
                     title = it.title,
                     quantity = it.quantity,
@@ -96,21 +96,31 @@ class OrderService(
         orderId: Long,
         lineItems: List<OrderLineItem>,
     ) {
-        lineItems.forEach { item ->
-            val productId =
-                item.productId.toLongOrNull()
-                    ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid productId: ${item.productId}")
+        val parsedLineItems =
+            lineItems.map { item ->
+                val productId =
+                    item.productId.toLongOrNull()
+                        ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid productId: ${item.productId}")
+                ParsedLineItem(productId = productId, quantity = item.quantity)
+            }
+
+        parsedLineItems.forEach { item ->
             eventPublisher.publish(
                 topic = ORDER_CREATED_TOPIC,
                 event =
                     OrderCreatedEvent(
                         orderId = orderId,
-                        productId = productId,
+                        productId = item.productId,
                         quantity = item.quantity,
                     ),
             )
         }
     }
+
+    private data class ParsedLineItem(
+        val productId: Long,
+        val quantity: Int,
+    )
 
     companion object {
         private const val ORDER_CREATED_TOPIC = "order.created"

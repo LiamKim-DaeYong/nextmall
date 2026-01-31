@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank
 
 data class OrderLineItemRequest(
     @field:NotBlank
-    val id: String,
+    val lineItemId: String,
 
     @field:NotBlank
     val productId: String,

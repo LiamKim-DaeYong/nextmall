@@ -1,7 +1,7 @@
 package com.nextmall.order.presentation.dto
 
 data class OrderLineItem(
-    val id: String,
+    val lineItemId: String,
     val productId: String,
     val title: String,
     val quantity: Int,

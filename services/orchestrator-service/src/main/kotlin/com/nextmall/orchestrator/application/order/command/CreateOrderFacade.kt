@@ -1,5 +1,6 @@
 package com.nextmall.orchestrator.application.order.command
 
+import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.common.redis.stock.StockCacheRepository
 import com.nextmall.common.redis.stock.StockDecreaseResult
 import com.nextmall.orchestrator.application.order.exception.InsufficientStockException
@@ -17,6 +18,7 @@ import java.util.UUID
 
 @Component
 class CreateOrderFacade(
+    private val idGenerator: IdGenerator,
     private val productServiceClient: ProductServiceClient,
     private val orderServiceClient: OrderServiceClient,
     private val stockCacheRepository: StockCacheRepository,
@@ -37,7 +39,7 @@ class CreateOrderFacade(
                 val totalAmount = toMinorAmount(totalPrice.amount)
                 val lineItem =
                     OrderLineItemClientRequest(
-                        id = UUID.randomUUID().toString(),
+                        lineItemId = idGenerator.generate().toString(),
                         productId = product.id.toString(),
                         title = product.name,
                         quantity = command.quantity,

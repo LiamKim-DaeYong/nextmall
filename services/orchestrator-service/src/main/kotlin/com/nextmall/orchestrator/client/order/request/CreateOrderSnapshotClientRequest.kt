@@ -9,7 +9,7 @@ data class CreateOrderSnapshotClientRequest(
 )
 
 data class OrderLineItemClientRequest(
-    val id: String,
+    val lineItemId: String,
     val productId: String,
     val title: String,
     val quantity: Int,
