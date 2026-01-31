@@ -35,6 +35,8 @@ management:
         url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT}
 
 gateway:
+  bff:
+    base-url: http://localhost:8082
   security:
     permit-all-paths:
       # Auth / Public APIs

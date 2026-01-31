@@ -50,13 +50,17 @@ open class OrdersRecord() : UpdatableRecordImpl<OrdersRecord>(Orders.ORDERS) {
         set(value): Unit = set(7, value)
         get(): String? = get(7) as String?
 
-    open var createdAt: OffsetDateTime?
+    open var status: String?
         set(value): Unit = set(8, value)
-        get(): OffsetDateTime? = get(8) as OffsetDateTime?
+        get(): String? = get(8) as String?
 
-    open var updatedAt: OffsetDateTime?
+    open var createdAt: OffsetDateTime?
         set(value): Unit = set(9, value)
         get(): OffsetDateTime? = get(9) as OffsetDateTime?
+
+    open var updatedAt: OffsetDateTime?
+        set(value): Unit = set(10, value)
+        get(): OffsetDateTime? = get(10) as OffsetDateTime?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -67,7 +71,7 @@ open class OrdersRecord() : UpdatableRecordImpl<OrdersRecord>(Orders.ORDERS) {
     /**
      * Create a detached, initialised OrdersRecord
      */
-    constructor(orderId: Long? = null, checkoutId: String? = null, currency: String? = null, permalinkUrl: String? = null, lineItemsJson: String? = null, totalsJson: String? = null, fulfillmentJson: String? = null, adjustmentsJson: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
+    constructor(orderId: Long? = null, checkoutId: String? = null, currency: String? = null, permalinkUrl: String? = null, lineItemsJson: String? = null, totalsJson: String? = null, fulfillmentJson: String? = null, adjustmentsJson: String? = null, status: String? = null, createdAt: OffsetDateTime? = null, updatedAt: OffsetDateTime? = null): this() {
         this.orderId = orderId
         this.checkoutId = checkoutId
         this.currency = currency
@@ -76,6 +80,7 @@ open class OrdersRecord() : UpdatableRecordImpl<OrdersRecord>(Orders.ORDERS) {
         this.totalsJson = totalsJson
         this.fulfillmentJson = fulfillmentJson
         this.adjustmentsJson = adjustmentsJson
+        this.status = status
         this.createdAt = createdAt
         this.updatedAt = updatedAt
         resetTouchedOnNotNull()

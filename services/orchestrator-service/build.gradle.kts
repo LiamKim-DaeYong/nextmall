@@ -10,7 +10,9 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
+    implementation(project(":common:identifier"))
     implementation(project(":common:integration"))
+    implementation(project(":common:redis"))
     implementation(project(":common:security-core"))
     implementation(project(":common:util"))
 

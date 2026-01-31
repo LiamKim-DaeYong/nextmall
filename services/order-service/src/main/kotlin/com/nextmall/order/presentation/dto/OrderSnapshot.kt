@@ -1,7 +1,7 @@
 package com.nextmall.order.presentation.dto
 
 data class OrderSnapshot(
-    val id: Long,
+    val orderId: Long,
     val checkoutId: String,
     val permalinkUrl: String? = null,
     val lineItems: List<OrderLineItem>,

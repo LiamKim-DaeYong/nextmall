@@ -166,6 +166,19 @@ class ProductService(
         product.hide()
     }
 
+    @Transactional
+    fun decreaseStock(
+        productId: Long,
+        quantity: Int,
+    ) {
+        require(quantity > 0) { "Quantity must be positive" }
+        val product =
+            productJpaRepository
+                .findById(productId)
+                .orElseThrow { ProductNotFoundException() }
+        product.decreaseStock(quantity)
+    }
+
     private fun ensureOwner(
         ownerId: Long,
         sellerId: Long,

@@ -1,8 +1,7 @@
 package com.nextmall.orchestrator.client.order
 
 import com.nextmall.common.integration.support.WebClientFactory
-import com.nextmall.common.util.Money
-import com.nextmall.orchestrator.client.order.request.CreateOrderClientRequest
+import com.nextmall.orchestrator.client.order.request.CreateOrderSnapshotClientRequest
 import com.nextmall.orchestrator.client.order.response.CreateOrderClientResponse
 import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
 import org.springframework.stereotype.Component
@@ -21,15 +20,12 @@ class WebClientOrderServiceClient(
         )
 
     override fun createOrder(
-        userId: Long,
-        productId: Long,
-        quantity: Int,
-        totalPrice: Money,
+        request: CreateOrderSnapshotClientRequest,
     ): Mono<CreateOrderClientResponse> =
         client
             .post()
             .uri(ORDER_CREATE_URI)
-            .bodyValue(CreateOrderClientRequest(userId, productId, quantity, totalPrice))
+            .bodyValue(request)
             .retrieve()
             .bodyToMono<CreateOrderClientResponse>()
 

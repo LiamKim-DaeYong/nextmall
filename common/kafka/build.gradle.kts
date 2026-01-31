@@ -11,10 +11,10 @@ java {
 
 dependencies {
     api(platform(libs.spring.boot.dependencies))
+    api(libs.spring.kafka)
 
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
-    implementation(libs.spring.kafka)
     implementation(libs.spring.boot.autoconfigure)
     implementation(libs.slf4j.api)
 }
