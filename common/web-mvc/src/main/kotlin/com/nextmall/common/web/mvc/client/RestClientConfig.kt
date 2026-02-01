@@ -17,11 +17,18 @@ class RestClientConfig {
         properties: RestClientProperties,
     ): RestClient.Builder {
         val requestFactory = SimpleClientHttpRequestFactory()
-        requestFactory.setConnectTimeout(properties.connectTimeout.toMillis().toInt())
-        requestFactory.setReadTimeout(properties.readTimeout.toMillis().toInt())
+        requestFactory.setConnectTimeout(properties.connectTimeout.toMillis().toIntSafely())
+        requestFactory.setReadTimeout(properties.readTimeout.toMillis().toIntSafely())
 
         return RestClient
             .builder()
             .requestFactory(requestFactory)
     }
+
+    private fun Long.toIntSafely(): Int =
+        when {
+            this <= 0L -> 0
+            this > Int.MAX_VALUE.toLong() -> Int.MAX_VALUE
+            else -> this.toInt()
+        }
 }

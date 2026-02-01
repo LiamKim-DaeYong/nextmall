@@ -54,7 +54,7 @@ class UserServiceClient(
 
     companion object {
         private const val USER_CREATE_URI = "/users"
-        private const val USER_ACTIVATE_URI = "/users/{id}/activate"
-        private const val USER_SIGNUP_FAIL_URI = "/users/{id}/signup-failed"
+        private const val USER_ACTIVATE_URI = "/users/{userId}/activate"
+        private const val USER_SIGNUP_FAIL_URI = "/users/{userId}/signup-failed"
     }
 }

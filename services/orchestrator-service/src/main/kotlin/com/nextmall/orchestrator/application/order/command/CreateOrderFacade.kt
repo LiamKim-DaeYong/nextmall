@@ -21,9 +21,9 @@ class CreateOrderFacade(
     private val orderServiceClient: OrderServiceClient,
     private val stockCacheRepository: StockCacheRepository,
 ) {
-     /**
-      * 상품 조회와 주문 생성을 오케스트레이션한다.
-      */
+    /**
+     * 상품 조회와 주문 생성을 오케스트레이션한다.
+     */
     fun createOrder(command: CreateOrderCommand): CreateOrderResult {
         require(command.quantity > 0) { "Quantity must be positive" }
 

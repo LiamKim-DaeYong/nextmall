@@ -23,7 +23,9 @@ open class GlobalExceptionHandlerSupport(
         exchange: ServerWebExchange,
     ): Mono<ResponseEntity<ErrorResponse>> {
         val message =
-            ex.bindingResult.fieldErrors.firstOrNull()?.defaultMessage
+            ex.bindingResult.fieldErrors
+                .firstOrNull()
+                ?.defaultMessage
                 ?: CommonErrorCode.INVALID_REQUEST.message
 
         return Mono.just(
@@ -40,7 +42,8 @@ open class GlobalExceptionHandlerSupport(
                                     ex.bindingResult.fieldErrors.map { error ->
                                         mapOf(
                                             "field" to error.field,
-                                            "message" to (error.defaultMessage ?: CommonErrorCode.INVALID_REQUEST.message),
+                                            "message" to
+                                                (error.defaultMessage ?: CommonErrorCode.INVALID_REQUEST.message),
                                         )
                                     },
                             ),
