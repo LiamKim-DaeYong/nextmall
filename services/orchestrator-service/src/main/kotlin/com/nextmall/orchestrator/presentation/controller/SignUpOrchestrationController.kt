@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/orchestrations/sign-up")
@@ -22,12 +21,10 @@ class SignUpOrchestrationController(
     @PostMapping
     fun signUp(
         @Valid @RequestBody request: SignUpOrchestrationRequest,
-    ): Mono<ResponseEntity<SignUpOrchestrationResponse>> =
-        signUpFacade
-            .signUp(request.toCommand())
-            .map { result ->
-                ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(result.toResponse())
-            }
+    ): ResponseEntity<SignUpOrchestrationResponse> {
+        val result = signUpFacade.signUp(request.toCommand())
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(result.toResponse())
+    }
 }

@@ -17,6 +17,8 @@ include("common:integration") // 외부 서비스 통신 공통 레이어 (HTTP,
 include("common:authorization") // 인가 인프라 통합 (AOP, 캐시, 이벤트)
 include("common:data") // 데이터 접근 공통 인프라 (JPA, jOOQ)
 include("common:exception") // 공통 예외 정의 및 에러 계약
+include("common:web-mvc") // MVC 공통 웹 설정 (ExceptionHandler, WebMvcConfigurer)
+include("common:web-reactive") // Reactive 공통 웹 설정 (ExceptionHandler, WebFluxConfigurer)
 include("common:identifier") // 식별자 생성 및 관리
 include("common:kafka") // Kafka 메시징 공통 인프라
 include("common:policy") // 정책 기반 인가 (Policy-Based Authorization)

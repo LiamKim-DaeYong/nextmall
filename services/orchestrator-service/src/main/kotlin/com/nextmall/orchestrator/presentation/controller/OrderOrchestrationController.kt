@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/orchestrations/orders")
@@ -20,17 +19,14 @@ class OrderOrchestrationController(
     @PostMapping
     fun createOrder(
         @Valid @RequestBody request: CreateOrderOrchestrationRequest,
-    ): Mono<ResponseEntity<CreateOrderOrchestrationResponse>> {
+    ): ResponseEntity<CreateOrderOrchestrationResponse> {
         val command =
             CreateOrderCommand(
                 userId = request.userId,
                 productId = request.productId,
                 quantity = request.quantity,
             )
-        return createOrderFacade
-            .createOrder(command)
-            .map { result ->
-                ResponseEntity.ok(CreateOrderOrchestrationResponse(result.orderId))
-            }
+        val result = createOrderFacade.createOrder(command)
+        return ResponseEntity.ok(CreateOrderOrchestrationResponse(result.orderId))
     }
 }

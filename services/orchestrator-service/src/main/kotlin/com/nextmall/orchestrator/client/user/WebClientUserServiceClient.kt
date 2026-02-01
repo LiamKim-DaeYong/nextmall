@@ -6,7 +6,6 @@ import com.nextmall.orchestrator.client.user.response.CreateUserClientResponse
 import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 @Component
 class WebClientUserServiceClient(
@@ -22,28 +21,36 @@ class WebClientUserServiceClient(
     override fun createUser(
         nickname: String,
         email: String?,
-    ): Mono<Long> =
-        client
-            .post()
-            .uri(USER_CREATE_URI)
-            .bodyValue(CreateUserClientRequest(nickname, email))
-            .retrieve()
-            .bodyToMono<CreateUserClientResponse>()
-            .map { it.userId }
+    ): Long {
+        val response =
+            client
+                .post()
+                .uri(USER_CREATE_URI)
+                .bodyValue(CreateUserClientRequest(nickname, email))
+                .retrieve()
+                .bodyToMono<CreateUserClientResponse>()
+                .block()
 
-    override fun activateUser(userId: Long): Mono<Void> =
+        return requireNotNull(response).userId
+    }
+
+    override fun activateUser(userId: Long) {
         client
             .post()
             .uri(USER_ACTIVATE_URI, userId)
             .retrieve()
             .bodyToMono<Void>()
+            .block()
+    }
 
-    override fun markSignupFailed(userId: Long): Mono<Void> =
+    override fun markSignupFailed(userId: Long) {
         client
             .post()
             .uri(USER_SIGNUP_FAIL_URI, userId)
             .retrieve()
             .bodyToMono<Void>()
+            .block()
+    }
 
     companion object {
         private const val USER_CREATE_URI = "/users"

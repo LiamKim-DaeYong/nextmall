@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":common:integration"))
     implementation(project(":common:security-core"))
     implementation(project(":common:util"))
+    implementation(project(":common:web-reactive"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.actuator)

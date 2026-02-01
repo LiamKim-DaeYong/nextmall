@@ -12,6 +12,7 @@ plugins {
 dependencies {
     implementation(project(":common:data"))
     implementation(project(":common:exception"))
+    implementation(project(":common:web-mvc"))
     implementation(project(":common:identifier"))
     implementation(project(":common:redis"))
     implementation(project(":common:security"))

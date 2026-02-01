@@ -1,11 +1,9 @@
 package com.nextmall.orchestrator.client.user
 
-import reactor.core.publisher.Mono
-
 interface UserServiceClient {
-    fun createUser(nickname: String, email: String?): Mono<Long>
+    fun createUser(nickname: String, email: String?): Long
 
-    fun activateUser(userId: Long): Mono<Void>
+    fun activateUser(userId: Long)
 
-    fun markSignupFailed(userId: Long): Mono<Void>
+    fun markSignupFailed(userId: Long)
 }

@@ -8,15 +8,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import com.fasterxml.jackson.databind.ObjectMapper
 
 @Configuration
 class WebClientBaseConfig {
     @Bean
-    fun webClientBuilder(): WebClient.Builder =
+    fun webClientBuilder(objectMapper: ObjectMapper): WebClient.Builder =
         WebClient
             .builder()
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .filter(HttpStatusExceptionFilter.filter())
+            .filter(HttpStatusExceptionFilter.filter(objectMapper))
             .filter(ConnectionAndTimeoutExceptionFilter.filter())
 
     @Bean

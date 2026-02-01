@@ -1,7 +1,7 @@
 package com.nextmall.orchestrator.security
 
 import com.nextmall.common.security.internal.SecurityTokenConstants
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.reactive.function.client.ClientRequest
 import org.springframework.web.reactive.function.client.ClientResponse
@@ -14,28 +14,24 @@ import reactor.core.publisher.Mono
  */
 class PassportTokenPropagationFilter : ExchangeFilterFunction {
     override fun filter(request: ClientRequest, next: ExchangeFunction): Mono<ClientResponse> =
-        ReactiveSecurityContextHolder
-            .getContext()
-            .mapNotNull { securityContext ->
-                val authentication = securityContext.authentication
-                if (authentication is JwtAuthenticationToken) {
-                    authentication.token.tokenValue
-                } else {
-                    null
-                }
-            }.defaultIfEmpty("")
-            .flatMap { token ->
+        Mono.defer {
+            val authentication = SecurityContextHolder.getContext().authentication
+            val token =
+                (authentication as? JwtAuthenticationToken)
+                    ?.token
+                    ?.tokenValue
+                    .orEmpty()
+            val newRequest =
                 if (token.isNotEmpty()) {
-                    val newRequest =
-                        ClientRequest
-                            .from(request)
-                            .header(
-                                SecurityTokenConstants.PASSPORT_HEADER_NAME,
-                                SecurityTokenConstants.BEARER_PREFIX + token,
-                            ).build()
-                    next.exchange(newRequest)
+                    ClientRequest
+                        .from(request)
+                        .header(
+                            SecurityTokenConstants.PASSPORT_HEADER_NAME,
+                            SecurityTokenConstants.BEARER_PREFIX + token,
+                        ).build()
                 } else {
-                    next.exchange(request)
+                    request
                 }
-            }
+            next.exchange(newRequest)
+        }
 }

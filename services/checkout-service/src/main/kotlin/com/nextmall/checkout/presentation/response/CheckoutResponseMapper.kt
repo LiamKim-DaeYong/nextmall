@@ -2,6 +2,7 @@ package com.nextmall.checkout.presentation.response
 
 import com.nextmall.checkout.domain.Checkout
 import com.nextmall.checkout.domain.Order
+import com.nextmall.checkout.application.query.CheckoutSummaryView
 import com.nextmall.checkout.application.query.CheckoutView
 import com.nextmall.checkout.domain.model.Address
 import com.nextmall.checkout.domain.model.LineItem
@@ -112,7 +113,7 @@ fun CheckoutView.toResponse(): CheckoutResponse =
         payment = payment.toResponse(),
     )
 
-fun com.nextmall.checkout.application.query.CheckoutSummaryView.toResponse(): CheckoutSummaryResponse =
+fun CheckoutSummaryView.toResponse(): CheckoutSummaryResponse =
     CheckoutSummaryResponse(
         id = id,
         status = status.name.lowercase(),

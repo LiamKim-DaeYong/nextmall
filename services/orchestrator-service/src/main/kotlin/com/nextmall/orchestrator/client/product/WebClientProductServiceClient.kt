@@ -5,7 +5,6 @@ import com.nextmall.orchestrator.client.product.response.ProductViewClientRespon
 import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 @Component
 class WebClientProductServiceClient(
@@ -18,12 +17,17 @@ class WebClientProductServiceClient(
             filters = arrayOf(PassportTokenPropagationFilter()),
         )
 
-    override fun getProduct(productId: Long): Mono<ProductViewClientResponse> =
-        client
-            .get()
-            .uri(PRODUCT_GET_URI, productId)
-            .retrieve()
-            .bodyToMono<ProductViewClientResponse>()
+    override fun getProduct(productId: Long): ProductViewClientResponse {
+        val response =
+            client
+                .get()
+                .uri(PRODUCT_GET_URI, productId)
+                .retrieve()
+                .bodyToMono<ProductViewClientResponse>()
+                .block()
+
+        return requireNotNull(response)
+    }
 
     companion object {
         private const val PRODUCT_GET_URI = "/products/{id}"

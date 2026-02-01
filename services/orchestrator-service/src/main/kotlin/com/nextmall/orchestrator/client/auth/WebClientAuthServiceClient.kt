@@ -8,7 +8,6 @@ import com.nextmall.orchestrator.client.auth.response.TokenClientResponse
 import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 @Component
 class WebClientAuthServiceClient(
@@ -26,30 +25,39 @@ class WebClientAuthServiceClient(
         provider: AuthProvider,
         providerAccountId: String,
         password: String?,
-    ): Mono<Long> =
-        client
-            .post()
-            .uri(AUTH_INTERNAL_CREATE_ACCOUNT_URI)
-            .bodyValue(
-                CreateAuthAccountClientRequest(
-                    userId = userId,
-                    provider = provider,
-                    providerAccountId = providerAccountId,
-                    password = password,
-                ),
-            ).retrieve()
-            .bodyToMono<CreateAuthAccountClientResponse>()
-            .map { it.authAccountId }
+    ): Long {
+        val response =
+            client
+                .post()
+                .uri(AUTH_INTERNAL_CREATE_ACCOUNT_URI)
+                .bodyValue(
+                    CreateAuthAccountClientRequest(
+                        userId = userId,
+                        provider = provider,
+                        providerAccountId = providerAccountId,
+                        password = password,
+                    ),
+                ).retrieve()
+                .bodyToMono<CreateAuthAccountClientResponse>()
+                .block()
+
+        return requireNotNull(response).authAccountId
+    }
 
     override fun issueToken(
         authAccountId: Long,
-    ): Mono<TokenClientResponse> =
-        client
-            .post()
-            .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
-            .bodyValue(IssueTokenClientRequest(authAccountId))
-            .retrieve()
-            .bodyToMono<TokenClientResponse>()
+    ): TokenClientResponse {
+        val response =
+            client
+                .post()
+                .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
+                .bodyValue(IssueTokenClientRequest(authAccountId))
+                .retrieve()
+                .bodyToMono<TokenClientResponse>()
+                .block()
+
+        return requireNotNull(response)
+    }
 
     companion object {
         private const val AUTH_INTERNAL_CREATE_ACCOUNT_URI = "/auth/accounts"
