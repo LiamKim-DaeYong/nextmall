@@ -112,7 +112,7 @@ open class GlobalExceptionHandlerSupport(
             .body(
                 buildErrorResponse(
                     code = CommonErrorCode.INVALID_REQUEST.code,
-                    message = ex.mostSpecificCause?.message ?: CommonErrorCode.INVALID_REQUEST.message,
+                    message = CommonErrorCode.INVALID_REQUEST.message,
                     path = request.requestURI,
                 ),
             )

@@ -86,7 +86,7 @@ open class GlobalExceptionHandlerSupport(
         ex: ServerWebInputException,
         exchange: ServerWebExchange,
     ): Mono<ResponseEntity<ErrorResponse>> {
-        val message = ex.mostSpecificCause?.message ?: CommonErrorCode.INVALID_REQUEST.message
+        val message = CommonErrorCode.INVALID_REQUEST.message
 
         return Mono.just(
             ResponseEntity

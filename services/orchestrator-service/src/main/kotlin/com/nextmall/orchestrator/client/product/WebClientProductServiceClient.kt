@@ -1,21 +1,21 @@
 package com.nextmall.orchestrator.client.product
 
-import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.orchestrator.client.product.response.ProductViewClientResponse
-import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
+import com.nextmall.orchestrator.security.PassportTokenPropagationInterceptor
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.client.RestClient
 
 @Component
 class WebClientProductServiceClient(
-    webClientFactory: WebClientFactory,
+    restClientBuilder: RestClient.Builder,
     properties: ProductServiceClientProperties,
+    passportTokenPropagationInterceptor: PassportTokenPropagationInterceptor,
 ) : ProductServiceClient {
     private val client =
-        webClientFactory.create(
-            baseUrl = properties.baseUrl,
-            filters = arrayOf(PassportTokenPropagationFilter()),
-        )
+        restClientBuilder
+            .baseUrl(properties.baseUrl)
+            .requestInterceptor(passportTokenPropagationInterceptor)
+            .build()
 
     override fun getProduct(productId: Long): ProductViewClientResponse {
         val response =
@@ -23,8 +23,7 @@ class WebClientProductServiceClient(
                 .get()
                 .uri(PRODUCT_GET_URI, productId)
                 .retrieve()
-                .bodyToMono<ProductViewClientResponse>()
-                .block()
+                .body(ProductViewClientResponse::class.java)
 
         return requireNotNull(response)
     }

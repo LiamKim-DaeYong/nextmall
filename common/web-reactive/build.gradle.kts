@@ -22,6 +22,7 @@ tasks.named<Jar>("jar") {
 
 dependencies {
     api(libs.spring.boot.starter.webflux)
+    api(libs.spring.boot.starter.validation)
 
     implementation(project(":common:exception"))
     implementation(project(":common:integration"))

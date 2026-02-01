@@ -1,24 +1,24 @@
 package com.nextmall.orchestrator.client.auth
 
-import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.orchestrator.client.auth.request.CreateAuthAccountClientRequest
 import com.nextmall.orchestrator.client.auth.request.IssueTokenClientRequest
 import com.nextmall.orchestrator.client.auth.response.CreateAuthAccountClientResponse
 import com.nextmall.orchestrator.client.auth.response.TokenClientResponse
-import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
+import com.nextmall.orchestrator.security.PassportTokenPropagationInterceptor
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.client.RestClient
 
 @Component
 class WebClientAuthServiceClient(
-    webClientFactory: WebClientFactory,
+    restClientBuilder: RestClient.Builder,
     properties: AuthServiceClientProperties,
+    passportTokenPropagationInterceptor: PassportTokenPropagationInterceptor,
 ) : AuthServiceClient {
     private val client =
-        webClientFactory.create(
-            baseUrl = properties.baseUrl,
-            filters = arrayOf(PassportTokenPropagationFilter()),
-        )
+        restClientBuilder
+            .baseUrl(properties.baseUrl)
+            .requestInterceptor(passportTokenPropagationInterceptor)
+            .build()
 
     override fun createAccount(
         userId: Long,
@@ -30,7 +30,7 @@ class WebClientAuthServiceClient(
             client
                 .post()
                 .uri(AUTH_INTERNAL_CREATE_ACCOUNT_URI)
-                .bodyValue(
+                .body(
                     CreateAuthAccountClientRequest(
                         userId = userId,
                         provider = provider,
@@ -38,8 +38,7 @@ class WebClientAuthServiceClient(
                         password = password,
                     ),
                 ).retrieve()
-                .bodyToMono<CreateAuthAccountClientResponse>()
-                .block()
+                .body(CreateAuthAccountClientResponse::class.java)
 
         return requireNotNull(response).authAccountId
     }
@@ -51,10 +50,9 @@ class WebClientAuthServiceClient(
             client
                 .post()
                 .uri(AUTH_INTERNAL_ISSUE_TOKEN_URI)
-                .bodyValue(IssueTokenClientRequest(authAccountId))
+                .body(IssueTokenClientRequest(authAccountId))
                 .retrieve()
-                .bodyToMono<TokenClientResponse>()
-                .block()
+                .body(TokenClientResponse::class.java)
 
         return requireNotNull(response)
     }

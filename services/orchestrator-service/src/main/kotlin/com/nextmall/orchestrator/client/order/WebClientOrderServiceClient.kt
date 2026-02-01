@@ -1,22 +1,22 @@
 package com.nextmall.orchestrator.client.order
 
-import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.orchestrator.client.order.request.CreateOrderSnapshotClientRequest
 import com.nextmall.orchestrator.client.order.response.CreateOrderClientResponse
-import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
+import com.nextmall.orchestrator.security.PassportTokenPropagationInterceptor
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.client.RestClient
 
 @Component
 class WebClientOrderServiceClient(
-    webClientFactory: WebClientFactory,
+    restClientBuilder: RestClient.Builder,
     properties: OrderServiceClientProperties,
+    passportTokenPropagationInterceptor: PassportTokenPropagationInterceptor,
 ) : OrderServiceClient {
     private val client =
-        webClientFactory.create(
-            baseUrl = properties.baseUrl,
-            filters = arrayOf(PassportTokenPropagationFilter()),
-        )
+        restClientBuilder
+            .baseUrl(properties.baseUrl)
+            .requestInterceptor(passportTokenPropagationInterceptor)
+            .build()
 
     override fun createOrder(
         request: CreateOrderSnapshotClientRequest,
@@ -25,10 +25,9 @@ class WebClientOrderServiceClient(
             client
                 .post()
                 .uri(ORDER_CREATE_URI)
-                .bodyValue(request)
+                .body(request)
                 .retrieve()
-                .bodyToMono<CreateOrderClientResponse>()
-                .block()
+                .body(CreateOrderClientResponse::class.java)
 
         return requireNotNull(response)
     }

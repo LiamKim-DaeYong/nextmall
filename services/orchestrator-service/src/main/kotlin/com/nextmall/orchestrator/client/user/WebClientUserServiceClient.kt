@@ -1,22 +1,22 @@
 package com.nextmall.orchestrator.client.user
 
-import com.nextmall.common.integration.support.WebClientFactory
 import com.nextmall.orchestrator.client.user.request.CreateUserClientRequest
 import com.nextmall.orchestrator.client.user.response.CreateUserClientResponse
-import com.nextmall.orchestrator.security.PassportTokenPropagationFilter
+import com.nextmall.orchestrator.security.PassportTokenPropagationInterceptor
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.client.RestClient
 
 @Component
 class WebClientUserServiceClient(
-    webClientFactory: WebClientFactory,
+    restClientBuilder: RestClient.Builder,
     properties: UserServiceClientProperties,
+    passportTokenPropagationInterceptor: PassportTokenPropagationInterceptor,
 ) : UserServiceClient {
     private val client =
-        webClientFactory.create(
-            baseUrl = properties.baseUrl,
-            filters = arrayOf(PassportTokenPropagationFilter()),
-        )
+        restClientBuilder
+            .baseUrl(properties.baseUrl)
+            .requestInterceptor(passportTokenPropagationInterceptor)
+            .build()
 
     override fun createUser(
         nickname: String,
@@ -26,10 +26,9 @@ class WebClientUserServiceClient(
             client
                 .post()
                 .uri(USER_CREATE_URI)
-                .bodyValue(CreateUserClientRequest(nickname, email))
+                .body(CreateUserClientRequest(nickname, email))
                 .retrieve()
-                .bodyToMono<CreateUserClientResponse>()
-                .block()
+                .body(CreateUserClientResponse::class.java)
 
         return requireNotNull(response).userId
     }
@@ -39,8 +38,7 @@ class WebClientUserServiceClient(
             .post()
             .uri(USER_ACTIVATE_URI, userId)
             .retrieve()
-            .bodyToMono<Void>()
-            .block()
+            .toBodilessEntity()
     }
 
     override fun markSignupFailed(userId: Long) {
@@ -48,8 +46,7 @@ class WebClientUserServiceClient(
             .post()
             .uri(USER_SIGNUP_FAIL_URI, userId)
             .retrieve()
-            .bodyToMono<Void>()
-            .block()
+            .toBodilessEntity()
     }
 
     companion object {
