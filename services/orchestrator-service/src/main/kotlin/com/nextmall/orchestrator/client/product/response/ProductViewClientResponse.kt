@@ -6,7 +6,7 @@ data class ProductViewClientResponse(
     val id: Long,
     val name: String,
     val price: Money,
-    val currency: String,
+    val currency: String? = null,
     val stock: Int,
     val sellerId: Long,
     val category: String?,
