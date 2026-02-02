@@ -1,5 +1,7 @@
 package com.nextmall.checkout.application
 
+import com.nextmall.checkout.application.command.AddressCommand
+import com.nextmall.checkout.application.command.BuyerCommand
 import com.nextmall.checkout.application.command.CompleteCheckoutCommand
 import com.nextmall.checkout.application.command.CreateCheckoutCommand
 import com.nextmall.checkout.application.command.LineItemCommand
@@ -270,14 +272,14 @@ class CheckoutService(
             )
         }.toMutableList()
 
-    private fun com.nextmall.checkout.application.command.BuyerCommand.toDomain(): Buyer =
+    private fun BuyerCommand.toDomain(): Buyer =
         Buyer(
             id = id,
             email = email,
             name = name,
         )
 
-    private fun com.nextmall.checkout.application.command.AddressCommand.toDomain(): Address =
+    private fun AddressCommand.toDomain(): Address =
         Address(
             line1 = line1,
             line2 = line2,

@@ -2,7 +2,7 @@ package com.nextmall.common.testsupport.config
 
 import com.nextmall.common.kafka.event.DomainEvent
 import com.nextmall.common.kafka.producer.EventPublisher
-import com.nextmall.common.security.token.PassportTokenProperties
+import com.nextmall.common.web.core.security.passport.PassportTokenProperties
 import com.nextmall.common.testsupport.security.TestPassportTokenIssuer
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean

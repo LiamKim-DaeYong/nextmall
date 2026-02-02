@@ -1,7 +1,7 @@
 package com.nextmall.apigateway.security.token
 
-import com.nextmall.common.security.internal.PassportTokenIssuer
-import com.nextmall.common.security.token.PassportTokenProperties
+import com.nextmall.common.web.core.security.passport.PassportTokenIssuer
+import com.nextmall.common.web.core.security.passport.PassportTokenProperties
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Component
 

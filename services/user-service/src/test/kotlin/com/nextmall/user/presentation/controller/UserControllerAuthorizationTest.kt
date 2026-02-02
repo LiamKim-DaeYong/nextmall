@@ -1,6 +1,6 @@
 package com.nextmall.user.presentation.controller
 
-import com.nextmall.common.security.internal.SecurityTokenConstants
+import com.nextmall.common.web.core.security.passport.SecurityTokenConstants
 import com.nextmall.common.testsupport.annotation.IntegrationTest
 import com.nextmall.common.testsupport.security.TestPassportTokenIssuer
 import com.nextmall.user.application.UserService

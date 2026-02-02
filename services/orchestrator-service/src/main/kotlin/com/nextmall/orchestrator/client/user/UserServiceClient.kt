@@ -1,11 +1,60 @@
 package com.nextmall.orchestrator.client.user
 
-import reactor.core.publisher.Mono
+import com.nextmall.common.web.mvc.client.RestClientFactory
+import com.nextmall.orchestrator.client.user.request.CreateUserClientRequest
+import com.nextmall.orchestrator.client.user.response.CreateUserClientResponse
+import com.nextmall.orchestrator.security.PassportTokenPropagationInterceptor
+import org.springframework.stereotype.Component
+import org.springframework.web.client.body
 
-interface UserServiceClient {
-    fun createUser(nickname: String, email: String?): Mono<Long>
+@Component
+class UserServiceClient(
+    restClientFactory: RestClientFactory,
+    properties: UserServiceClientProperties,
+    passportTokenPropagationInterceptor: PassportTokenPropagationInterceptor,
+) {
+    private val client =
+        restClientFactory.create(
+            baseUrl = properties.baseUrl,
+            interceptor = passportTokenPropagationInterceptor,
+        )
 
-    fun activateUser(userId: Long): Mono<Void>
+    fun createUser(
+        nickname: String,
+        email: String?,
+    ): Long {
+        val response =
+            client
+                .post()
+                .uri(USER_CREATE_URI)
+                .body(CreateUserClientRequest(nickname, email))
+                .retrieve()
+                .body<CreateUserClientResponse>()
 
-    fun markSignupFailed(userId: Long): Mono<Void>
+        return checkNotNull(response) {
+            "User service returned null response for createUser"
+        }.userId
+    }
+
+    fun activateUser(userId: Long) {
+        client
+            .post()
+            .uri(USER_ACTIVATE_URI, userId)
+            .retrieve()
+            .toBodilessEntity()
+    }
+
+    fun markSignupFailed(userId: Long) {
+        client
+            .post()
+            .uri(USER_SIGNUP_FAIL_URI, userId)
+            .retrieve()
+            .toBodilessEntity()
+    }
+
+    companion object {
+        private const val USER_CREATE_URI = "/users"
+        private const val USER_ACTIVATE_URI = "/users/{userId}/activate"
+        private const val USER_SIGNUP_FAIL_URI = "/users/{userId}/signup-failed"
+    }
 }

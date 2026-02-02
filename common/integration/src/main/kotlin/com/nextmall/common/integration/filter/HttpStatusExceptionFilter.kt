@@ -1,19 +1,22 @@
 package com.nextmall.common.integration.filter
 
+import com.nextmall.common.exception.ErrorResponse
 import com.nextmall.common.integration.exception.ClientErrorException
 import com.nextmall.common.integration.exception.IntegrationErrorContext
 import com.nextmall.common.integration.exception.ServerErrorException
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
+import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
+import tools.jackson.databind.ObjectMapper
 
 object HttpStatusExceptionFilter {
-    fun filter(): ExchangeFilterFunction =
+    fun filter(objectMapper: ObjectMapper): ExchangeFilterFunction =
         ExchangeFilterFunction.ofResponseProcessor { response: ClientResponse ->
             when {
                 response.statusCode().is4xxClientError ->
                     response
-                        .bodyToMono(String::class.java)
+                        .bodyToMono<String>()
                         .defaultIfEmpty("")
                         .flatMap { body ->
                             Mono.error(
@@ -23,6 +26,8 @@ object HttpStatusExceptionFilter {
                                             url = response.request().uri.toString(),
                                             statusCode = response.statusCode().value(),
                                             responseBody = body,
+                                            errorResponse = parseErrorResponse(body, objectMapper),
+                                            serviceName = resolveServiceName(response.request().uri.toString()),
                                         ),
                                 ),
                             )
@@ -30,7 +35,7 @@ object HttpStatusExceptionFilter {
 
                 response.statusCode().is5xxServerError ->
                     response
-                        .bodyToMono(String::class.java)
+                        .bodyToMono<String>()
                         .defaultIfEmpty("")
                         .flatMap { body ->
                             Mono.error(
@@ -40,6 +45,8 @@ object HttpStatusExceptionFilter {
                                             url = response.request().uri.toString(),
                                             statusCode = response.statusCode().value(),
                                             responseBody = body,
+                                            errorResponse = parseErrorResponse(body, objectMapper),
+                                            serviceName = resolveServiceName(response.request().uri.toString()),
                                         ),
                                 ),
                             )
@@ -49,4 +56,19 @@ object HttpStatusExceptionFilter {
                     Mono.just(response)
             }
         }
+
+    private fun parseErrorResponse(
+        body: String,
+        objectMapper: ObjectMapper,
+    ): ErrorResponse? =
+        if (body.isBlank()) {
+            null
+        } else {
+            runCatching { objectMapper.readValue(body, ErrorResponse::class.java) }.getOrNull()
+        }
+
+    private fun resolveServiceName(url: String): String? =
+        runCatching {
+            java.net.URI(url).host
+        }.getOrNull()
 }

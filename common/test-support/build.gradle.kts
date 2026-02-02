@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":common:identifier"))
     implementation(project(":common:kafka"))
     implementation(project(":common:redis"))
-    implementation(project(":common:security"))
+    implementation(project(":common:web-core"))
 
     implementation(platform(libs.spring.boot.dependencies))
     implementation(libs.spring.boot.starter.data.jpa)

@@ -1,9 +1,9 @@
 package com.nextmall.bff.config
 
 import com.nextmall.bff.security.PassportBearerTokenAuthenticationConverter
-import com.nextmall.common.security.jwt.SecretKeyDecoder
-import com.nextmall.common.security.spring.PassportJwtAuthenticationConverter
-import com.nextmall.common.security.token.PassportTokenProperties
+import com.nextmall.common.web.core.security.jwt.SecretKeyDecoder
+import com.nextmall.common.web.core.security.passport.PassportJwtAuthenticationConverter
+import com.nextmall.common.web.core.security.passport.PassportTokenProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity

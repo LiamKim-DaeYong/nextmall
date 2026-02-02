@@ -1,6 +1,6 @@
 package com.nextmall.order.config
 
-import com.nextmall.common.security.config.PassportTokenSecurityConfig
+import com.nextmall.common.web.mvc.security.config.PassportTokenSecurityConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity

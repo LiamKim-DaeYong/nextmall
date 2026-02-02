@@ -12,17 +12,15 @@ plugins {
 dependencies {
     implementation(project(":common:data"))
     implementation(project(":common:exception"))
+    implementation(project(":common:web-mvc"))
     implementation(project(":common:identifier"))
     implementation(project(":common:redis"))
-    implementation(project(":common:security"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.jooq)
-    implementation(libs.spring.boot.starter.validation)
-    implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
 
     runtimeOnly(libs.postgresql)

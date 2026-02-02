@@ -1,6 +1,6 @@
 package com.nextmall.product.application
 
-import com.nextmall.common.authorization.exception.AccessDeniedException
+import com.nextmall.common.web.mvc.authorization.exception.AccessDeniedException
 import com.nextmall.common.identifier.IdGenerator
 import com.nextmall.common.util.Money
 import com.nextmall.product.application.query.ProductView

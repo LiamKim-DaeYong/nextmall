@@ -1,7 +1,7 @@
 package com.nextmall.user.config
 
-import com.nextmall.common.authorization.config.AuthorizationConfig
-import com.nextmall.common.authorization.service.PolicyProvider
+import com.nextmall.common.web.mvc.authorization.config.AuthorizationConfig
+import com.nextmall.common.web.mvc.authorization.service.PolicyProvider
 import com.nextmall.common.policy.factory.policy
 import com.nextmall.common.policy.model.Operator
 import com.nextmall.common.policy.model.Policy
