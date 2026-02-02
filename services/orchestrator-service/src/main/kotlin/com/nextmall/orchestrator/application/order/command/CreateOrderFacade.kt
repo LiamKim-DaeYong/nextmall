@@ -67,7 +67,11 @@ class CreateOrderFacade(
                 )
             CreateOrderResult(orderId = response.orderId)
         } catch (ex: Exception) {
-            releaseStock(product.id, command.quantity)
+            try {
+                releaseStock(product.id, command.quantity)
+            } catch (releaseEx: Exception) {
+                ex.addSuppressed(releaseEx)
+            }
             throw ex
         }
     }
