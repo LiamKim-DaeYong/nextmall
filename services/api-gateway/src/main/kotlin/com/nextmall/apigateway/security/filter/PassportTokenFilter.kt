@@ -2,7 +2,7 @@ package com.nextmall.apigateway.security.filter
 
 import com.nextmall.apigateway.security.config.GatewaySecurityProperties
 import com.nextmall.apigateway.security.token.GatewayPassportTokenIssuer
-import com.nextmall.common.security.internal.SecurityTokenConstants
+import com.nextmall.common.web.core.security.passport.SecurityTokenConstants
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
 import org.springframework.core.Ordered

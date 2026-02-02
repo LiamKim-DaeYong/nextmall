@@ -15,7 +15,6 @@ dependencies {
     implementation(project(":common:web-mvc"))
     implementation(project(":common:identifier"))
     implementation(project(":common:redis"))
-    implementation(project(":common:security"))
     implementation(project(":common:util"))
 
     implementation(libs.kotlin.reflect)

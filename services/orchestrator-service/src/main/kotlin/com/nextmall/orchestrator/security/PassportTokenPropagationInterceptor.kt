@@ -1,6 +1,6 @@
 package com.nextmall.orchestrator.security
 
-import com.nextmall.common.security.internal.SecurityTokenConstants
+import com.nextmall.common.web.core.security.passport.SecurityTokenConstants
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse

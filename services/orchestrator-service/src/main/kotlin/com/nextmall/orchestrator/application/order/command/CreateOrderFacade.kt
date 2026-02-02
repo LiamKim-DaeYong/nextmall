@@ -30,7 +30,7 @@ class CreateOrderFacade(
         val product = productServiceClient.getProduct(command.productId)
         val totalPrice = product.price * command.quantity
         val checkoutId = UUID.randomUUID().toString()
-        val currency = product.currency
+        val currency = product.currency ?: DEFAULT_CURRENCY
         val unitPrice = toMinorAmount(product.price.amount)
         val totalAmount = toMinorAmount(totalPrice.amount)
         val lineItem =
@@ -102,4 +102,7 @@ class CreateOrderFacade(
             .movePointRight(2)
             .longValueExact()
 
+    companion object {
+        private const val DEFAULT_CURRENCY = "KRW"
+    }
 }

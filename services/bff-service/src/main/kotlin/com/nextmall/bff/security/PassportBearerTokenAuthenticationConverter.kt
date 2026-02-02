@@ -1,6 +1,6 @@
 package com.nextmall.bff.security
 
-import com.nextmall.common.security.internal.SecurityTokenConstants
+import com.nextmall.common.web.core.security.passport.SecurityTokenConstants
 import org.springframework.security.oauth2.server.resource.web.server.authentication.ServerBearerTokenAuthenticationConverter
 
 class PassportBearerTokenAuthenticationConverter : ServerBearerTokenAuthenticationConverter() {

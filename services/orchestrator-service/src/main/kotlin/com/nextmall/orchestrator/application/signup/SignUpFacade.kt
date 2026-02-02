@@ -36,7 +36,11 @@ class SignUpFacade(
                 refreshToken = token.refreshToken,
             )
         } catch (ex: Exception) {
-            runCatching { userServiceClient.markSignupFailed(userId) }
+            try {
+                userServiceClient.markSignupFailed(userId)
+            } catch (cleanupEx: Exception) {
+                ex.addSuppressed(cleanupEx)
+            }
             throw ex
         }
     }

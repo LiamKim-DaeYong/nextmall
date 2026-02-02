@@ -3,7 +3,7 @@ package com.nextmall.apigateway.exception
 import com.nextmall.common.exception.ErrorResponse
 import com.nextmall.common.exception.code.CommonErrorCode
 import com.nextmall.common.web.reactive.exception.GlobalExceptionHandlerSupport
-import com.nextmall.common.web.reactive.exception.HttpStatusMapper
+import com.nextmall.common.web.core.exception.HttpStatusMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

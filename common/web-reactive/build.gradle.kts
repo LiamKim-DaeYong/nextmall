@@ -21,6 +21,7 @@ tasks.named<Jar>("jar") {
 }
 
 dependencies {
+    api(project(":common:web-core"))
     api(libs.spring.boot.starter.webflux)
     api(libs.spring.boot.starter.validation)
 

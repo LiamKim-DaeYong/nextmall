@@ -10,7 +10,6 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
-    implementation(project(":common:security-core"))
     implementation(project(":common:web-reactive"))
 
     implementation(libs.kotlin.reflect)

@@ -4,6 +4,7 @@ import com.nextmall.common.exception.ErrorResponse
 import com.nextmall.common.exception.base.BaseException
 import com.nextmall.common.exception.code.CommonErrorCode
 import com.nextmall.common.integration.exception.IntegrationException
+import com.nextmall.common.web.core.exception.HttpStatusMapper
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.MDC
 import org.springframework.http.HttpStatus

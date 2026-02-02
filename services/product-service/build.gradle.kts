@@ -10,13 +10,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common:authorization"))
     implementation(project(":common:data"))
     implementation(project(":common:exception"))
     implementation(project(":common:web-mvc"))
     implementation(project(":common:identifier"))
     implementation(project(":common:kafka"))
-    implementation(project(":common:security"))
     implementation(project(":common:util"))
 
     implementation(libs.jackson.module.kotlin)

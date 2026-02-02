@@ -1,7 +1,7 @@
 package com.nextmall.order.exception
 
 import com.nextmall.common.web.mvc.exception.GlobalExceptionHandlerSupport
-import com.nextmall.common.web.mvc.exception.HttpStatusMapper
+import com.nextmall.common.web.core.exception.HttpStatusMapper
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.RestControllerAdvice
 

@@ -1,9 +1,9 @@
 package com.nextmall.common.testsupport.security
 
-import com.nextmall.common.security.internal.PassportTokenIssuer
-import com.nextmall.common.security.internal.SecurityTokenConstants
-import com.nextmall.common.security.jwt.SecretKeyDecoder
-import com.nextmall.common.security.token.PassportTokenProperties
+import com.nextmall.common.web.core.security.passport.PassportTokenIssuer
+import com.nextmall.common.web.core.security.passport.SecurityTokenConstants
+import com.nextmall.common.web.core.security.jwt.SecretKeyDecoder
+import com.nextmall.common.web.core.security.passport.PassportTokenProperties
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.crypto.MACSigner

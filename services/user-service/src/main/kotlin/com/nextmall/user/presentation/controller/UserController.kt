@@ -1,6 +1,6 @@
 package com.nextmall.user.presentation.controller
 
-import com.nextmall.common.authorization.annotation.RequiresPolicy
+import com.nextmall.common.web.mvc.authorization.annotation.RequiresPolicy
 import com.nextmall.user.application.UserService
 import com.nextmall.user.presentation.request.CreateUserRequest
 import com.nextmall.user.presentation.response.CreateUserResponse

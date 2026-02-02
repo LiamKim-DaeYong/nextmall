@@ -1,7 +1,7 @@
 package com.nextmall.bff.exception
 
 import com.nextmall.common.web.reactive.exception.GlobalExceptionHandlerSupport
-import com.nextmall.common.web.reactive.exception.HttpStatusMapper
+import com.nextmall.common.web.core.exception.HttpStatusMapper
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.RestControllerAdvice
 

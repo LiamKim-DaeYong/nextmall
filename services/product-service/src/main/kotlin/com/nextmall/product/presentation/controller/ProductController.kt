@@ -1,7 +1,7 @@
 package com.nextmall.product.presentation.controller
 
-import com.nextmall.common.security.principal.AuthenticatedPrincipal
-import com.nextmall.common.security.spring.CurrentUser
+import com.nextmall.common.web.core.security.principal.AuthenticatedPrincipal
+import com.nextmall.common.web.core.security.spring.CurrentUser
 import com.nextmall.common.util.Money
 import com.nextmall.product.application.ProductService
 import com.nextmall.product.presentation.request.CreateProductRequest

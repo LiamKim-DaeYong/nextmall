@@ -9,4 +9,4 @@ nextmall:
 logging:
   level:
     org.springframework.security: DEBUG
-    com.nextmall.common.authorization: DEBUG
+    com.nextmall.common.web.mvc.authorization: DEBUG

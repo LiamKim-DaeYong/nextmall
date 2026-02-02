@@ -1,6 +1,6 @@
 package com.nextmall.auth.config
 
-import com.nextmall.common.security.config.PassportTokenSecurityConfig
+import com.nextmall.common.web.mvc.security.config.PassportTokenSecurityConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
