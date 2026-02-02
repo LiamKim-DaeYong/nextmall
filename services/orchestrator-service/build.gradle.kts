@@ -18,8 +18,6 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.security)
-    implementation(libs.spring.boot.starter.validation)
-    implementation(libs.spring.boot.starter.webmvc)
 
     testImplementation(project(":common:test-support"))
 }

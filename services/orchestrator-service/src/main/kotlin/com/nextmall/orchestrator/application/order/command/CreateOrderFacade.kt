@@ -12,6 +12,7 @@ import com.nextmall.orchestrator.client.order.request.OrderTotalsClientRequest
 import com.nextmall.orchestrator.client.product.ProductServiceClient
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.util.Currency
 import java.util.UUID
 
 @Component
@@ -31,8 +32,8 @@ class CreateOrderFacade(
         val totalPrice = product.price * command.quantity
         val checkoutId = UUID.randomUUID().toString()
         val currency = product.currency ?: DEFAULT_CURRENCY
-        val unitPrice = toMinorAmount(product.price.amount)
-        val totalAmount = toMinorAmount(totalPrice.amount)
+        val unitPrice = toMinorAmount(product.price.amount, currency)
+        val totalAmount = toMinorAmount(totalPrice.amount, currency)
         val lineItem =
             OrderLineItemClientRequest(
                 lineItemId = idGenerator.generate().toString(),
@@ -97,10 +98,17 @@ class CreateOrderFacade(
     ): Int =
         stockCacheRepository.increase(productId, quantity)
 
-    private fun toMinorAmount(amount: BigDecimal): Long =
-        amount
-            .movePointRight(2)
+    /**
+     * 금액을 해당 통화의 최소 단위(minor unit)로 변환한다.
+     * - KRW, JPY 등 소수점 없는 통화: 그대로 반환
+     * - USD, EUR 등 2자리 소수점 통화: 100을 곱함
+     */
+    private fun toMinorAmount(amount: BigDecimal, currencyCode: String): Long {
+        val fractionDigits = Currency.getInstance(currencyCode).defaultFractionDigits
+        return amount
+            .movePointRight(fractionDigits)
             .longValueExact()
+    }
 
     companion object {
         private const val DEFAULT_CURRENCY = "KRW"
