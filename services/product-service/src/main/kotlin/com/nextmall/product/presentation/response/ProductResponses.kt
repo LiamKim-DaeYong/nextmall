@@ -14,6 +14,7 @@ data class ProductResponse(
     val name: String,
     val description: String?,
     val price: Money,
+    val currency: String,
     val stock: Int,
     val saleStatus: SaleStatus,
     val displayStatus: DisplayStatus,
@@ -29,6 +30,7 @@ data class SellerProductResponse(
     val name: String,
     val description: String?,
     val price: Money,
+    val currency: String,
     val stock: Int,
     val saleStatus: SaleStatus,
     val displayStatus: DisplayStatus,
@@ -45,6 +47,7 @@ fun ProductView.toPublicResponse() =
         name = name,
         description = description,
         price = price,
+        currency = DEFAULT_CURRENCY,
         stock = stock,
         saleStatus = saleStatus,
         displayStatus = displayStatus,
@@ -59,6 +62,7 @@ fun ProductView.toSellerResponse() =
         name = name,
         description = description,
         price = price,
+        currency = DEFAULT_CURRENCY,
         stock = stock,
         saleStatus = saleStatus,
         displayStatus = displayStatus,
@@ -67,3 +71,5 @@ fun ProductView.toSellerResponse() =
         isDeleted = isDeleted,
         createdAt = createdAt,
     )
+
+private const val DEFAULT_CURRENCY = "USD"
