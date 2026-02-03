@@ -8,7 +8,7 @@
  *   k6 run k6/scenarios/order-baseline.js
  *
  * 환경변수:
- *   BASE_URL: API Gateway URL (default: http://localhost:8000)
+ *   BASE_URL: API Gateway URL (default: http://localhost:8080/api/v1)
  *   TEST_EMAIL: 테스트 계정 이메일
  *   TEST_PASSWORD: 테스트 계정 비밀번호
  */
@@ -93,7 +93,7 @@ export default function (data) {
   orderDuration.add(duration);
 
   const success = check(res, {
-    'status is 200': (r) => r.status === 200,
+    'status is 200 or 201': (r) => r.status === 200 || r.status === 201,
   });
 
   if (success) {

@@ -8,7 +8,7 @@
  *   k6 run k6/scenarios/order-concurrency.js
  *
  * 환경변수:
- *   BASE_URL: API Gateway URL (default: http://localhost:8000)
+ *   BASE_URL: API Gateway URL (default: http://localhost:8080/api/v1)
  *   TEST_EMAIL: 테스트 계정 이메일
  *   TEST_PASSWORD: 테스트 계정 비밀번호
  *   TEST_STOCK: 테스트 상품 재고 (default: 100)
@@ -27,7 +27,7 @@ const orderOtherError = new Counter('order_other_error');
 const orderDuration = new Trend('order_duration');
 
 // 테스트 설정
-const TEST_STOCK = parseInt(__ENV.TEST_STOCK) || 100;
+const TEST_STOCK = Number.isNaN(parseInt(__ENV.TEST_STOCK)) ? 100 : parseInt(__ENV.TEST_STOCK);
 
 export const options = {
   scenarios: {

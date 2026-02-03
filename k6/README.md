@@ -50,7 +50,7 @@ k6 run --env TEST_STOCK=500 k6/scenarios/order-concurrency.js
 
 | 변수 | 설명 | 기본값 |
 |------|------|--------|
-| `BASE_URL` | API Gateway URL | `http://localhost:8000` |
+| `BASE_URL` | API Gateway URL | `http://localhost:8080/api/v1` |
 | `TEST_EMAIL` | 테스트 계정 이메일 | 자동 생성 |
 | `TEST_PASSWORD` | 테스트 계정 비밀번호 | `Test1234!` |
 | `TEST_STOCK` | 테스트 상품 재고 (concurrency) | `100` |
@@ -82,7 +82,7 @@ k6 run --env TEST_STOCK=500 k6/scenarios/order-concurrency.js
 
 ## 디렉토리 구조
 
-```
+```text
 k6/
 ├── lib/
 │   ├── auth.js       # 인증 헬퍼

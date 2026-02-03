@@ -34,9 +34,8 @@ export function signup(email, password, nickname) {
     { headers: { 'Content-Type': 'application/json' } }
   );
 
-  console.log(`Signup response: ${res.status} ${res.body}`);
-
   if (res.status !== 201) {
+    console.log(`Signup failed: ${res.status}`);
     return null;
   }
 
@@ -55,36 +54,24 @@ export function getOrCreateTestUser() {
   const password = __ENV.TEST_PASSWORD || 'Test1234!';
   const nickname = __ENV.TEST_NICKNAME || `K6 Test User`;
 
-  console.log(`Attempting to get/create user: ${email}`);
-  console.log(`BASE_URL: ${config.baseUrl}`);
-
   // 먼저 로그인 시도
   let token = login(email, password);
   if (token) {
-    console.log(`Logged in as: ${email}`);
+    console.log(`Using existing account`);
     return { email, accessToken: token };
   }
 
   // 로그인 실패 시 회원가입
-  console.log(`Login failed, creating new user: ${email}`);
-
-  const signupRes = http.post(
-    `${config.baseUrl}/sign-up/local`,
-    JSON.stringify({ email, password, nickname }),
-    { headers: { 'Content-Type': 'application/json' } }
-  );
-
-  console.log(`Signup status: ${signupRes.status}`);
-  console.log(`Signup body: ${signupRes.body}`);
-
-  if (signupRes.status !== 201) {
-    throw new Error(`Signup failed: ${signupRes.status} - ${signupRes.body}`);
+  const user = signup(email, password, nickname);
+  if (!user) {
+    throw new Error(`Failed to create test user`);
   }
 
+  console.log(`Created new test account`);
   return {
     email,
-    userId: signupRes.json('userId'),
-    accessToken: signupRes.json('accessToken'),
+    userId: user.userId,
+    accessToken: user.accessToken,
   };
 }
 
