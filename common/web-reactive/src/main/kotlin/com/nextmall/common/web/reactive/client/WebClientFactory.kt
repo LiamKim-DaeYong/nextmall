@@ -1,4 +1,4 @@
-package com.nextmall.common.integration.support
+package com.nextmall.common.web.reactive.client
 
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient

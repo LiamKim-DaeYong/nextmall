@@ -10,9 +10,6 @@ include("services:order-service") // 주문 서비스 실행 단위 (Order Domai
 include("services:product-service") // 상품 서비스 실행 단위 (Product Domain 실행 책임)
 include("services:user-service") // 회원 서비스 실행 단위 (User Domain 실행 책임)
 
-// ──────────────── Integration Layer ────────────────
-include("common:integration") // 외부 서비스 통신 공통 레이어 (HTTP, Event, Messaging)
-
 // ──────────────── Common Infrastructure ────────────────
 include("common:data") // 데이터 접근 공통 인프라 (JPA, jOOQ)
 include("common:exception") // 공통 예외 정의 및 에러 계약

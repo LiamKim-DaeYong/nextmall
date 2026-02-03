@@ -10,7 +10,6 @@ plugins {
 
 dependencies {
     implementation(project(":common:exception"))
-    implementation(project(":common:integration"))
     implementation(project(":common:util"))
     implementation(project(":common:web-reactive"))
 

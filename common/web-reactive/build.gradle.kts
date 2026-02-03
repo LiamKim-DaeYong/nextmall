@@ -26,5 +26,5 @@ dependencies {
     api(libs.spring.boot.starter.validation)
 
     implementation(project(":common:exception"))
-    implementation(project(":common:integration"))
+    api(libs.jackson.module.kotlin)
 }
