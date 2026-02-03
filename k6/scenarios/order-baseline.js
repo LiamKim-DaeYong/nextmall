@@ -62,9 +62,7 @@ export function setup() {
   );
 
   if (productRes.status !== 201) {
-    console.error(`Product creation failed: ${productRes.status}`);
-    console.error(`Response: ${productRes.body}`);
-    throw new Error('Failed to create test product');
+    throw new Error(`Failed to create test product: ${productRes.status}`);
   }
 
   const productId = productRes.json('productId');
