@@ -1,9 +1,9 @@
-package com.nextmall.common.integration.filter
+package com.nextmall.common.web.reactive.client.filter
 
 import com.nextmall.common.exception.ErrorResponse
-import com.nextmall.common.integration.exception.ClientErrorException
-import com.nextmall.common.integration.exception.IntegrationErrorContext
-import com.nextmall.common.integration.exception.ServerErrorException
+import com.nextmall.common.web.core.exception.ClientErrorException
+import com.nextmall.common.web.core.exception.IntegrationErrorContext
+import com.nextmall.common.web.core.exception.ServerErrorException
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.bodyToMono

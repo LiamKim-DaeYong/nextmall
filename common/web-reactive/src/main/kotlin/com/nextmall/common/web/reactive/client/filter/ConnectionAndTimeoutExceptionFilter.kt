@@ -1,9 +1,9 @@
-package com.nextmall.common.integration.filter
+package com.nextmall.common.web.reactive.client.filter
 
-import com.nextmall.common.integration.exception.ConnectionFailedException
-import com.nextmall.common.integration.exception.IntegrationErrorContext
-import com.nextmall.common.integration.exception.IntegrationException
-import com.nextmall.common.integration.exception.TimeoutException
+import com.nextmall.common.web.core.exception.ConnectionFailedException
+import com.nextmall.common.web.core.exception.IntegrationErrorContext
+import com.nextmall.common.web.core.exception.IntegrationException
+import com.nextmall.common.web.core.exception.TimeoutException
 import io.netty.handler.timeout.ReadTimeoutException
 import io.netty.handler.timeout.WriteTimeoutException
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction

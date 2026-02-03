@@ -1,8 +1,7 @@
-package com.nextmall.common.integration.config
+package com.nextmall.common.web.reactive.client
 
-import com.nextmall.common.integration.filter.ConnectionAndTimeoutExceptionFilter
-import com.nextmall.common.integration.filter.HttpStatusExceptionFilter
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.common.web.reactive.client.filter.ConnectionAndTimeoutExceptionFilter
+import com.nextmall.common.web.reactive.client.filter.HttpStatusExceptionFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
@@ -11,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.databind.ObjectMapper
 
 @Configuration
-class WebClientBaseConfig {
+class WebClientConfig {
     @Bean
     fun webClientBuilder(objectMapper: ObjectMapper): WebClient.Builder =
         WebClient

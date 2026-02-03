@@ -6,7 +6,7 @@ import com.nextmall.bff.client.product.response.CreateProductClientResponse
 import com.nextmall.bff.client.product.response.ProductViewClientResponse
 import com.nextmall.bff.client.product.response.SellerProductViewClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.common.web.reactive.client.WebClientFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono

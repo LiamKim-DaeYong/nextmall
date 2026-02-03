@@ -4,7 +4,7 @@ import com.nextmall.bff.client.order.request.CreateOrderClientRequest
 import com.nextmall.bff.client.order.response.CreateOrderClientResponse
 import com.nextmall.bff.client.order.response.OrderViewClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.common.web.reactive.client.WebClientFactory
 import com.nextmall.common.util.Money
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono

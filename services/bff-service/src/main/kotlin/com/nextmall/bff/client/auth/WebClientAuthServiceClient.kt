@@ -8,7 +8,7 @@ import com.nextmall.bff.client.auth.request.RevokeTokenClientRequest
 import com.nextmall.bff.client.auth.response.CreateAuthAccountClientResponse
 import com.nextmall.bff.client.auth.response.TokenClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.common.web.reactive.client.WebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono

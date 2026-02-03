@@ -6,7 +6,7 @@ import com.nextmall.bff.client.orchestrator.request.SignUpOrchestrationClientReq
 import com.nextmall.bff.client.orchestrator.response.CreateOrderOrchestrationClientResponse
 import com.nextmall.bff.client.orchestrator.response.SignUpOrchestrationClientResponse
 import com.nextmall.bff.security.PassportTokenPropagationFilter
-import com.nextmall.common.integration.support.WebClientFactory
+import com.nextmall.common.web.reactive.client.WebClientFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono

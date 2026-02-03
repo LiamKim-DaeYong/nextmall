@@ -29,7 +29,6 @@ dependencies {
     api(project(":common:policy"))
 
     implementation(project(":common:exception"))
-    implementation(project(":common:integration"))
     implementation(libs.kotlin.reflect)
 
     testImplementation(libs.kotest.runner.junit5)
