@@ -15,7 +15,7 @@
 
 ## 서비스 통신 구조
 
-```
+```text
 Client → Gateway(8080) → BFF(8082) → Domain Services
                                   └→ Orchestrator(8087) → Domain Services
 
