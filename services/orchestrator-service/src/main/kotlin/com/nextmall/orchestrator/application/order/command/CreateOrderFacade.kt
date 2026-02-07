@@ -34,6 +34,7 @@ class CreateOrderFacade(
         val currency = product.currency ?: DEFAULT_CURRENCY
         val unitPrice = toMinorAmount(product.price.amount, currency)
         val totalAmount = toMinorAmount(totalPrice.amount, currency)
+
         val lineItem =
             OrderLineItemClientRequest(
                 lineItemId = idGenerator.generate().toString(),
@@ -43,7 +44,9 @@ class CreateOrderFacade(
                 price = MoneyAmountClientRequest(unitPrice, currency),
                 imageUrl = null,
             )
+
         val zero = MoneyAmountClientRequest(0, currency)
+
         val totals =
             OrderTotalsClientRequest(
                 subtotal = MoneyAmountClientRequest(totalAmount, currency),
@@ -52,6 +55,7 @@ class CreateOrderFacade(
                 discount = zero,
                 total = MoneyAmountClientRequest(totalAmount, currency),
             )
+
         val orderRequest =
             CreateOrderSnapshotClientRequest(
                 checkoutId = checkoutId,
@@ -61,6 +65,7 @@ class CreateOrderFacade(
             )
 
         reserveStock(product.id, product.stock, command.quantity)
+
         return try {
             val response =
                 orderServiceClient.createOrder(
