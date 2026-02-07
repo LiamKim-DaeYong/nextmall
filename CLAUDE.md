@@ -1,59 +1,33 @@
-# NextMall 프로젝트 컨텍스트
+# NextMall
 
-## 프로젝트 목적
+## 필수 컨텍스트
 
-- **학습 및 역량 향상**을 위한 이커머스 플랫폼
-- 대규모 트래픽 처리, 분산 시스템 설계 등 실무에서 경험하기 어려운 영역 학습
-- 실제 서비스 목적이 아닌 **기술 학습**이 주목적
-- 설계 원칙: **실무 기준 베스트 프랙티스**
+이 프로젝트를 이해하려면 반드시 아래 문서를 먼저 읽으세요:
 
-## 개발 환경
+- `docs/AI_CONTEXT.md` — 서비스 구조, 통신 맵, 코드 패턴, 현재 작업 상태
+- `docs/TODO.md` — 우선순위별 TODO
 
-- 1인 개발
-- 단일 Gradle 프로젝트 + 멀티 모듈 구조
-- 한 번에 한 파일씩 작업하며 점진적으로 진행
+## Claude 역할
 
-## 기술 스택
+- **설계/플랜 담당** (실행은 Codex에서 진행)
+- 시니어 개발자로서 베스트 프랙티스 기반 가이드
+- 큰 변경은 방향성 먼저 논의, 한 번에 한 파일씩 작업
 
-| 영역 | 기술 | 비고 |
-|------|------|------|
-| Framework | Spring Boot 4.0.1 | 최신 버전 유지 |
-| Language | Kotlin | |
-| Command | JPA | 쓰기 작업 |
-| Query | jOOQ | 읽기 작업 (CQRS) |
-| Gateway | Spring Cloud Gateway | WebFlux 기반 |
-| BFF | WebFlux | UI 집계 담당 |
-| Database | PostgreSQL | |
-| Cache | Redis | 세션, 캐시, 분산 락 |
-| Message Queue | Kafka | 이벤트 드리븐 (예정) |
-| Test | JUnit 5, Kotest, MockK | Testcontainers 활용 |
+## 출력 규칙
 
-## 문서 참조 가이드
+- Codex에서 바로 실행할 수 있도록 **구체적이고 명확한 지시** 형태로 작성
+- 코드 블록에는 파일 경로를 반드시 포함
+- 모호한 설명보다 실행 가능한 스펙 우선
 
-아키텍처나 정책처럼 변경 가능한 정보는 이 문서에 고정하지 않습니다.
-항상 아래 문서/소스를 우선 참고합니다.
+## 기술 스택 (빠른 참조)
 
-- **아키텍처/흐름**: `docs/architecture/` 문서
-- **의사결정 기록**: `docs/decisions/ADR-*.md`
-- **API 흐름 예시**: `http/` 및 `e2e-test/`
-- **버전/의존성**: `gradle.properties`, `build.gradle.kts`, `settings.gradle.kts`
-- **서비스 구성**: `services/` 하위 모듈 README 및 설정 파일
+- Spring Boot 4.0.1 / Kotlin / Gradle 멀티모듈
+- CQRS: JPA(쓰기) + jOOQ(읽기)
+- 테스트: Kotest FunSpec + MockK + Testcontainers
+- 인프라: PostgreSQL, Redis, Kafka
 
-## 협업 규칙
+## 문서 참조
 
-1. **한 번에 한 파일씩**: 방향성 합의 후 클래스 파일 하나씩 작업
-2. **Claude 역할**: 시니어 개발자로서 베스트 프랙티스 기반 가이드
-3. **실무 수준 설계**: 학습 목적이지만 실제 운영 가능한 수준 지향
-4. **코드 수정 전 확인**: 큰 변경은 방향성 먼저 논의
-
-## 학습 목표 주제
-
-- 대규모 트래픽 처리 설계
-- 동시성 제어 (분산 락, 낙관적/비관적 락)
-- 이벤트 드리븐 아키텍처 (Kafka)
-- CQRS 패턴
-- 마이크로서비스 간 통신 및 인증
-- 장애 대응 (Circuit Breaker, Retry, Fallback)
-- 캐시 전략 (Cache Aside, Write Through 등)
-- 성능 테스트 (k6)
-- 모니터링/로깅
+- 아키텍처: `docs/architecture/`
+- 기술 결정: `docs/decisions/ADR-*.md`
+- 운영: `docs/operations/`
