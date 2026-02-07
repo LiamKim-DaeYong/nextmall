@@ -28,6 +28,7 @@ const orderDuration = new Trend('order_duration');
 
 // 테스트 설정
 const TEST_STOCK = Number.isNaN(parseInt(__ENV.TEST_STOCK)) ? 100 : parseInt(__ENV.TEST_STOCK);
+const DEBUG_LOG_BODY = __ENV.K6_DEBUG === 'true';
 
 export const options = {
   scenarios: {
@@ -72,7 +73,11 @@ export function setup() {
   );
 
   if (productRes.status !== 201) {
-    throw new Error(`Failed to create test product: ${productRes.status}`);
+    console.error(`Product creation failed: ${productRes.status}`);
+    if (DEBUG_LOG_BODY) {
+      console.error(`Response: ${productRes.body}`);
+    }
+    throw new Error('Failed to create test product');
   }
 
   const productId = productRes.json('productId');

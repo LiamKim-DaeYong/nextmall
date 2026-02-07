@@ -23,6 +23,8 @@ const orderSuccess = new Counter('order_success');
 const orderFailed = new Counter('order_failed');
 const orderDuration = new Trend('order_duration');
 
+const DEBUG_LOG_BODY = __ENV.K6_DEBUG === 'true';
+
 export const options = {
   scenarios: {
     baseline: {
@@ -62,7 +64,11 @@ export function setup() {
   );
 
   if (productRes.status !== 201) {
-    throw new Error(`Failed to create test product: ${productRes.status}`);
+    console.error(`Product creation failed: ${productRes.status}`);
+    if (DEBUG_LOG_BODY) {
+      console.error(`Response: ${productRes.body}`);
+    }
+    throw new Error('Failed to create test product');
   }
 
   const productId = productRes.json('productId');
