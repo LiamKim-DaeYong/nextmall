@@ -20,7 +20,7 @@ docker pull grafana/k6
 ### 사전 준비
 
 1. Docker Compose로 서비스 실행
-2. API Gateway가 `localhost:8000`에서 동작 확인
+2. API Gateway가 `localhost:8080`에서 동작 확인
 
 ### Baseline 테스트
 
